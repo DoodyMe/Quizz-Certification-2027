@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. STYLE CSS (Cadre hospitalier chaleureux & cartes cliquables)
+# 2. STYLE CSS (Cadre hospitalier chaleureux & vignettes)
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -195,9 +195,66 @@ if not st.session_state.user_pseudo:
         </div>
     """, unsafe_allow_html=True)
 
-    # Filtrer les animaux disponibles
-    animaux_disponibles = [a for a in ANIMAUX if len([p for p in st.session_state.pseudos_reserves if p["animal"] == a]) < len(ADJECTIFS)]
-
-    st.markdown("<h4 style='text-align:center; color:#0f766e;'>Étape 1 : Choisissez votre Animal</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align:center; color:#0f766e;'>Étape 1 : Cliquez sur un Animal</h4>", unsafe_allow_html=True)
 
     # Grille de vignettes d'animaux (5 colonnes x 3 lignes)
+    cols = st.columns(5)
+    for idx, animal in enumerate(ANIMAUX):
+        emoji = ANIMAL_TO_EMOJI[animal]
+        col = cols[idx % 5]
+        
+        is_selected = (st.session_state.animal_selectionne == animal)
+        btn_label = f"{emoji} {animal}"
+        btn_type = "primary" if is_selected else "secondary"
+        
+        if col.button(btn_label, key=f"btn_anim_{animal}", type=btn_type, use_container_width=True):
+            st.session_state.animal_selectionne = animal
+            st.rerun()
+
+    # Étape 2 : Choix de l'adjectif (apparaît une fois l'animal sélectionné)
+    if st.session_state.animal_selectionne:
+        animal_choisi = st.session_state.animal_selectionne
+        emoji_choisi = ANIMAL_TO_EMOJI[animal_choisi]
+
+        st.markdown("---")
+        
+        col_l, col_center, col_r = st.columns([1, 2, 1])
+        with col_center:
+            st.markdown(f"""
+                <div style='text-align:center;'>
+                    <div class='animal-selected-badge'>
+                        <span class='animal-selected-emoji'>{emoji_choisi}</span>
+                        <span class='animal-selected-name'>Animal choisi : {animal_choisi}</span>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
+            # Adjectifs pris pour cet animal
+            adjectifs_pris = [
+                p["adjectif"] for p in st.session_state.pseudos_reserves 
+                if isinstance(p, dict) and p.get("animal") == animal_choisi
+            ]
+            adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
+
+            adjectif_choisi = st.selectbox(
+                "Étape 2 : Choisissez votre Adjectif :", 
+                options=["-- Sélectionner un adjectif --"] + adjectifs_disponibles
+            )
+
+            if adjectif_choisi != "-- Sélectionner un adjectif --":
+                pseudo_complet = f"{animal_choisi} {adjectif_choisi}"
+                st.markdown("<br>", unsafe_allow_html=True)
+                
+                if st.button(f"✨ Entrer en tant que {pseudo_complet}", type="primary", use_container_width=True):
+                    st.session_state.pseudos_reserves.append({"animal": animal_choisi, "adjectif": adjectif_choisi})
+                    st.session_state.user_pseudo = pseudo_complet
+                    st.rerun()
+
+# ------------------------------------------------------------------------------
+# 5. ÉCRAN 2 : TABLEAU DE BORD CONNECTÉ
+# ------------------------------------------------------------------------------
+else:
+    # Header profil
+    col_head1, col_head2 = st.columns([4, 1])
+    with col_head1:
+        st.markdown(f"<div
