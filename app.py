@@ -1,5 +1,7 @@
 import datetime
 import streamlit as st
+import gspread
+from google.oauth2.service_account import Credentials
 
 # ------------------------------------------------------------------------------
 # 1. CONFIGURATION DE LA PAGE
@@ -11,7 +13,64 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. STYLE CSS
+# 2. CONNEXION SÉCURISÉE À GOOGLE SHEETS VIA GSPREAD
+# ------------------------------------------------------------------------------
+@st.cache_resource
+def get_gspread_client():
+    scope = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+    credentials = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scope
+    )
+    return gspread.authorize(credentials)
+
+def get_sheet():
+    client = get_gspread_client()
+    return client.open_by_url(st.secrets["spreadsheet_url"])
+
+def charger_utilisateurs():
+    try:
+        sheet = get_sheet().worksheet("Utilisateurs")
+        records = sheet.get_all_records()
+        return {str(r["Pseudo"]): str(r["Mot_De_Passe"]) for r in records if "Pseudo" in r and r["Pseudo"]}
+    except Exception as e:
+        st.error(f"Erreur lors de la lecture des utilisateurs : {e}")
+        return {}
+
+def ajouter_utilisateur(pseudo, mdp):
+    try:
+        sheet = get_sheet().worksheet("Utilisateurs")
+        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+        sheet.append_row([date_str, str(pseudo), str(mdp)])
+        return True
+    except Exception as e:
+        st.error(f"Erreur d'enregistrement dans Google Sheets : {e}")
+        return False
+
+def charger_notes_utilisateur(pseudo):
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        records = sheet.get_all_records()
+        return [r for r in records if str(r.get("Pseudo")) == str(pseudo)]
+    except Exception as e:
+        st.error(f"Erreur lors du chargement des notes : {e}")
+        return []
+
+def enregistrer_reponse(pseudo, semaine_id, score, total):
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total)])
+        return True
+    except Exception as e:
+        st.error(f"Erreur de sauvegarde des réponses : {e}")
+        return False
+
+# ------------------------------------------------------------------------------
+# 3. STYLE CSS (Thème hospitalier chaleureux & coloré)
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -37,7 +96,7 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* Carte d'Auth / Connexion */
+    /* Cartes de connexion / profil */
     .auth-card-header {
         background: white;
         border-radius: 20px;
@@ -112,7 +171,7 @@ st.markdown("""
         margin-bottom: 15px;
     }
 
-    /* Customisation des onglets */
+    /* Onglets sur-mesure */
     .stTabs [data-baseweb="tab-list"] {
         gap: 12px;
         justify-content: center;
@@ -135,7 +194,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 3. DONNÉES DE L'APPLICATION
+# 4. DONNÉES & VARIABLES DE SESSION
 # ------------------------------------------------------------------------------
 ANIMAL_TO_EMOJI = {
     "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
@@ -145,20 +204,6 @@ ANIMAL_TO_EMOJI = {
 
 ANIMAUX = list(ANIMAL_TO_EMOJI.keys())
 ADJECTIFS = ["Astucieux", "Timide", "Ambitieux", "Survolté", "Combatif", "Emotif", "Espiègle", "Gourmand", "Malin", "Optimiste"]
-
-# Base fictive d'utilisateurs enregistrés (Pseudo: Mot_de_passe)
-if "comptes_utilisateurs" not in st.session_state:
-    st.session_state.comptes_utilisateurs = {
-        "Dauphin Malin": "12345",
-        "Loup Combatif": "urgences2027"
-    }
-
-# Historique des notes par utilisateur
-if "historique_reponses" not in st.session_state:
-    st.session_state.historique_reponses = {
-        "Dauphin Malin": [{"semaine": 1, "titre": "Droits du patient", "score": 10, "total": 10, "date": "22/09/2026"}],
-        "Loup Combatif": [{"semaine": 1, "titre": "Droits du patient", "score": 9, "total": 10, "date": "23/09/2026"}]
-    }
 
 if "user_pseudo" not in st.session_state:
     st.session_state.user_pseudo = None
@@ -181,7 +226,15 @@ SESSIONS = [
         ],
         "podium": [
             {"rang": "🥇 1er", "pseudo": "Dauphin Malin", "score": "10/10"},
-            {"rang": "🥈 2ème", "pseudo": "Loup Combatif", "score": "9/10"}
+            {"rang": "🥈 2ème", "pseudo": "Loup Combatif", "score": "10/10"},
+            {"rang": "🥉 3ème", "pseudo": "Panda Optimiste", "score": "9/10"},
+            {"rang": "4ème", "pseudo": "Cochon Survolté", "score": "9/10"},
+            {"rang": "5ème", "pseudo": "Canard Astucieux", "score": "8/10"},
+            {"rang": "6ème", "pseudo": "Lynx Ambitieux", "score": "8/10"},
+            {"rang": "7ème", "pseudo": "Hérisson Timide", "score": "7/10"},
+            {"rang": "8ème", "pseudo": "Faucon Espiègle", "score": "7/10"},
+            {"rang": "9ème", "pseudo": "Hamster Gourmand", "score": "6/10"},
+            {"rang": "10ème", "pseudo": "Ours Emotif", "score": "6/10"}
         ]
     },
     {
@@ -204,7 +257,7 @@ SESSIONS = [
 ]
 
 # ------------------------------------------------------------------------------
-# 4. ÉCRAN D'AUTHENTIFICATION (SI NON CONNECTÉ)
+# 5. ÉCRAN D'AUTHENTIFICATION (SI NON CONNECTÉ)
 # ------------------------------------------------------------------------------
 if not st.session_state.user_pseudo:
     st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
@@ -212,23 +265,25 @@ if not st.session_state.user_pseudo:
 
     tab_login, tab_register = st.tabs(["🔑 Se connecter", "✨ Créer un compte (1ère visite)"])
 
+    comptes_existants = charger_utilisateurs()
+
     # --- ONGLET 1 : CONNEXION ---
     with tab_login:
         st.markdown("<div class='auth-card-header'><h3 style='color:#0f766e; margin:0;'>Connexion à votre espace</h3></div>", unsafe_allow_html=True)
         
         col_l, col_center, col_r = st.columns([1, 2, 1])
         with col_center:
-            pseudos_existants = list(st.session_state.comptes_utilisateurs.keys())
-            if not pseudos_existants:
+            pseudos_liste = list(comptes_existants.keys())
+            if not pseudos_liste:
                 st.info("Aucun compte créé pour le moment. Allez dans l'onglet 'Créer un compte' !")
             else:
-                pseudo_saisi = st.selectbox("Choisissez votre Pseudo :", options=["-- Sélectionner --"] + pseudos_existants)
+                pseudo_saisi = st.selectbox("Choisissez votre Pseudo :", options=["-- Sélectionner --"] + pseudos_liste)
                 mdp_saisi = st.text_input("Mot de passe :", type="password")
 
                 if st.button("🚀 Me connecter", type="primary", use_container_width=True):
                     if pseudo_saisi != "-- Sélectionner --" and mdp_saisi:
-                        mdp_attendu = st.session_state.comptes_utilisateurs.get(pseudo_saisi)
-                        if mdp_saisi == mdp_attendu:
+                        mdp_attendu = comptes_existants.get(pseudo_saisi)
+                        if str(mdp_saisi) == str(mdp_attendu):
                             st.session_state.user_pseudo = pseudo_saisi
                             st.rerun()
                         else:
@@ -236,7 +291,7 @@ if not st.session_state.user_pseudo:
                     else:
                         st.warning("Veuillez sélectionner un pseudo et saisir votre mot de passe.")
 
-    # --- ONGLET 2 : CREATION DE COMPTE ---
+    # --- ONGLET 2 : CRÉATION DE COMPTE ---
     with tab_register:
         st.markdown("""
             <div class='auth-card-header'>
@@ -278,8 +333,7 @@ if not st.session_state.user_pseudo:
                 )
 
                 # Filtrer les adjectifs déjà pris pour cet animal
-                pseudos_pris = list(st.session_state.comptes_utilisateurs.keys())
-                adjectifs_pris = [p.split(" ")[1] for p in pseudos_pris if p.startswith(animal_choisi)]
+                adjectifs_pris = [p.split(" ")[1] for p in comptes_existants.keys() if p.startswith(animal_choisi) and " " in p]
                 adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
 
                 adjectif_choisi = st.selectbox("Étape 2 : Choisissez votre Adjectif :", options=["-- Sélectionner un adjectif --"] + adjectifs_disponibles)
@@ -292,19 +346,17 @@ if not st.session_state.user_pseudo:
                     
                     if st.button(f"✨ Enregistrer mon compte ({pseudo_cree})", type="primary", use_container_width=True):
                         if len(nouveau_mdp) < 3:
-                            st.error("Veuillez saisir un mot de passe plus long.")
+                            st.error("Veuillez saisir un mot de passe d'au moins 3 caractères.")
                         else:
-                            st.session_state.comptes_utilisateurs[pseudo_cree] = nouveau_mdp
-                            st.session_state.historique_reponses[pseudo_cree] = []
-                            st.session_state.user_pseudo = pseudo_cree
-                            st.success(f"Compte créé avec succès ! Bienvenue {pseudo_cree}.")
-                            st.rerun()
+                            if ajouter_utilisateur(pseudo_cree, nouveau_mdp):
+                                st.session_state.user_pseudo = pseudo_cree
+                                st.success(f"Compte créé avec succès ! Bienvenue {pseudo_cree}.")
+                                st.rerun()
 
 # ------------------------------------------------------------------------------
-# 5. ÉCRAN TABLEAU DE BORD CONNECTÉ
+# 6. ÉCRAN TABLEAU DE BORD CONNECTÉ
 # ------------------------------------------------------------------------------
 else:
-    # Header profil
     col_head1, col_head2 = st.columns([4, 1])
     with col_head1:
         st.markdown(f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
@@ -343,34 +395,26 @@ else:
                 if None in reponses.values():
                     st.error("Veuillez répondre à l'ensemble des questions avant de valider !")
                 else:
-                    # Simulation du calcul du score
-                    score_obtenu = 2 # Ex: 2/2
+                    # Calcul de la note exacte
+                    score_obtenu = sum(1 for idx, q in enumerate(session_active["questions"]) if reponses[idx] == q["rep"])
                     total_q = len(session_active["questions"])
                     
-                    # Sauvegarde dans l'historique du profil
-                    st.session_state.historique_reponses[st.session_state.user_pseudo].append({
-                        "semaine": session_active["id"],
-                        "titre": session_active["titre"],
-                        "score": score_obtenu,
-                        "total": total_q,
-                        "date": datetime.date.today().strftime("%d/%m/%Y")
-                    })
-                    
-                    st.balloons()
-                    st.success(f"Réponses enregistrées avec succès pour **{st.session_state.user_pseudo}** ! Score : {score_obtenu}/{total_q}")
+                    if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q):
+                        st.balloons()
+                        st.success(f"Réponses enregistrées dans Google Sheets pour **{st.session_state.user_pseudo}** ! Score : {score_obtenu}/{total_q}")
 
     # --- TAB 2 : MA PROGRESSION PERSONNELLE ---
     with tab_progression:
         st.markdown("<div class='card-progression'>", unsafe_allow_html=True)
         st.markdown(f"### 📈 Progression de **{st.session_state.user_pseudo}**")
         
-        mes_notes = st.session_state.historique_reponses.get(st.session_state.user_pseudo, [])
+        mes_notes = charger_notes_utilisateur(st.session_state.user_pseudo)
         
         if not mes_notes:
             st.info("Vous n'avez pas encore répondu à un quiz. Participez à la semaine actuelle pour voir apparaître vos statistiques !")
         else:
-            total_points = sum(item["score"] for item in mes_notes)
-            total_possible = sum(item["total"] for item in mes_notes)
+            total_points = sum(int(item["Score"]) for item in mes_notes if "Score" in item)
+            total_possible = sum(int(item["Total_Questions"]) for item in mes_notes if "Total_Questions" in item)
             pourcentage = int((total_points / total_possible) * 100) if total_possible > 0 else 0
 
             c1, c2, c3 = st.columns(3)
@@ -381,7 +425,7 @@ else:
             st.divider()
             st.markdown("#### 📜 Historique détaillé de vos notes :")
             for item in mes_notes:
-                st.write(f"• **{item['titre']}** (fait le {item['date']}) : **{item['score']}/{item['total']}**")
+                st.write(f"• **Semaine {item.get('Semaine_ID')}** (le {item.get('Horodateur')}) : **{item.get('Score')}/{item.get('Total_Questions')}**")
 
         st.markdown("</div>", unsafe_allow_html=True)
 
