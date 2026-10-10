@@ -97,7 +97,7 @@ def charger_top10_semaine(semaine_id):
         return []
 
 # ------------------------------------------------------------------------------
-# 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & INTÉGRATION PROPRE DU LOGO)
+# 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & LOGO)
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -108,7 +108,6 @@ st.markdown("""
     .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
     .subtitle { color: #0369a1; font-weight: 600; margin-top: 0.2rem; }
     
-    /* Style pour intégrer harmonieusement l'image du logo */
     .service-logo img {
         border-radius: 20px;
         border: 3px solid #99f6e4;
@@ -174,6 +173,9 @@ if "user_pseudo" not in st.session_state:
 if "animal_selectionne" not in st.session_state:
     st.session_state.animal_selectionne = None
 
+if "login_animal_selectionne" not in st.session_state:
+    st.session_state.login_animal_selectionne = None
+
 if "current_q_index" not in st.session_state:
     st.session_state.current_q_index = 0
 
@@ -185,6 +187,9 @@ if "quiz_paused" not in st.session_state:
 
 def fixer_animal(nom_animal):
     st.session_state.animal_selectionne = nom_animal
+
+def fixer_animal_login(nom_animal):
+    st.session_state.login_animal_selectionne = nom_animal
 
 # --- SESSIONS DE QUIZ ---
 SESSIONS = [
@@ -394,40 +399,70 @@ with col_titre:
 st.divider()
 
 # ------------------------------------------------------------------------------
-# 7. ÉCRAN D'AUTHENTIFICATION (SI NON CONNECTÉ)
+# 7. ÉCRAN D'AUTHENTIFICATION (SÉLECTEUR VISUEL PAR ANIMAL POUR ÉVITER LA LISTE GÉANTE)
 # ------------------------------------------------------------------------------
 if not st.session_state.user_pseudo:
     tab_login, tab_register = st.tabs(["🔑 Se connecter", "✨ Créer un compte (1ère visite)"])
     comptes_existants = charger_utilisateurs()
 
-    # --- ONGLET 1 : CONNEXION ---
+    # --- ONGLET 1 : CONNEXION PAR SÉLECTION D'AVATAR ---
     with tab_login:
-        st.markdown("<div class='auth-card-header'><h3 style='color:#0f766e; margin:0;'>Connexion à votre espace</h3></div>", unsafe_allow_html=True)
-        col_l, col_center, col_r = st.columns([1, 2, 1])
-        with col_center:
-            pseudos_liste = list(comptes_existants.keys())
-            if not pseudos_liste:
-                st.info("Aucun compte créé pour le moment. Allez dans l'onglet 'Créer un compte' !")
-            else:
-                pseudo_saisi = st.selectbox("Choisissez votre Pseudo :", options=["-- Sélectionner --"] + pseudos_liste)
-                mdp_saisi = st.text_input("Mot de passe :", type="password")
+        st.markdown("<div class='auth-card-header'><h3 style='color:#0f766e; margin:0;'>Connexion rapide à votre espace</h3><p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Sélectionnez votre animal pour retrouver votre profil</p></div>", unsafe_allow_html=True)
+        
+        st.markdown("<h4 style='text-align:center; color:#0f766e;'>Étape 1 : Cliquez sur votre Animal</h4>", unsafe_allow_html=True)
+        cols_login = st.columns(5)
+        for idx, animal in enumerate(ANIMAUX):
+            emoji = ANIMAL_TO_EMOJI[animal]
+            col = cols_login[idx % 5]
+            is_selected = (st.session_state.login_animal_selectionne == animal)
+            btn_type = "primary" if is_selected else "secondary"
+            
+            col.button(
+                f"{emoji} {animal}", 
+                key=f"btn_login_anim_{animal}", 
+                type=btn_type, 
+                use_container_width=True,
+                on_click=fixer_animal_login,
+                args=(animal,)
+            )
 
-                if st.button("🚀 Me connecter", type="primary", use_container_width=True):
-                    if pseudo_saisi != "-- Sélectionner --" and mdp_saisi:
-                        mdp_attendu = comptes_existants.get(pseudo_saisi)
-                        if str(mdp_saisi) == str(mdp_attendu):
-                            st.session_state.user_pseudo = pseudo_saisi
-                            st.rerun()
+        if st.session_state.login_animal_selectionne:
+            animal_actif = st.session_state.login_animal_selectionne
+            emoji_actif = ANIMAL_TO_EMOJI[animal_actif]
+
+            st.markdown("---")
+            col_l, col_center, col_r = st.columns([1, 2, 1])
+            with col_center:
+                st.markdown(
+                    f"<div style='text-align:center;'><div class='animal-selected-badge'><span class='animal-selected-emoji'>{emoji_actif}</span><span class='animal-selected-name'>Animal : {animal_actif}</span></div></div>",
+                    unsafe_allow_html=True
+                )
+
+                # Filtrer les pseudos existants pour cet animal uniquement
+                pseudos_animal = [p for p in comptes_existants.keys() if p.startswith(animal_actif)]
+
+                if not pseudos_animal:
+                    st.warning(f"Aucun compte enregistré pour l'animal {animal_actif}. Créez-en un dans l'onglet à côté !")
+                else:
+                    pseudo_choisi = st.selectbox("Étape 2 : Choisissez votre Pseudo exact :", options=pseudos_animal)
+                    mdp_saisi = st.text_input("Étape 3 : Mot de passe :", type="password", key="login_mdp")
+
+                    if st.button("🚀 Me connecter", type="primary", use_container_width=True):
+                        if mdp_saisi:
+                            mdp_attendu = comptes_existants.get(pseudo_choisi)
+                            if str(mdp_saisi) == str(mdp_attendu):
+                                st.session_state.user_pseudo = pseudo_choisi
+                                st.rerun()
+                            else:
+                                st.error("Mot de passe incorrect !")
                         else:
-                            st.error("Mot de passe incorrect !")
-                    else:
-                        st.warning("Veuillez sélectionner un pseudo et saisir votre mot de passe.")
+                            st.warning("Veuillez saisir votre mot de passe.")
 
     # --- ONGLET 2 : CRÉATION DE COMPTE ---
     with tab_register:
         st.markdown("""
             <div class='auth-card-header'>
-                <h3 style='color:#0f766e; margin:0;'>🎭 Choisissez votre Avatar & Mot de passe</h3>
+                <h3 style='color:#0f766e; margin:0;'>🎭 Créez votre Avatar & Mot de passe</h3>
                 <p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Ce pseudo et ce mot de passe vous suivront tout au long des révisions.</p>
             </div>
         """, unsafe_allow_html=True)
@@ -493,6 +528,7 @@ else:
         if st.button("🔒 Déconnexion"):
             st.session_state.user_pseudo = None
             st.session_state.animal_selectionne = None
+            st.session_state.login_animal_selectionne = None
             st.session_state.current_q_index = 0
             st.session_state.user_quiz_answers = {}
             st.session_state.quiz_paused = False
