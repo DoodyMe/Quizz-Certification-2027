@@ -6,13 +6,13 @@ import streamlit as st
 # ------------------------------------------------------------------------------
 st.set_page_config(
     page_title="Révisions Équipe HAS 2027",
-    page_icon="🩺",
+    page_icon="🧠",
     layout="wide"
 )
 
 st.markdown("""
 <style>
-    /* Fond général : Dégradé Vert Menthe & Bleu Doux (Soin & Positivité) */
+    /* Fond général : Dégradé Vert Menthe & Bleu Doux */
     .stApp {
         background: linear-gradient(135deg, #e6fffa 0%, #f0f9ff 50%, #f5f3ff 100%);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -34,15 +34,28 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* Carte de Profil / Inscription (Style Macaron pastel) */
+    /* Badge Equipe des Urgences GHR */
+    .team-badge {
+        display: inline-block;
+        background-color: #fef3c7;
+        color: #b45309;
+        font-weight: 700;
+        padding: 6px 18px;
+        border-radius: 20px;
+        font-size: 0.95rem;
+        border: 1px solid #fde68a;
+        margin-bottom: 15px;
+    }
+
+    /* Carte de Profil / Inscription */
     .profile-card {
         background: white;
         border-radius: 24px;
-        padding: 35px;
+        padding: 30px;
         box-shadow: 0 10px 25px rgba(15, 118, 110, 0.1);
         border: 2px solid #99f6e4;
         max-width: 580px;
-        margin: 20px auto;
+        margin: 10px auto 20px auto;
         text-align: center;
     }
 
@@ -61,7 +74,7 @@ st.markdown("""
     .animal-emoji { font-size: 2.6rem; }
     .animal-name { color: #0369a1; font-weight: 700; font-size: 1.3rem; }
 
-    /* Header connecté (Corail & Violet vibrant) */
+    /* Header connecté */
     .user-header {
         background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
         color: white;
@@ -179,12 +192,13 @@ SESSIONS = [
 # ÉCRAN 1 : SÉLECTION DU PSEUDO (SI NON CONNECTÉ)
 # ------------------------------------------------------------------------------
 if not st.session_state.user_pseudo:
-    st.markdown("<h1 class='main-title'>🩺 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
     st.markdown("<p class='subtitle'>Espace ludique & anonyme pour l'équipe soignante</p>", unsafe_allow_html=True)
 
     with st.container():
         st.markdown("<div class='profile-card'>", unsafe_allow_html=True)
-        st.markdown("<h3 style='color:#0f766e;'>🎭 Choisissez votre Avatar</h3>", unsafe_allow_html=True)
+        st.markdown("<div class='team-badge'>🏥 Équipe des Urgences GHR</div>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color:#0f766e; margin-top:5px;'>🎭 Choisissez votre Avatar</h3>", unsafe_allow_html=True)
         st.write("Sélectionnez un animal puis un adjectif. Ce duo reste votre identifiant unique !")
 
         animaux_disponibles = [a for a in ANIMAUX if len([p for p in st.session_state.pseudos_reserves if p["animal"] == a]) < len(ADJECTIFS)]
@@ -206,83 +220,4 @@ if not st.session_state.user_pseudo:
 
             if adjectif_choisi != "-- Sélectionner --":
                 pseudo_complet = f"{animal_choisi} {adjectif_choisi}"
-                st.markdown("<br>", unsafe_allow_html=True)
-                
-                if st.button(f"✨ Entrer en tant que {pseudo_complet}", type="primary", use_container_width=True):
-                    st.session_state.pseudos_reserves.append({"animal": animal_choisi, "adjectif": adjectif_choisi})
-                    st.session_state.user_pseudo = pseudo_complet
-                    st.rerun()
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# ------------------------------------------------------------------------------
-# ÉCRAN 2 : TABLEAU DE BORD CONNECTÉ
-# ------------------------------------------------------------------------------
-else:
-    # Header profil
-    col_head1, col_head2 = st.columns([4, 1])
-    with col_head1:
-        st.markdown(f"<div class='user-header'>🩺 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
-    with col_head2:
-        if st.button("Changer de profil"):
-            st.session_state.user_pseudo = None
-            st.rerun()
-
-    st.markdown("<h1 class='main-title' style='text-align:left; margin-top:15px;'>🎯 Tableau de bord des Révisions</h1>", unsafe_allow_html=True)
-
-    tab_actuel, tab_historique, tab_avenir = st.tabs(["🔥 Semaine Actuelle", "📜 Semaines Passées & Corrections", "📅 Semaines À Venir"])
-
-    # --- TAB 1 : QUIZ EN COURS ---
-    with tab_actuel:
-        session_active = next(s for s in SESSIONS if s["statut"] == "Actuelle")
-        
-        st.markdown("<div class='card-actuelle'>", unsafe_allow_html=True)
-        st.markdown(f"<h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3>", unsafe_allow_html=True)
-        st.caption(f"📅 Session ouverte : {session_active['dates']}")
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        with st.form("quiz_form"):
-            reponses = {}
-            for idx, q in enumerate(session_active["questions"]):
-                st.write(f"**{q['q']}**")
-                reponses[idx] = st.radio("Votre réponse :", q["options"], key=f"q_{idx}", index=None)
-                st.divider()
-
-            if st.form_submit_button("🚀 Envoyer mes réponses", type="primary"):
-                if None in reponses.values():
-                    st.error("Veuillez répondre à l'ensemble des questions avant de valider !")
-                else:
-                    st.balloons()
-                    st.success(f"Réponses enregistrées avec succès pour **{st.session_state.user_pseudo}** !")
-
-    # --- TAB 2 : HISTORIQUE & CORRECTIONS ---
-    with tab_historique:
-        sessions_passees = [s for s in SESSIONS if s["statut"] == "Passee"]
-        for s in sessions_passees:
-            st.markdown("<div class='card-passee'>", unsafe_allow_html=True)
-            st.markdown(f"<h3 style='color:#4338ca;'>{s['titre']}</h3>", unsafe_allow_html=True)
-            st.caption(f"Clôturé : {s['dates']}")
-
-            col_pod, col_corr = st.columns(2)
-            
-            with col_pod:
-                st.markdown("#### 🏆 Top 10 - Podium")
-                for p in s.get("podium", []):
-                    st.write(f"**{p['rang']}** — {p['pseudo']} ({p['score']})")
-
-            with col_corr:
-                st.markdown("#### 📖 Corrections & Explications")
-                for q in s["questions"]:
-                    with st.expander(q["q"]):
-                        st.success(f"Bonne réponse : {q['rep']}")
-            
-            st.markdown("</div>", unsafe_allow_html=True)
-
-    # --- TAB 3 : SEMAINES À VENIR ---
-    with tab_avenir:
-        sessions_futures = [s for s in SESSIONS if s["statut"] == "A venir"]
-        for s in sessions_futures:
-            st.markdown("<div class='card-avenir'>", unsafe_allow_html=True)
-            st.markdown(f"<h4 style='color:#b45309;'>🔒 {s['titre']}</h4>", unsafe_allow_html=True)
-            st.write(f"📅 Ouverture prévue : **{s['dates']}**")
-            st.markdown("</div>", unsafe_allow_html=True)
+                st
