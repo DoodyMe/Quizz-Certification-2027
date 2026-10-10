@@ -193,300 +193,156 @@ if "user_quiz_answers" not in st.session_state:
 def fixer_animal(nom_animal):
     st.session_state.animal_selectionne = nom_animal
 
-# --- SESSIONS AVEC DATES AUTOMATIQUES ET STRUCTURE TRONC COMMUN + MÉTIERS ---
+# --- SESSIONS AVEC DATES AUTOMATIQUES ET SEMAINE 0 TEST ---
 SESSIONS = [
     {
-        "id": 1,
-        "titre": "Semaine 1 - Droits du patient & Bientraitance (Urgences)",
-        "date_debut": datetime.date(2026, 10, 16),
-        "date_fin": datetime.date(2026, 11, 1),
+        "id": 0,
+        "titre": "Semaine 0 - Session de Démonstration & Test Hiérarchie",
+        "date_debut": datetime.date(2020, 1, 1),
+        "date_fin": datetime.date(2030, 12, 31),
         "tronc_commun": [
             {
-                "q": "Un patient accueilli aux urgences refuse un examen complémentaire. Quelle est la conduite à tenir légale ?",
+                "q": "🔎 [Démo Tronc Commun] Quel est l'objectif principal de cette plateforme de révision automatisée ?",
                 "options": [
-                    "Réaliser l'examen malgré tout au vu de l'urgence médicale",
-                    "Respecter son refus après lui avoir délivré une information claire sur les risques encourus",
-                    "L'obliger à signer une décharge avant de le faire sortir immédiatement"
+                    "Sanctionner les soignants qui manquent de temps de formation",
+                    "Offrir un outil ludique, anonyme et régulier pour préparer sereinement la certification HAS 2027",
+                    "Remplacer les réunions d'équipe physiques"
                 ],
-                "rep": "Respecter son refus après lui avoir délivré une information claire sur les risques encourus"
+                "rep": "Offrir un outil ludique, anonyme et régulier pour préparer sereinement la certification HAS 2027"
             },
             {
-                "q": "Quel est le délai légal de communication du dossier médical pour des soins datant de moins de 5 ans ?",
+                "q": "🛡️ [Démo Tronc Commun] Comment la confidentialité des soignants est-elle garantie sur le site ?",
                 "options": [
-                    "48 heures maximum",
-                    "8 jours maximum après un délai de réflexion de 48h",
-                    "15 jours maximum"
+                    "Par un identifiant unique combinant un Avatar Animal + un Adjectif et un mot de passe personnel",
+                    "En publiant les noms et prénoms réels des soignants sur le tableau de garde",
+                    "En envoyant les résultats par mail à la direction"
                 ],
-                "rep": "8 jours maximum après un délai de réflexion de 48h"
+                "rep": "Par un identifiant unique combinant un Avatar Animal + un Adjectif et un mot de passe personnel"
             },
             {
-                "q": "Concernant la personne de confiance désignée par le patient, quelle affirmation est EXACTE ?",
+                "q": "📋 [Démo Tronc Commun] Lors de la visite des experts HAS, quelle est la priorité concernant l'identitovigilance aux urgences ?",
                 "options": [
-                    "Elle prévaut obligatoirement sur les directives anticipées",
-                    "Son avis prévaut sur celui de la famille si le patient ne peut plus s'exprimer",
-                    "Elle est automatiquement destinataire du dossier médical du vivant du patient"
+                    "Vérifier le bracelet d'identification à chaque étape de la prise en charge (soins, examens, transports)",
+                    "Demander au patient de garder ses papiers d'identité dans sa poche",
+                    "Coller une étiquette sur la blouse du soignant"
                 ],
-                "rep": "Son avis prévaut sur celui de la famille si le patient ne peut plus s'exprimer"
+                "rep": "Vérifier le bracelet d'identification à chaque étape de la prise en charge (soins, examens, transports)"
             },
             {
-                "q": "Lors de la prise en charge d'un patient sous mesure de protection juridique (Tutelle), qui consent aux soins d'urgence ?",
+                "q": "🤝 [Démo Tronc Commun] Quelle est la définition de la bientraitance retenue par la HAS aux urgences ?",
                 "options": [
-                    "Le tuteur obligatoirement, quel que soit l'état d'urgence",
-                    "Le patient lui-même si son état le permet, l'urgence médicale prime sur l'accord du tuteur",
-                    "Le juge des contentieux de la protection"
+                    "Une posture globale de respect, d'écoute, de préservation de l'intimité et de prise en charge de la douleur",
+                    "L'obligation d'offrir un café à chaque accompagnant",
+                    "L'absence de plainte enregistrée durant l'année"
                 ],
-                "rep": "Le patient lui-même si son état le permet, l'urgence médicale prime sur l'accord du tuteur"
+                "rep": "Une posture globale de respect, d'écoute, de préservation de l'intimité et de prise en charge de la douleur"
             },
             {
-                "q": "Dans un box d'urgences, la bientraitance et le respect de l'intimité imposent prioritairement de :",
+                "q": "🚨 [Démo Tronc Commun] En cas d'Événement Indésirable (EI), quelle est la culture de sécurité prônée par l'établissement ?",
                 "options": [
-                    "Fermer les rideaux/portes et baisser la voix lors de l'interrogatoire et des soins",
-                    "Demander systématiquement à la famille de sortir pendant toute la durée du passage aux urgences",
-                    "Ne pas poser de questions sur le mode de vie du patient"
+                    "Chercher immédiatement un responsable à sanctionner",
+                    "Déclarer l'événement sans crainte de blâme pour analyser collectivement les causes et améliorer le système",
+                    "Cacher l'incident si le patient ne s'en est pas rendu compte"
                 ],
-                "rep": "Fermer les rideaux/portes et baisser la voix lors de l'interrogatoire et des soins"
+                "rep": "Déclarer l'événement sans crainte de blâme pour analyser collectivement les causes et améliorer le système"
             }
         ],
         "metiers": {
             "IDE": [
                 {
-                    "q": "Lors de l'administration d'un traitement antalgique réévalué aux urgences, quelle traçabilité minimale exige la HAS ?",
+                    "q": "🩺 [Démo IDE] Quelle est l'obligation de traçabilité lors de la réévaluation de la douleur après administration antalgique ?",
                     "options": [
-                        "Horaire, molécule et nom du prescripteur uniquement sur le logiciel",
-                        "Score de douleur avant administration, re-évaluation post-injection et traçabilité de l'efficacité",
-                        "Transmission orale au médecin au changement d'équipe"
+                        "Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique",
+                        "Informer oralement la collègue de la relève uniquement",
+                        "Attendre la fin du poste pour noter une note globale"
                     ],
-                    "rep": "Score de douleur avant administration, re-évaluation post-injection et traçabilité de l'efficacité"
-                },
-                {
-                    "q": "En cas d'accueil aux urgences d'un mineur non accompagné refusant l'avertissement de ses parents, que devez-vous appliquer ?",
-                    "options": [
-                        "Refuser la prise en charge sans l'accord écrit parental",
-                        "Dispenser les soins d'urgence si le mineur le demande expressément et se faire accompagner par un majeur protecteur",
-                        "Appeler immédiatement la gendarmerie"
-                    ],
-                    "rep": "Dispenser les soins d'urgence si le mineur le demande expressément et se faire accompagner par un majeur protecteur"
-                },
-                {
-                    "q": "Dans la prise en charge des personnes victimes de violences aux urgences, quelle est la priorité de soins IDE ?",
-                    "options": [
-                        "Exiger un dépôt de plainte immédiat avant d'installer le patient",
-                        "Garantir un espace sécurisé, assurer la traçabilité des lésions sur certificat médical et orienter vers la prise en charge médico-psychologique",
-                        "Contacter directement le procureur sans l'accord du patient"
-                    ],
-                    "rep": "Garantir un espace sécurisé, assurer la traçabilité des lésions sur certificat médical et orienter vers la prise en charge médico-psychologique"
+                    "rep": "Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique"
                 }
             ],
             "AS": [
                 {
-                    "q": "Quelle mesure de bientraitance est prioritaire lors de la prise en charge d'une personne âgée confuse aux urgences ?",
+                    "q": "🪴 [Démo AS] Quelle échelle d'évaluation de la douleur est privilégiée chez le sujet âgé non communicant ?",
                     "options": [
-                        "Appliquer immédiatement des ridelles et une contention pelvienne pour éviter les chutes",
-                        "Évaluer la douleur, chercher des causes réversibles (globe, fécalome) et rassurer avec la présence d'un proche",
-                        "L'isoler dans une chambre fermée pour limiter les stimulations"
+                        "L'échelle comportementale ALGOPLUS",
+                        "L'Échelle Visuelle Analogique (EVA)",
+                        "L'Échelle Numérique (EN)"
                     ],
-                    "rep": "Évaluer la douleur, chercher des causes réversibles (globe, fécalome) et rassurer avec la présence d'un proche"
-                },
-                {
-                    "q": "Un brancardage entre les urgences et la radiologie nécessite le respect de l'intimité. Quelle est la bonne pratique ?",
-                    "options": [
-                        "Déplacer le patient en blouse d'examen sans couverture s'il fait chaud",
-                        "Veiller au recouvrement du corps avec un drap/couverture et préserver le secret professionnel pendant le trajet",
-                        "Discuter du motif d'admission du patient avec le brancardier dans le couloir"
-                    ],
-                    "rep": "Veiller au recouvrement du corps avec un drap/couverture et préserver le secret professionnel pendant le trajet"
-                },
-                {
-                    "q": "Un patient dépendant réclame de l'eau aux urgences alors qu'il est en attente d'avis médical. Que devez-vous faire ?",
-                    "options": [
-                        "Lui donner un grand verre d'eau immédiatement pour son confort",
-                        "Vérifier auprès de l'IDE si le patient est à jeun strict avant toute administration de boisson",
-                        "Lui dire d'attendre sa sortie des urgences"
-                    ],
-                    "rep": "Vérifier auprès de l'IDE si le patient est à jeun strict avant toute administration de boisson"
+                    "rep": "L'échelle comportementale ALGOPLUS"
                 }
             ],
             "Médecin": [
                 {
-                    "q": "Concernant les directives anticipées aux urgences, quelle est la règle applicable pour le médecin ?",
+                    "q": "💊 [Démo Médecin] Quelle procédure doit être tracée lors d'une décision de Limitation ou Arrêt de Traitement (LAT) ?",
                     "options": [
-                        "Elles ont une durée de validité limitée à 3 ans",
-                        "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)",
-                        "Elles ne sont qu'un simple avis consultatif que le médecin peut ignorer librement"
+                        "La décision collégiale, la consultation de la personne de confiance/directives anticipées",
+                        "Un simple mot dans le dossier sans avis collégial",
+                        "L'accord verbal du chef de service uniquement"
                     ],
-                    "rep": "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)"
-                },
-                {
-                    "q": "Lors d'une décision de Limitation ou Arrêt de Traitement (LAT) aux urgences, quelle est l'obligation réglementaire ?",
-                    "options": [
-                        "Décider seul pour ne pas perdre de temps",
-                        "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier",
-                        "Demander l'autorisation préalable au directeur de l'hôpital"
-                    ],
-                    "rep": "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier"
-                },
-                {
-                    "q": "Un proche réclame des informations médicales sur un patient majeur hospitalisé aux urgences. Le médecin peut lui répondre si :",
-                    "options": [
-                        "Le proche prouve son lien de parenté direct (livret de famille)",
-                        "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche",
-                        "Le proche habite sous le même toit que le patient"
-                    ],
-                    "rep": "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche"
+                    "rep": "La décision collégiale, la consultation de la personne de confiance/directives anticipées"
                 }
             ],
             "ARM": [
                 {
-                    "q": "Lors de la création d'un dossier au SAMU/SAS, quelle est la priorité d'identitovigilance pour éviter les doublons ?",
+                    "q": "📞 [Démo ARM] Quel élément d'identitovigilance est indispensable lors de la création d'un dossier de régulation ?",
                     "options": [
-                        "Saisir uniquement le prénom et le numéro de téléphone portable",
-                        "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur",
-                        "Utiliser le pseudonyme donné par le patient à l'oral"
+                        "Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon",
+                        "Surnom habituel du patient",
+                        "Uniquement l'adresse de l'intervention"
                     ],
-                    "rep": "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur"
-                },
-                {
-                    "q": "Un appelant demande confirmation de l'admission aux urgences de son voisin par téléphone. Quelle est votre obligation ?",
-                    "options": [
-                        "Lui donner la réponse s'il connaît le nom et le prénom du patient",
-                        "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité",
-                        "Lui transférer immédiatement la ligne du médecin régulateur"
-                    ],
-                    "rep": "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité"
-                },
-                {
-                    "q": "Lors de la régulation d'un appel urgent pour détresse vitale, quelle traçabilité est exigée dans le logiciel d'appel ?",
-                    "options": [
-                        "Rédiger un compte-rendu uniquement si le patient est transporté par le SMUR",
-                        "Enregistrer l'horodatage des décisions, le motif de régulation et les moyens envoyés",
-                        "Ne rien saisir et faire confiance à la bande d'enregistrement audio"
-                    ],
-                    "rep": "Enregistrer l'horodatage des décisions, le motif de régulation et les moyens envoyés"
+                    "rep": "Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon"
                 }
             ],
             "Accueil": [
                 {
-                    "q": "Lors de l'enregistrement administratif d'un patient à la banque d'accueil, quel document doit être privilégié pour vérifier l'identité ?",
+                    "q": "🏥 [Démo Accueil] Quelle attitude adopter si un patient en salle d'attente signale une douleur thoracique aiguë ?",
                     "options": [
-                        "La carte de mutuelle ou un justificatif de domicile",
-                        "Une pièce d'identité officielle avec photo (CNI, passeport, titre de séjour) complétée de la carte Vitale",
-                        "La carte de fidélité ou le permis de conduire uniquement"
+                        "Prévenir immédiatement l'IAO pour une évaluation clinique sans délai",
+                        "Lui dire de remettre son ticket dans la borne",
+                        "Lui proposer un verre d'eau"
                     ],
-                    "rep": "Une pièce d'identité officielle avec photo (CNI, passeport, titre de séjour) complétée de la carte Vitale"
-                },
-                {
-                    "q": "Dans la salle d'attente, un patient vous informe d'une dégradation de son état ou d'une douleur aiguë. Quelle est votre action immédiate ?",
-                    "options": [
-                        "Lui demander de patienter gentiment que son nom soit appelé",
-                        "Alerter immédiatement l'Infirmier/ère d'Accueil et d'Orientation (IAO) pour une réévaluation clinique",
-                        "Lui donner un antalgique disponible dans le tirant du guichet"
-                    ],
-                    "rep": "Alerter immédiatement l'Infirmier/ère d'Accueil et d'Orientation (IAO) pour une réévaluation clinique"
-                },
-                {
-                    "q": "Comment garantir la confidentialité des données lors des échanges à la banque d'accueil des urgences ?",
-                    "options": [
-                        "Répéter à haute voix la date de naissance du patient pour que toute la file d'attente l'entende",
-                        "Maintenir la distance de sécurité entre usagers, baisser la voix et ne pas laisser d'écrans nominatifs visibles du public",
-                        "Mettre le dossier papier en évidence sur le guichet"
-                    ],
-                    "rep": "Maintenir la distance de sécurité entre usagers, baisser la voix et ne pas laisser d'écrans nominatifs visibles du public"
+                    "rep": "Prévenir immédiatement l'IAO pour une évaluation clinique sans délai"
                 }
             ],
             "Brancardier": [
                 {
-                    "q": "Quelle vérification minimale d'identitovigilance est obligatoire AVANT de déplacer un patient des urgences vers le scanner ?",
+                    "q": "🚑 [Démo Brancardier] Quelle action est obligatoire avant de transférer un patient vers le scanner ?",
                     "options": [
-                        "Appeler le patient par son prénom dans le couloir sans vérifier le dossier",
-                        "Vérifier l'identité sur le bracelet d'identification (Nom, Prénom, Date de naissance) et la faire confirmer par le patient si possible",
-                        "Se fier uniquement au numéro de box inscrit sur le tableau"
+                        "Vérifier la concordance de l'identité sur le bracelet d'identification",
+                        "Regarder uniquement le numéro de box",
+                        "Demander au patient son numéro de téléphone"
                     ],
-                    "rep": "Vérifier l'identité sur le bracelet d'identification (Nom, Prénom, Date de naissance) et la faire confirmer par le patient si possible"
-                },
-                {
-                    "q": "Quelle est la règle de sécurité et de bientraitance lors du transport d'un patient en brancard dans les couloirs ?",
-                    "options": [
-                        "Transporter le patient sans barrières s'il promet de ne pas bouger",
-                        "Mettre systématiquement les ridelles/barrières relevées, recouvrir le corps d'un drap et respecter sa pudeur",
-                        "Discuter de l'état de santé du patient avec un collègue dans l'ascenseur public"
-                    ],
-                    "rep": "Mettre systématiquement les ridelles/barrières relevées, recouvrir le corps d'un drap et respecter sa pudeur"
-                },
-                {
-                    "q": "Concernant l'hygiène du matériel de transport entre deux passages de patients, que devez-vous appliquer ?",
-                    "options": [
-                        "Nettoyer le brancard uniquement à la fin du poste de travail",
-                        "Désinfecter les surfaces de contact du brancard/fauteuil avec un produit détergent-désinfectant homologué entre chaque patient",
-                        "Passer un coup d'eau tiède sans produit détergent"
-                    ],
-                    "rep": "Désinfecter les surfaces de contact du brancard/fauteuil avec un produit détergent-désinfectant homologué entre chaque patient"
+                    "rep": "Vérifier la concordance de l'identité sur le bracelet d'identification"
                 }
             ],
             "ASH": [
                 {
-                    "q": "Quelle est la règle essentielle de bio-nettoyage d'un box d'urgences après la sortie d'un patient ?",
+                    "q": "🧼 [Démo ASH] Quel produit doit être utilisé pour la désinfection d'un box d'urgences entre deux patients ?",
                     "options": [
-                        "Vider uniquement les poubelles et passer un coup de balai sec",
-                        "Réaliser un bio-nettoyage complet des surfaces et du mobilier avec un produit détergent-désinfectant selon le protocole du service",
-                        "Attendre le lendemain matin pour désinfecter la pièce"
+                        "Un détergent-désinfectant homologué selon le protocole de l'établissement",
+                        "Uniquement de l'eau claire",
+                        "Du produit à vitres classique"
                     ],
-                    "rep": "Réaliser un bio-nettoyage complet des surfaces et du mobilier avec un produit détergent-désinfectant selon le protocole du service"
-                },
-                {
-                    "q": "Dans quelle filière d'élimination des déchets devez-vous jeter les gants et compresses usagés non souillés de sang ?",
-                    "options": [
-                        "Filière DAOM (Déchets Assimilables aux Ordures Ménagères - Sac Noir)",
-                        "Filière DASRI (Déchets d'Activités de Soins à Risques Infectieux - Sac Jaune)",
-                        "Dans le conteneur pour objets perforants"
-                    ],
-                    "rep": "Filière DAOM (Déchets Assimilables aux Ordures Ménagères - Sac Noir)"
-                },
-                {
-                    "q": "Lors de votre intervention dans un box occupé par un patient, quelle est la posture de bientraitance attendue ?",
-                    "options": [
-                        "Entrer sans frapper et faire du bruit avec le matériel sans parler au patient",
-                        "Taper à la porte, se présenter, expliquer la présence pour le nettoyage et respecter l'intimité du soin",
-                        "Poser des questions médicales personnelles au patient"
-                    ],
-                    "rep": "Taper à la porte, se présenter, expliquer la présence pour le nettoyage et respecter l'intimité du soin"
+                    "rep": "Un détergent-désinfectant homologué selon le protocole de l'établissement"
                 }
             ],
             "Cadre": [
                 {
-                    "q": "Suite à la déclaration d'un Événement Indésirable Grave (EIGS) aux urgences, quelle est la priorité managériale ?",
+                    "q": "📈 [Démo Cadre] Quel outil permet de suivre le niveau de préparation de l'équipe aux exigences HAS ?",
                     "options": [
-                        "Blâmer immédiatement le soignant impliqué dans la fiche d'événement",
-                        "Organiser une analyse systémique des causes (REX / CREX) sans recherche de coupable et suivre le plan d'actions correctives",
-                        "Classer le dossier sans suite pour ne pas inquiéter la direction"
+                        "Le suivi automatisé des participations et du taux de réussite global sur le tableau de bord",
+                        "Une interrogation orale individuelle impromptue",
+                        "Le contrôle des heures de présence uniquement"
                     ],
-                    "rep": "Organiser une analyse systémique des causes (REX / CREX) sans recherche de coupable et suivre le plan d'actions correctives"
-                },
-                {
-                    "q": "Quelle traçabilité minimale devez-vous contrôler concernant la sécurité du chariot d'urgence du service ?",
-                    "options": [
-                        "Une vérification trimestrielle informelle",
-                        "Un contrôle quotidien de l'intégrité du scellé et une traçabilité de la vérification des péremptions sur le registre dédié",
-                        "Le contrôle par la pharmacie une fois par an uniquement"
-                    ],
-                    "rep": "Un contrôle quotidien de l'intégrité du scellé et une traçabilité de la vérification des péremptions sur le registre dédié"
-                },
-                {
-                    "q": "Dans le cadre de l'évaluation HAS sur la bientraitance, quel rôle clé tient le Cadre de Santé au quotidien ?",
-                    "options": [
-                        "Superviser uniquement les plannings sans aller sur le terrain",
-                        "Promouvoir la culture de bientraitance, réaliser des audits flash (douleur, contention) et accompagner les équipes",
-                        "Interdire les visites de famille aux urgences"
-                    ],
-                    "rep": "Promouvoir la culture de bientraitance, réaliser des audits flash (douleur, contention) et accompagner les équipes"
+                    "rep": "Le suivi automatisé des participations et du taux de réussite global sur le tableau de bord"
                 }
             ]
         }
     },
     {
-        "id": 2,
-        "titre": "Semaine 2 - Évaluation & Prise en charge de la douleur",
-        "date_debut": datetime.date(2026, 11, 2),
-        "date_fin": datetime.date(2026, 11, 15),
+        "id": 1,
+        "titre": "Semaine 1 - Droits du patient & Bientraitance (Urgences)",
+        "date_debut": datetime.date(2026, 10, 16),
+        "date_fin": datetime.date(2026, 11, 1),
         "tronc_commun": [],
         "metiers": {}
     }
@@ -624,16 +480,13 @@ else:
         if not session_active:
             st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui. Veuillez consulter le calendrier des 'Semaines À Venir' !")
         else:
-            str_debut = session_active['date_debut'].strftime('%d/%m/%Y')
-            str_fin = session_active['date_fin'].strftime('%d/%m/%Y')
-            
             st.markdown(
-                f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>📅 Session ouverte du {str_debut} au {str_fin}</p></div>",
+                f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>⚡ Session de démonstration interactive ouverte en permanence</p></div>",
                 unsafe_allow_html=True
             )
 
             role_soignant = st.selectbox(
-                "🩺 Sélectionnez votre fonction pour personnaliser votre parcours :",
+                "🩺 Sélectionnez votre fonction pour tester le parcours personnalisé :",
                 options=[
                     "-- Choisir ma fonction --", 
                     "IDE (Infirmier/ère)", 
@@ -731,9 +584,9 @@ else:
                     st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
                     if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q):
-                        st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés sur Google Sheets.")
+                        st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats de test ont été enregistrés sur Google Sheets.")
 
-                    if st.button("🔄 Recommencer le quiz", type="secondary"):
+                    if st.button("🔄 Recommencer le test", type="secondary"):
                         st.session_state.current_q_index = 0
                         st.session_state.user_quiz_answers = {}
                         st.rerun()
