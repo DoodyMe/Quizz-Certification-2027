@@ -200,7 +200,7 @@ def fixer_animal(nom_animal):
 SESSIONS = [
     {
         "id": 0,
-        "titre": "Semaine 0 - Session de Démonstration & Test Hiérarchie",
+        "titre": "Semaine 0 - Session de Démonstration",
         "date_debut": datetime.date(2020, 1, 1),
         "date_fin": datetime.date(2030, 12, 31),
         "tronc_commun": [
