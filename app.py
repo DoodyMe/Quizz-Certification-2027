@@ -202,40 +202,4 @@ if not st.session_state.user_pseudo:
 
     # Entête de la carte de profil
     st.markdown("""
-        <div class='profile-card-header'>
-            <div class='team-badge'>🏥 Équipe des Urgences GHR</div>
-            <h3 style='color:#0f766e; margin-top:5px; margin-bottom:0px;'>🎭 Choisissez votre Avatar</h3>
-            <p style='color:#64748b; font-size:0.95rem;'>Sélectionnez un animal puis un adjectif.</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # Colonnes pour centrer les sélecteurs
-    col_l, col_center, col_r = st.columns([1, 2, 1])
-
-    with col_center:
-        animaux_disponibles = [a for a in ANIMAUX if len([p for p in st.session_state.pseudos_reserves if p["animal"] == a]) < len(ADJECTIFS)]
-        animal_choisi = st.selectbox("1. Choisissez votre Animal :", options=["-- Sélectionner --"] + animaux_disponibles)
-
-        if animal_choisi != "-- Sélectionner --":
-            emoji = ANIMAL_TO_EMOJI[animal_choisi]
-            st.markdown(f"""
-                <div style='text-align:center;'>
-                    <div class='animal-badge'>
-                        <span class='animal-emoji'>{emoji}</span>
-                        <span class='animal-name'>{animal_choisi}</span>
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-
-            adjectifs_pris = [p["adjectif"] for p in st.session_state.pseudos_reserves if p["animal"] == animal_choisi]
-            adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
-
-            adjectif_choisi = st.selectbox("2. Choisissez votre Adjectif :", options=["-- Sélectionner --"] + adjectifs_disponibles)
-
-            if adjectif_choisi != "-- Sélectionner --":
-                pseudo_complet = f"{animal_choisi} {adjectif_choisi}"
-                st.markdown("<br>", unsafe_allow_html=True)
-                
-                if st.button(f"✨ Entrer en tant que {pseudo_complet}", type="primary", use_container_width=True):
-                    st.session_state.pseudos_reserves.append({"animal": animal_choisi, "adjectif": adjectif_choisi})
-                    st.
+        <div class='profile-card-header
