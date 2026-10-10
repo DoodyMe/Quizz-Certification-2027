@@ -31,7 +31,7 @@ st.markdown("""
         color: #0369a1;
         text-align: center;
         font-weight: 600;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
     }
 
     /* Badge Equipe des Urgences GHR */
@@ -44,18 +44,20 @@ st.markdown("""
         border-radius: 20px;
         font-size: 0.95rem;
         border: 1px solid #fde68a;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
 
-    /* Carte de Profil / Inscription */
-    .profile-card {
+    /* Carte de Profil / Inscription ajustée sans espace perdu */
+    .profile-card-header {
         background: white;
-        border-radius: 24px;
-        padding: 30px;
-        box-shadow: 0 10px 25px rgba(15, 118, 110, 0.1);
-        border: 2px solid #99f6e4;
+        border-top-left-radius: 24px;
+        border-top-right-radius: 24px;
+        padding: 25px 25px 10px 25px;
+        border-top: 2px solid #99f6e4;
+        border-left: 2px solid #99f6e4;
+        border-right: 2px solid #99f6e4;
         max-width: 580px;
-        margin: 10px auto 20px auto;
+        margin: 0 auto;
         text-align: center;
     }
 
@@ -64,15 +66,15 @@ st.markdown("""
         display: inline-flex;
         align-items: center;
         gap: 15px;
-        padding: 12px 28px;
+        padding: 10px 25px;
         border-radius: 50px;
         background-color: #e0f2fe;
         border: 2px solid #38bdf8;
         box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
-        margin: 15px 0;
+        margin: 10px 0;
     }
-    .animal-emoji { font-size: 2.6rem; }
-    .animal-name { color: #0369a1; font-weight: 700; font-size: 1.3rem; }
+    .animal-emoji { font-size: 2.4rem; }
+    .animal-name { color: #0369a1; font-weight: 700; font-size: 1.25rem; }
 
     /* Header connecté */
     .user-header {
@@ -195,21 +197,30 @@ if not st.session_state.user_pseudo:
     st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
     st.markdown("<p class='subtitle'>Espace ludique & anonyme pour l'équipe soignante</p>", unsafe_allow_html=True)
 
-    with st.container():
-        st.markdown("<div class='profile-card'>", unsafe_allow_html=True)
-        st.markdown("<div class='team-badge'>🏥 Équipe des Urgences GHR</div>", unsafe_allow_html=True)
-        st.markdown("<h3 style='color:#0f766e; margin-top:5px;'>🎭 Choisissez votre Avatar</h3>", unsafe_allow_html=True)
-        st.write("Sélectionnez un animal puis un adjectif. Ce duo reste votre identifiant unique !")
+    # Entête de la carte de profil (Sans conteneur inutile)
+    st.markdown("""
+        <div class='profile-card-header'>
+            <div class='team-badge'>🏥 Équipe des Urgences GHR</div>
+            <h3 style='color:#0f766e; margin-top:5px; margin-bottom:0px;'>🎭 Choisissez votre Avatar</h3>
+            <p style='color:#64748b; font-size:0.95rem;'>Sélectionnez un animal puis un adjectif.</p>
+        </div>
+    """, unsafe_allow_html=True)
 
+    # Colonnes pour centrer parfaitement les sélecteurs
+    col_l, col_center, col_r = st.columns([1, 2, 1])
+
+    with col_center:
         animaux_disponibles = [a for a in ANIMAUX if len([p for p in st.session_state.pseudos_reserves if p["animal"] == a]) < len(ADJECTIFS)]
         animal_choisi = st.selectbox("1. Choisissez votre Animal :", options=["-- Sélectionner --"] + animaux_disponibles)
 
         if animal_choisi != "-- Sélectionner --":
             emoji = ANIMAL_TO_EMOJI[animal_choisi]
             st.markdown(f"""
-                <div class='animal-badge'>
-                    <span class='animal-emoji'>{emoji}</span>
-                    <span class='animal-name'>{animal_choisi}</span>
+                <div style='text-align:center;'>
+                    <div class='animal-badge'>
+                        <span class='animal-emoji'>{emoji}</span>
+                        <span class='animal-name'>{animal_choisi}</span>
+                    </div>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -220,4 +231,55 @@ if not st.session_state.user_pseudo:
 
             if adjectif_choisi != "-- Sélectionner --":
                 pseudo_complet = f"{animal_choisi} {adjectif_choisi}"
-                st
+                st.markdown("<br>", unsafe_allow_html=True)
+                
+                if st.button(f"✨ Entrer en tant que {pseudo_complet}", type="primary", use_container_width=True):
+                    st.session_state.pseudos_reserves.append({"animal": animal_choisi, "adjectif": adjectif_choisi})
+                    st.session_state.user_pseudo = pseudo_complet
+                    st.rerun()
+
+# ------------------------------------------------------------------------------
+# ÉCRAN 2 : TABLEAU DE BORD CONNECTÉ
+# ------------------------------------------------------------------------------
+else:
+    # Header profil
+    col_head1, col_head2 = st.columns([4, 1])
+    with col_head1:
+        st.markdown(f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
+    with col_head2:
+        if st.button("Changer de profil"):
+            st.session_state.user_pseudo = None
+            st.rerun()
+
+    st.markdown("<h1 class='main-title' style='text-align:left; margin-top:15px;'>🎯 Tableau de bord des Révisions</h1>", unsafe_allow_html=True)
+
+    tab_actuel, tab_historique, tab_avenir = st.tabs(["🔥 Semaine Actuelle", "📜 Semaines Passées & Corrections", "📅 Semaines À Venir"])
+
+    # --- TAB 1 : QUIZ EN COURS ---
+    with tab_actuel:
+        session_active = next(s for s in SESSIONS if s["statut"] == "Actuelle")
+        
+        st.markdown("<div class='card-actuelle'>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3>", unsafe_allow_html=True)
+        st.caption(f"📅 Session ouverte : {session_active['dates']}")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        with st.form("quiz_form"):
+            reponses = {}
+            for idx, q in enumerate(session_active["questions"]):
+                st.write(f"**{q['q']}**")
+                reponses[idx] = st.radio("Votre réponse :", q["options"], key=f"q_{idx}", index=None)
+                st.divider()
+
+            if st.form_submit_button("🚀 Envoyer mes réponses", type="primary"):
+                if None in reponses.values():
+                    st.error("Veuillez répondre à l'ensemble des questions avant de valider !")
+                else:
+                    st.balloons()
+                    st.success(f"Réponses enregistrées avec succès pour **{st.session_state.user_pseudo}** !")
+
+    # --- TAB 2 : HISTORIQUE & CORRECTIONS ---
+    with tab_historique:
+        sessions_passees = [s for s in SESSIONS if s["statut"] == "Passee"]
+        for s in sessions_passees:
+            st.markdown("<div class='card-passee'>", unsafe_
