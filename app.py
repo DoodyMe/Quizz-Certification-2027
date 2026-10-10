@@ -147,7 +147,10 @@ if "user_pseudo" not in st.session_state:
 if "animal_selectionne" not in st.session_state:
     st.session_state.animal_selectionne = None
 
-# Programme des sessions de révision avec exemple de Top 10
+def fixer_animal(nom_animal):
+    st.session_state.animal_selectionne = nom_animal
+
+# Programme des sessions de révision
 SESSIONS = [
     {
         "id": 1,
@@ -215,11 +218,16 @@ if not st.session_state.user_pseudo:
         btn_label = f"{emoji} {animal}"
         btn_type = "primary" if is_selected else "secondary"
         
-        if col.button(btn_label, key=f"btn_anim_{animal}", type=btn_type, use_container_width=True):
-            st.session_state.animal_selectionne = animal
-            st.rerun()
+        col.button(
+            btn_label, 
+            key=f"btn_anim_{animal}", 
+            type=btn_type, 
+            use_container_width=True,
+            on_click=fixer_animal,
+            args=(animal,)
+        )
 
-    # Étape 2 : Choix de l'adjectif
+    # Étape 2 : Choix de l'adjectif (S'affiche dès qu'un animal est cliqué)
     if st.session_state.animal_selectionne:
         animal_choisi = st.session_state.animal_selectionne
         emoji_choisi = ANIMAL_TO_EMOJI[animal_choisi]
@@ -230,5 +238,103 @@ if not st.session_state.user_pseudo:
         with col_center:
             st.markdown(
                 f"<div style='text-align:center;'><div class='animal-selected-badge'><span class='animal-selected-emoji'>{emoji_choisi}</span><span class='animal-selected-name'>Animal choisi : {animal_choisi}</span></div></div>",
+                unsafe_allow_html=True
+            )
+
+            # Recherche des adjectifs déjà pris pour cet animal
+            adjectifs_pris = [
+                p["adjectif"] for p in st.session_state.pseudos_reserves 
+                if isinstance(p, dict) and p.get("animal") == animal_choisi
+            ]
+            adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
+
+            adjectif_choisi = st.selectbox(
+                "Étape 2 : Choisissez votre Adjectif :", 
+                options=["-- Sélectionner un adjectif --"] + adjectifs_disponibles
+            )
+
+            if adjectif_choisi != "-- Sélectionner un adjectif --":
+                pseudo_complet = f"{animal_choisi} {adjectif_choisi}"
+                st.markdown("<br>", unsafe_allow_html=True)
+                
+                if st.button(f"✨ Entrer en tant que {pseudo_complet}", type="primary", use_container_width=True):
+                    st.session_state.pseudos_reserves.append({"animal": animal_choisi, "adjectif": adjectif_choisi})
+                    st.session_state.user_pseudo = pseudo_complet
+                    st.rerun()
+
+# ------------------------------------------------------------------------------
+# 5. ÉCRAN 2 : TABLEAU DE BORD CONNECTÉ
+# ------------------------------------------------------------------------------
+else:
+    # Header profil
+    col_head1, col_head2 = st.columns([4, 1])
+    with col_head1:
+        st.markdown(
+            f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>",
+            unsafe_allow_html=True
+        )
+    with col_head2:
+        if st.button("Changer de profil"):
+            st.session_state.user_pseudo = None
+            st.session_state.animal_selectionne = None
+            st.rerun()
+
+    st.markdown("<h1 class='main-title' style='text-align:left; margin-top:15px;'>🎯 Tableau de bord des Révisions</h1>", unsafe_allow_html=True)
+
+    tab_actuel, tab_historique, tab_avenir = st.tabs(["🔥 Semaine Actuelle", "📜 Semaines Passées & Corrections", "📅 Semaines À Venir"])
+
+    # --- TAB 1 : QUIZ EN COURS ---
+    with tab_actuel:
+        session_active = next(s for s in SESSIONS if s["statut"] == "Actuelle")
+        
+        st.markdown(
+            f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>📅 Session ouverte : {session_active['dates']}</p></div>",
+            unsafe_allow_html=True
+        )
+
+        with st.form("quiz_form"):
+            reponses = {}
+            for idx, q in enumerate(session_active["questions"]):
+                st.write(f"**{q['q']}**")
+                reponses[idx] = st.radio("Votre réponse :", q["options"], key=f"q_{idx}", index=None)
+                st.divider()
+
+            if st.form_submit_button("🚀 Envoyer mes réponses", type="primary"):
+                if None in reponses.values():
+                    st.error("Veuillez répondre à l'ensemble des questions avant de valider !")
+                else:
+                    st.balloons()
+                    st.success(f"Réponses enregistrées avec succès pour **{st.session_state.user_pseudo}** !")
+
+    # --- TAB 2 : HISTORIQUE & CORRECTIONS ---
+    with tab_historique:
+        sessions_passees = [s for s in SESSIONS if s["statut"] == "Passee"]
+        for s in sessions_passees:
+            st.markdown(
+                f"<div class='card-passee'><h3 style='color:#4338ca;'>{s['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>Clôturé : {s['dates']}</p>",
+                unsafe_allow_html=True
+            )
+
+            col_pod, col_corr = st.columns(2)
+            
+            with col_pod:
+                st.markdown("#### 🏆 Top 10 - Classement")
+                for p in s.get("podium", [])[:10]:
+                    st.write(f"**{p['rang']}** — {p['pseudo']} ({p['score']})")
+
+            with col_corr:
+                st.markdown("#### 📖 Corrections & Explications")
+                for q in s["questions"]:
+                    with st.expander(q["q"]):
+                        st.success(f"Bonne réponse : {q['rep']}")
+            
+            st.markdown("</div>", unsafe_allow_html=True)
+
+    # --- TAB 3 : SEMAINES À VENIR ---
+    with tab_avenir:
+        sessions_futures = [s for s in SESSIONS if s["statut"] == "A venir"]
+        for s in sessions_futures:
+            st.markdown(
+                f"<div class='card-avenir'><h4 style='color:#b45309;'>🔒 {s['titre']}</h4><p style='margin:0;'>📅 Ouverture prévue : <strong>{s['dates']}</strong></p></div>",
                 unsafe_allow_html=True
             )
