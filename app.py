@@ -129,9 +129,9 @@ st.markdown("""
 # 3. DONNÉES DE L'APPLICATION (15 Animaux x 10 Adjectifs = 150 Combinaisons)
 # ------------------------------------------------------------------------------
 ANIMAL_TO_EMOJI = {
-    "Lapin": "🐇", "Ours": "🐻", "Castor": "🦫", "Elephant": "🐘", "Hamster": "🐹",
+    "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
     "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
-    "Lynx": "🐆", "Lémurien": "🐒", "Ornithorinque": "🦆", "Loup": "🐺", "Hérisson": "🦔"
+    "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔"
 }
 
 ANIMAUX = list(ANIMAL_TO_EMOJI.keys())
@@ -147,7 +147,7 @@ if "user_pseudo" not in st.session_state:
 if "animal_selectionne" not in st.session_state:
     st.session_state.animal_selectionne = None
 
-# Programme des sessions de révision
+# Programme des sessions de révision avec exemple de Top 10
 SESSIONS = [
     {
         "id": 1,
@@ -159,7 +159,15 @@ SESSIONS = [
         ],
         "podium": [
             {"rang": "🥇 1er", "pseudo": "Dauphin Malin", "score": "10/10"},
-            {"rang": "🥈 2ème", "pseudo": "Loup Combatif", "score": "9/10"}
+            {"rang": "🥈 2ème", "pseudo": "Loup Combatif", "score": "10/10"},
+            {"rang": "🥉 3ème", "pseudo": "Panda Optimiste", "score": "9/10"},
+            {"rang": "4ème", "pseudo": "Cochon Survolté", "score": "9/10"},
+            {"rang": "5ème", "pseudo": "Canard Astucieux", "score": "8/10"},
+            {"rang": "6ème", "pseudo": "Lynx Ambitieux", "score": "8/10"},
+            {"rang": "7ème", "pseudo": "Hérisson Timide", "score": "7/10"},
+            {"rang": "8ème", "pseudo": "Faucon Espiègle", "score": "7/10"},
+            {"rang": "9ème", "pseudo": "Hamster Gourmand", "score": "6/10"},
+            {"rang": "10ème", "pseudo": "Ours Emotif", "score": "6/10"}
         ]
     },
     {
@@ -224,13 +232,3 @@ if not st.session_state.user_pseudo:
                 f"<div style='text-align:center;'><div class='animal-selected-badge'><span class='animal-selected-emoji'>{emoji_choisi}</span><span class='animal-selected-name'>Animal choisi : {animal_choisi}</span></div></div>",
                 unsafe_allow_html=True
             )
-
-            adjectifs_pris = [
-                p["adjectif"] for p in st.session_state.pseudos_reserves 
-                if isinstance(p, dict) and p.get("animal") == animal_choisi
-            ]
-            adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
-
-            adjectif_choisi = st.selectbox(
-                "Étape 2 : Choisissez votre Adjectif :", 
-                options=["-- Sélectionner un adjectif --"] + adjectifs_dispon)
