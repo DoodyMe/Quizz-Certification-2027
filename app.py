@@ -112,4 +112,130 @@ st.markdown("""
 
     .card-avenir {
         background-color: #fffbeb;
-        border-radius
+        border-radius: 20px;
+        padding: 20px;
+        border-left: 8px solid #f59e0b;
+        margin-bottom: 15px;
+    }
+
+    /* Customisation des onglets */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 12px;
+        justify-content: center;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background-color: #ffffff;
+        border-radius: 30px;
+        padding: 10px 24px;
+        font-weight: 700;
+        color: #0f766e;
+        border: 1px solid #ccfbf1;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
+        color: white !important;
+        border: none !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ------------------------------------------------------------------------------
+# 3. DONNÉES DE L'APPLICATION (15 Animaux x 10 Adjectifs = 150 Combinaisons)
+# ------------------------------------------------------------------------------
+ANIMAL_TO_EMOJI = {
+    "Lapin": "🐇", "Ours": "🐻", "Castor": "🦫", "Elephant": "🐘", "Hamster": "🐹",
+    "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
+    "Lynx": "🐆", "Lémurien": "🐒", "Ornithorinque": "🦆", "Loup": "🐺", "Hérisson": "🦔"
+}
+
+ANIMAUX = list(ANIMAL_TO_EMOJI.keys())
+ADJECTIFS = ["Astucieux", "Timide", "Ambitieux", "Survolté", "Combatif", "Emotif", "Espiègle", "Gourmand", "Malin", "Optimiste"]
+
+# Enregistrements en session
+if "pseudos_reserves" not in st.session_state:
+    st.session_state.pseudos_reserves = [{"animal": "Dauphin", "adjectif": "Malin"}]
+
+if "user_pseudo" not in st.session_state:
+    st.session_state.user_pseudo = None
+
+# Programme des sessions de révision
+SESSIONS = [
+    {
+        "id": 1,
+        "titre": "Semaine 1 - Droits du patient & Bientraitance",
+        "statut": "Passee",
+        "dates": "Du 21/09 au 04/10",
+        "questions": [
+            {"q": "1. Quel est le délai légal de communication du dossier médical au patient ?", "options": ["48 heures", "8 jours", "15 jours"], "rep": "8 jours"}
+        ],
+        "podium": [
+            {"rang": "🥇 1er", "pseudo": "Dauphin Malin", "score": "10/10"},
+            {"rang": "🥈 2ème", "pseudo": "Loup Combatif", "score": "9/10"}
+        ]
+    },
+    {
+        "id": 2,
+        "titre": "Semaine 2 - Evaluation & Prise en charge de la douleur",
+        "statut": "Actuelle",
+        "dates": "Du 05/10 au 18/10",
+        "questions": [
+            {"q": "1. Quelle échelle est recommandée pour l'auto-évaluation de la douleur chez l'adulte communiquant ?", "options": ["EVA / EN", "ALGOPLUS", "DN4"], "rep": "EVA / EN"},
+            {"q": "2. Dans quel délai maximal la re-évaluation de la douleur doit-elle être tracée après antalgique IV ?", "options": ["15 à 30 minutes", "1 à 2 heures", "Au changement d'équipe"], "rep": "15 à 30 minutes"}
+        ]
+    },
+    {
+        "id": 3,
+        "titre": "Semaine 3 - Circuit du médicament & Identitovigilance",
+        "statut": "A venir",
+        "dates": "Du 19/10 au 01/11",
+        "questions": []
+    }
+]
+
+# ------------------------------------------------------------------------------
+# 4. ÉCRAN 1 : SÉLECTION DU PSEUDO (SI NON CONNECTÉ)
+# ------------------------------------------------------------------------------
+if not st.session_state.user_pseudo:
+    st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='subtitle'>Espace ludique & anonyme pour l'équipe soignante</p>", unsafe_allow_html=True)
+
+    # Entête de la carte de profil
+    st.markdown("""
+        <div class='profile-card-header'>
+            <div class='team-badge'>🏥 Équipe des Urgences GHR</div>
+            <h3 style='color:#0f766e; margin-top:5px; margin-bottom:0px;'>🎭 Choisissez votre Avatar</h3>
+            <p style='color:#64748b; font-size:0.95rem;'>Sélectionnez un animal puis un adjectif.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Colonnes pour centrer les sélecteurs
+    col_l, col_center, col_r = st.columns([1, 2, 1])
+
+    with col_center:
+        animaux_disponibles = [a for a in ANIMAUX if len([p for p in st.session_state.pseudos_reserves if p["animal"] == a]) < len(ADJECTIFS)]
+        animal_choisi = st.selectbox("1. Choisissez votre Animal :", options=["-- Sélectionner --"] + animaux_disponibles)
+
+        if animal_choisi != "-- Sélectionner --":
+            emoji = ANIMAL_TO_EMOJI[animal_choisi]
+            st.markdown(f"""
+                <div style='text-align:center;'>
+                    <div class='animal-badge'>
+                        <span class='animal-emoji'>{emoji}</span>
+                        <span class='animal-name'>{animal_choisi}</span>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
+            adjectifs_pris = [p["adjectif"] for p in st.session_state.pseudos_reserves if p["animal"] == animal_choisi]
+            adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
+
+            adjectif_choisi = st.selectbox("2. Choisissez votre Adjectif :", options=["-- Sélectionner --"] + adjectifs_disponibles)
+
+            if adjectif_choisi != "-- Sélectionner --":
+                pseudo_complet = f"{animal_choisi} {adjectif_choisi}"
+                st.markdown("<br>", unsafe_allow_html=True)
+                
+                if st.button(f"✨ Entrer en tant que {pseudo_complet}", type="primary", use_container_width=True):
+                    st.session_state.pseudos_reserves.append({"animal": animal_choisi, "adjectif": adjectif_choisi})
+                    st.
