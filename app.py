@@ -99,7 +99,7 @@ def charger_top10_semaine(semaine_id):
         return []
 
 # ------------------------------------------------------------------------------
-# 3. STYLE CSS (Thème hospitalier chaleureux & coloré)
+# 3. STYLE CSS (Thème ludo-pédagogique & dynamique)
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -128,6 +128,34 @@ st.markdown("""
     .card-actuelle { background-color: #ffffff; border-radius: 20px; padding: 25px; border-left: 8px solid #10b981; margin-bottom: 20px; }
     .card-passee { background-color: #f8fafc; border-radius: 20px; padding: 20px; border-left: 8px solid #6366f1; margin-bottom: 15px; }
     .card-avenir { background-color: #fffbeb; border-radius: 20px; padding: 20px; border-left: 8px solid #f59e0b; margin-bottom: 15px; }
+    
+    /* Carte Question Interactive */
+    .question-card {
+        background: white;
+        border-radius: 24px;
+        padding: 30px;
+        border: 2px solid #99f6e4;
+        box-shadow: 0 10px 25px rgba(15, 118, 110, 0.08);
+        margin-bottom: 20px;
+    }
+    .question-badge {
+        background: #ccfbf1;
+        color: #0f766e;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+    .question-title {
+        color: #0f766e;
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
     .stTabs [data-baseweb="tab-list"] { gap: 12px; justify-content: center; }
     .stTabs [data-baseweb="tab"] {
         background-color: #ffffff; border-radius: 30px; padding: 10px 24px; font-weight: 700; color: #0f766e; border: 1px solid #ccfbf1;
@@ -156,19 +184,25 @@ if "user_pseudo" not in st.session_state:
 if "animal_selectionne" not in st.session_state:
     st.session_state.animal_selectionne = None
 
+if "current_q_index" not in st.session_state:
+    st.session_state.current_q_index = 0
+
+if "user_quiz_answers" not in st.session_state:
+    st.session_state.user_quiz_answers = {}
+
 def fixer_animal(nom_animal):
     st.session_state.animal_selectionne = nom_animal
 
-# --- SESSIONS AVEC TRONC COMMUN ET MODULES METIERS ---
+# --- SESSIONS AVEC DATES AUTOMATIQUES ET STRUCTURE TRONC COMMUN + MÉTIERS ---
 SESSIONS = [
     {
         "id": 1,
-        "titre": "Semaine 1 - Droits du patient & Bientraitance",
-        "statut": "Actuelle",
-        "dates": "Du 16/10 au 01/11",
+        "titre": "Semaine 1 - Droits du patient & Bientraitance (Urgences)",
+        "date_debut": datetime.date(2026, 10, 16),
+        "date_fin": datetime.date(2026, 11, 1),
         "tronc_commun": [
             {
-                "q": "1. [Tronc Commun] Un patient accueilli aux urgences refuse un examen complémentaire. Quelle est la conduite à tenir légale ?",
+                "q": "Un patient accueilli aux urgences refuse un examen complémentaire. Quelle est la conduite à tenir légale ?",
                 "options": [
                     "Réaliser l'examen malgré tout au vu de l'urgence médicale",
                     "Respecter son refus après lui avoir délivré une information claire sur les risques encourus",
@@ -177,7 +211,7 @@ SESSIONS = [
                 "rep": "Respecter son refus après lui avoir délivré une information claire sur les risques encourus"
             },
             {
-                "q": "2. [Tronc Commun] Quel est le délai légal de communication du dossier médical pour des soins datant de moins de 5 ans ?",
+                "q": "Quel est le délai légal de communication du dossier médical pour des soins datant de moins de 5 ans ?",
                 "options": [
                     "48 heures maximum",
                     "8 jours maximum après un délai de réflexion de 48h",
@@ -186,7 +220,7 @@ SESSIONS = [
                 "rep": "8 jours maximum après un délai de réflexion de 48h"
             },
             {
-                "q": "3. [Tronc Commun] Concernant la personne de confiance désignée par le patient, quelle affirmation est EXACTE ?",
+                "q": "Concernant la personne de confiance désignée par le patient, quelle affirmation est EXACTE ?",
                 "options": [
                     "Elle prévaut obligatoirement sur les directives anticipées",
                     "Son avis prévaut sur celui de la famille si le patient ne peut plus s'exprimer",
@@ -195,7 +229,7 @@ SESSIONS = [
                 "rep": "Son avis prévaut sur celui de la famille si le patient ne peut plus s'exprimer"
             },
             {
-                "q": "4. [Tronc Commun] Lors de la prise en charge d'un patient sous mesure de protection juridique (Tutelle), qui consent aux soins d'urgence ?",
+                "q": "Lors de la prise en charge d'un patient sous mesure de protection juridique (Tutelle), qui consent aux soins d'urgence ?",
                 "options": [
                     "Le tuteur obligatoirement, quel que soit l'état d'urgence",
                     "Le patient lui-même si son état le permet, l'urgence médicale prime sur l'accord du tuteur",
@@ -204,7 +238,7 @@ SESSIONS = [
                 "rep": "Le patient lui-même si son état le permet, l'urgence médicale prime sur l'accord du tuteur"
             },
             {
-                "q": "5. [Tronc Commun] Dans un box d'urgences, la bientraitance et le respect de l'intimité imposent prioritairement de :",
+                "q": "Dans un box d'urgences, la bientraitance et le respect de l'intimité imposent prioritairement de :",
                 "options": [
                     "Fermer les rideaux/portes et baisser la voix lors de l'interrogatoire et des soins",
                     "Demander systématiquement à la famille de sortir pendant toute la durée du passage aux urgences",
@@ -216,7 +250,7 @@ SESSIONS = [
         "metiers": {
             "IDE": [
                 {
-                    "q": "6. [Module IDE] Lors de l'administration d'un traitement antalgique réévalué aux urgences, quelle traçabilité minimale exige la HAS ?",
+                    "q": "Lors de l'administration d'un traitement antalgique réévalué aux urgences, quelle traçabilité minimale exige la HAS ?",
                     "options": [
                         "Horaire, molécule et nom du prescripteur uniquement sur le logiciel",
                         "Score de douleur avant administration, re-évaluation post-injection et traçabilité de l'efficacité",
@@ -225,7 +259,7 @@ SESSIONS = [
                     "rep": "Score de douleur avant administration, re-évaluation post-injection et traçabilité de l'efficacité"
                 },
                 {
-                    "q": "7. [Module IDE] En cas d'accueil aux urgences d'un mineur non accompagné refusant l'avertissement de ses parents, que devez-vous appliquer ?",
+                    "q": "En cas d'accueil aux urgences d'un mineur non accompagné refusant l'avertissement de ses parents, que devez-vous appliquer ?",
                     "options": [
                         "Refuser la prise en charge sans l'accord écrit parental",
                         "Dispenser les soins d'urgence si le mineur le demande expressément et se faire accompagner par un majeur protecteur",
@@ -234,7 +268,7 @@ SESSIONS = [
                     "rep": "Dispenser les soins d'urgence si le mineur le demande expressément et se faire accompagner par un majeur protecteur"
                 },
                 {
-                    "q": "8. [Module IDE] Dans la prise en charge des personnes victimes de violences aux urgences, quelle est la priorité de soins IDE ?",
+                    "q": "Dans la prise en charge des personnes victimes de violences aux urgences, quelle est la priorité de soins IDE ?",
                     "options": [
                         "Exiger un dépôt de plainte immédiat avant d'installer le patient",
                         "Garantir un espace sécurisé, assurer la traçabilité des lésions sur certificat médical et orienter vers la prise en charge médico-psychologique",
@@ -245,7 +279,7 @@ SESSIONS = [
             ],
             "AS": [
                 {
-                    "q": "6. [Module AS] Quelle mesure de bientraitance est prioritaire lors de la prise en charge d'une personne âgée confuse aux urgences ?",
+                    "q": "Quelle mesure de bientraitance est prioritaire lors de la prise en charge d'une personne âgée confuse aux urgences ?",
                     "options": [
                         "Appliquer immédiatement des ridelles et une contention pelvienne pour éviter les chutes",
                         "Évaluer la douleur, chercher des causes réversibles (globe, fécalome) et rassurer avec la présence d'un proche",
@@ -254,7 +288,7 @@ SESSIONS = [
                     "rep": "Évaluer la douleur, chercher des causes réversibles (globe, fécalome) et rassurer avec la présence d'un proche"
                 },
                 {
-                    "q": "7. [Module AS] Un brancardage entre les urgences et la radiologie nécessite le respect de l'intimité. Quelle est la bonne pratique ?",
+                    "q": "Un brancardage entre les urgences et la radiologie nécessite le respect de l'intimité. Quelle est la bonne pratique ?",
                     "options": [
                         "Déplacer le patient en blouse d'examen sans couverture s'il fait chaud",
                         "Veiller au recouvrement du corps avec un drap/couverture et préserver le secret professionnel pendant le trajet",
@@ -263,7 +297,7 @@ SESSIONS = [
                     "rep": "Veiller au recouvrement du corps avec un drap/couverture et préserver le secret professionnel pendant le trajet"
                 },
                 {
-                    "q": "8. [Module AS] Un patient dépendant réclame de l'eau aux urgences alors qu'il est en attente d'avis médical. Que devez-vous faire ?",
+                    "q": "Un patient dépendant réclame de l'eau aux urgences alors qu'il est en attente d'avis médical. Que devez-vous faire ?",
                     "options": [
                         "Lui donner un grand verre d'eau immédiatement pour son confort",
                         "Vérifier auprès de l'IDE si le patient est à jeun strict avant toute administration de boisson",
@@ -274,7 +308,7 @@ SESSIONS = [
             ],
             "Médecin": [
                 {
-                    "q": "6. [Module Médecin] Concernant les directives anticipées aux urgences, quelle est la règle applicable pour le médecin ?",
+                    "q": "Concernant les directives anticipées aux urgences, quelle est la règle applicable pour le médecin ?",
                     "options": [
                         "Elles ont une durée de validité limitée à 3 ans",
                         "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)",
@@ -283,7 +317,7 @@ SESSIONS = [
                     "rep": "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)"
                 },
                 {
-                    "q": "7. [Module Médecin] Lors d'une décision de Limitation ou Arrêt de Traitement (LAT) aux urgences, quelle est l'obligation réglementaire ?",
+                    "q": "Lors d'une décision de Limitation ou Arrêt de Traitement (LAT) aux urgences, quelle est l'obligation réglementaire ?",
                     "options": [
                         "Décider seul pour ne pas perdre de temps",
                         "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier",
@@ -292,7 +326,7 @@ SESSIONS = [
                     "rep": "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier"
                 },
                 {
-                    "q": "8. [Module Médecin] Un proche réclame des informations médicales sur un patient majeur hospitalisé aux urgences. Le médecin peut lui répondre si :",
+                    "q": "Un proche réclame des informations médicales sur un patient majeur hospitalisé aux urgences. Le médecin peut lui répondre si :",
                     "options": [
                         "Le proche prouve son lien de parenté direct (livret de famille)",
                         "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche",
@@ -303,7 +337,7 @@ SESSIONS = [
             ],
             "ARM": [
                 {
-                    "q": "6. [Module ARM] Lors de la création d'un dossier au SAMU/SAS, quelle est la priorité d'identitovigilance pour éviter les doublons ?",
+                    "q": "Lors de la création d'un dossier au SAMU/SAS, quelle est la priorité d'identitovigilance pour éviter les doublons ?",
                     "options": [
                         "Saisir uniquement le prénom et le numéro de téléphone portable",
                         "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur",
@@ -312,7 +346,7 @@ SESSIONS = [
                     "rep": "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur"
                 },
                 {
-                    "q": "7. [Module ARM] Un appelant demande confirmation de l'admission aux urgences de son voisin par téléphone. Quelle est votre obligation ?",
+                    "q": "Un appelant demande confirmation de l'admission aux urgences de son voisin par téléphone. Quelle est votre obligation ?",
                     "options": [
                         "Lui donner la réponse s'il connaît le nom et le prénom du patient",
                         "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité",
@@ -321,7 +355,7 @@ SESSIONS = [
                     "rep": "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité"
                 },
                 {
-                    "q": "8. [Module ARM] Lors de la régulation d'un appel urgent pour détresse vitale, quelle traçabilité est exigée dans le logiciel d'appel ?",
+                    "q": "Lors de la régulation d'un appel urgent pour détresse vitale, quelle traçabilité est exigée dans le logiciel d'appel ?",
                     "options": [
                         "Rédiger un compte-rendu uniquement si le patient est transporté par le SMUR",
                         "Enregistrer l'horodatage des décisions, le motif de régulation et les moyens envoyés",
@@ -332,7 +366,7 @@ SESSIONS = [
             ],
             "Accueil": [
                 {
-                    "q": "6. [Module Accueil] Lors de l'enregistrement administratif d'un patient à la banque d'accueil, quel document doit être privilégié pour vérifier l'identité ?",
+                    "q": "Lors de l'enregistrement administratif d'un patient à la banque d'accueil, quel document doit être privilégié pour vérifier l'identité ?",
                     "options": [
                         "La carte de mutuelle ou un justificatif de domicile",
                         "Une pièce d'identité officielle avec photo (CNI, passeport, titre de séjour) complétée de la carte Vitale",
@@ -341,7 +375,7 @@ SESSIONS = [
                     "rep": "Une pièce d'identité officielle avec photo (CNI, passeport, titre de séjour) complétée de la carte Vitale"
                 },
                 {
-                    "q": "7. [Module Accueil] Dans la salle d'attente, un patient vous informe d'une dégradation de son état ou d'une douleur aiguë. Quelle est votre action immédiate ?",
+                    "q": "Dans la salle d'attente, un patient vous informe d'une dégradation de son état ou d'une douleur aiguë. Quelle est votre action immédiate ?",
                     "options": [
                         "Lui demander de patienter gentiment que son nom soit appelé",
                         "Alerter immédiatement l'Infirmier/ère d'Accueil et d'Orientation (IAO) pour une réévaluation clinique",
@@ -350,7 +384,7 @@ SESSIONS = [
                     "rep": "Alerter immédiatement l'Infirmier/ère d'Accueil et d'Orientation (IAO) pour une réévaluation clinique"
                 },
                 {
-                    "q": "8. [Module Accueil] Comment garantir la confidentialité des données lors des échanges à la banque d'accueil des urgences ?",
+                    "q": "Comment garantir la confidentialité des données lors des échanges à la banque d'accueil des urgences ?",
                     "options": [
                         "Répéter à haute voix la date de naissance du patient pour que toute la file d'attente l'entende",
                         "Maintenir la distance de sécurité entre usagers, baisser la voix et ne pas laisser d'écrans nominatifs visibles du public",
@@ -361,7 +395,7 @@ SESSIONS = [
             ],
             "Brancardier": [
                 {
-                    "q": "6. [Module Brancardier] Quelle vérification minimale d'identitovigilance est obligatoire AVANT de déplacer un patient des urgences vers le scanner ?",
+                    "q": "Quelle vérification minimale d'identitovigilance est obligatoire AVANT de déplacer un patient des urgences vers le scanner ?",
                     "options": [
                         "Appeler le patient par son prénom dans le couloir sans vérifier le dossier",
                         "Vérifier l'identité sur le bracelet d'identification (Nom, Prénom, Date de naissance) et la faire confirmer par le patient si possible",
@@ -370,7 +404,7 @@ SESSIONS = [
                     "rep": "Vérifier l'identité sur le bracelet d'identification (Nom, Prénom, Date de naissance) et la faire confirmer par le patient si possible"
                 },
                 {
-                    "q": "7. [Module Brancardier] Quelle est la règle de sécurité et de bientraitance lors du transport d'un patient en brancard dans les couloirs ?",
+                    "q": "Quelle est la règle de sécurité et de bientraitance lors du transport d'un patient en brancard dans les couloirs ?",
                     "options": [
                         "Transporter le patient sans barrières s'il promet de ne pas bouger",
                         "Mettre systématiquement les ridelles/barrières relevées, recouvrir le corps d'un drap et respecter sa pudeur",
@@ -379,7 +413,7 @@ SESSIONS = [
                     "rep": "Mettre systématiquement les ridelles/barrières relevées, recouvrir le corps d'un drap et respecter sa pudeur"
                 },
                 {
-                    "q": "8. [Module Brancardier] Concernant l'hygiène du matériel de transport entre deux passages de patients, que devez-vous appliquer ?",
+                    "q": "Concernant l'hygiène du matériel de transport entre deux passages de patients, que devez-vous appliquer ?",
                     "options": [
                         "Nettoyer le brancard uniquement à la fin du poste de travail",
                         "Désinfecter les surfaces de contact du brancard/fauteuil avec un produit détergent-désinfectant homologué entre chaque patient",
@@ -390,7 +424,7 @@ SESSIONS = [
             ],
             "ASH": [
                 {
-                    "q": "6. [Module ASH] Quelle est la règle essentielle de bio-nettoyage d'un box d'urgences après la sortie d'un patient ?",
+                    "q": "Quelle est la règle essentielle de bio-nettoyage d'un box d'urgences après la sortie d'un patient ?",
                     "options": [
                         "Vider uniquement les poubelles et passer un coup de balai sec",
                         "Réaliser un bio-nettoyage complet des surfaces et du mobilier avec un produit détergent-désinfectant selon le protocole du service",
@@ -399,7 +433,7 @@ SESSIONS = [
                     "rep": "Réaliser un bio-nettoyage complet des surfaces et du mobilier avec un produit détergent-désinfectant selon le protocole du service"
                 },
                 {
-                    "q": "7. [Module ASH] Dans quelle filière d'élimination des déchets devez-vous jeter les gants et compresses usagés non souillés de sang ?",
+                    "q": "Dans quelle filière d'élimination des déchets devez-vous jeter les gants et compresses usagés non souillés de sang ?",
                     "options": [
                         "Filière DAOM (Déchets Assimilables aux Ordures Ménagères - Sac Noir)",
                         "Filière DASRI (Déchets d'Activités de Soins à Risques Infectieux - Sac Jaune)",
@@ -408,7 +442,7 @@ SESSIONS = [
                     "rep": "Filière DAOM (Déchets Assimilables aux Ordures Ménagères - Sac Noir)"
                 },
                 {
-                    "q": "8. [Module ASH] Lors de votre intervention dans un box occupé par un patient, quelle est la posture de bientraitance attendue ?",
+                    "q": "Lors de votre intervention dans un box occupé par un patient, quelle est la posture de bientraitance attendue ?",
                     "options": [
                         "Entrer sans frapper et faire du bruit avec le matériel sans parler au patient",
                         "Taper à la porte, se présenter, expliquer la présence pour le nettoyage et respecter l'intimité du soin",
@@ -419,7 +453,7 @@ SESSIONS = [
             ],
             "Cadre": [
                 {
-                    "q": "6. [Module Cadre] Suite à la déclaration d'un Événement Indésirable Grave (EIGS) aux urgences, quelle est la priorité managériale ?",
+                    "q": "Suite à la déclaration d'un Événement Indésirable Grave (EIGS) aux urgences, quelle est la priorité managériale ?",
                     "options": [
                         "Blâmer immédiatement le soignant impliqué dans la fiche d'événement",
                         "Organiser une analyse systémique des causes (REX / CREX) sans recherche de coupable et suivre le plan d'actions correctives",
@@ -428,7 +462,7 @@ SESSIONS = [
                     "rep": "Organiser une analyse systémique des causes (REX / CREX) sans recherche de coupable et suivre le plan d'actions correctives"
                 },
                 {
-                    "q": "7. [Module Cadre] Quelle traçabilité minimale devez-vous contrôler concernant la sécurité du chariot d'urgence du service ?",
+                    "q": "Quelle traçabilité minimale devez-vous contrôler concernant la sécurité du chariot d'urgence du service ?",
                     "options": [
                         "Une vérification trimestrielle informelle",
                         "Un contrôle quotidien de l'intégrité du scellé et une traçabilité de la vérification des péremptions sur le registre dédié",
@@ -437,7 +471,7 @@ SESSIONS = [
                     "rep": "Un contrôle quotidien de l'intégrité du scellé et une traçabilité de la vérification des péremptions sur le registre dédié"
                 },
                 {
-                    "q": "8. [Module Cadre] Dans le cadre de l'évaluation HAS sur la bientraitance, quel rôle clé tient le Cadre de Santé au quotidien ?",
+                    "q": "Dans le cadre de l'évaluation HAS sur la bientraitance, quel rôle clé tient le Cadre de Santé au quotidien ?",
                     "options": [
                         "Superviser uniquement les plannings sans aller sur le terrain",
                         "Promouvoir la culture de bientraitance, réaliser des audits flash (douleur, contention) et accompagner les équipes",
@@ -451,12 +485,21 @@ SESSIONS = [
     {
         "id": 2,
         "titre": "Semaine 2 - Évaluation & Prise en charge de la douleur",
-        "statut": "A venir",
-        "dates": "Du 02/11 au 15/11",
+        "date_debut": datetime.date(2026, 11, 2),
+        "date_fin": datetime.date(2026, 11, 15),
         "tronc_commun": [],
         "metiers": {}
     }
 ]
+
+def obtenir_statut_session(session):
+    today = datetime.date.today()
+    if today < session["date_debut"]:
+        return "A venir"
+    elif session["date_debut"] <= today <= session["date_fin"]:
+        return "Actuelle"
+    else:
+        return "Passee"
 
 # ------------------------------------------------------------------------------
 # 5. ÉCRAN D'AUTHENTIFICATION (SI NON CONNECTÉ)
@@ -561,6 +604,8 @@ else:
         if st.button("🔒 Déconnexion"):
             st.session_state.user_pseudo = None
             st.session_state.animal_selectionne = None
+            st.session_state.current_q_index = 0
+            st.session_state.user_quiz_answers = {}
             st.rerun()
 
     st.markdown("<h1 class='main-title' style='text-align:left; margin-top:15px;'>🎯 Tableau de bord des Révisions</h1>", unsafe_allow_html=True)
@@ -572,72 +617,126 @@ else:
         "📅 Semaines À Venir"
     ])
 
-    # --- TAB 1 : QUIZ EN COURS AVEC ROUTAGE PAR MÉTIER ---
+    # --- TAB 1 : QUIZ DYNAMIQUE UNE PAR UNE ---
     with tab_actuel:
-        session_active = next(s for s in SESSIONS if s["statut"] == "Actuelle")
+        session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
         
-        st.markdown(
-            f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>📅 Session ouverte : {session_active['dates']}</p></div>",
-            unsafe_allow_html=True
-        )
-
-        role_soignant = st.selectbox(
-            "🩺 Sélectionnez votre fonction pour adapter votre questionnaire :",
-            options=[
-                "-- Choisir ma fonction --", 
-                "IDE (Infirmier/ère)", 
-                "AS (Aide-Soignant/e)", 
-                "Médecin", 
-                "ARM (Assistant/e de Régulation Médicale)",
-                "Hôte / Hôtesse d'accueil & Admission",
-                "Brancardier",
-                "ASH (Agent de Service Hospitalier)",
-                "Cadre de Santé / Encadrement"
-            ]
-        )
-
-        if role_soignant != "-- Choisir ma fonction --":
-            questions_quiz = list(session_active.get("tronc_commun", []))
+        if not session_active:
+            st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui. Veuillez consulter le calendrier des 'Semaines À Venir' !")
+        else:
+            str_debut = session_active['date_debut'].strftime('%d/%m/%Y')
+            str_fin = session_active['date_fin'].strftime('%d/%m/%Y')
             
-            # Routage précis par métier
-            if "IDE" in role_soignant:
-                questions_quiz.extend(session_active["metiers"].get("IDE", []))
-            elif "AS (" in role_soignant:
-                questions_quiz.extend(session_active["metiers"].get("AS", []))
-            elif "Médecin" in role_soignant:
-                questions_quiz.extend(session_active["metiers"].get("Médecin", []))
-            elif "ARM" in role_soignant:
-                questions_quiz.extend(session_active["metiers"].get("ARM", []))
-            elif "accueil" in role_soignant:
-                questions_quiz.extend(session_active["metiers"].get("Accueil", []))
-            elif "Brancardier" in role_soignant:
-                questions_quiz.extend(session_active["metiers"].get("Brancardier", []))
-            elif "ASH" in role_soignant:
-                questions_quiz.extend(session_active["metiers"].get("ASH", []))
-            elif "Cadre" in role_soignant:
-                questions_quiz.extend(session_active["metiers"].get("Cadre", []))
+            st.markdown(
+                f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>📅 Session ouverte du {str_debut} au {str_fin}</p></div>",
+                unsafe_allow_html=True
+            )
 
-            with st.form("quiz_form"):
-                st.markdown(f"#### Questionnaire sur-mesure : **{role_soignant}** ({len(questions_quiz)} questions)")
-                st.caption("5 questions Tronc Commun + 3 questions spécifiques à votre métier")
-                st.divider()
+            role_soignant = st.selectbox(
+                "🩺 Sélectionnez votre fonction pour personnaliser votre parcours :",
+                options=[
+                    "-- Choisir ma fonction --", 
+                    "IDE (Infirmier/ère)", 
+                    "AS (Aide-Soignant/e)", 
+                    "Médecin", 
+                    "ARM (Assistant/e de Régulation Médicale)",
+                    "Hôte / Hôtesse d'accueil & Admission",
+                    "Brancardier",
+                    "ASH (Agent de Service Hospitalier)",
+                    "Cadre de Santé / Encadrement"
+                ]
+            )
 
-                reponses = {}
-                for idx, q in enumerate(questions_quiz):
-                    st.write(f"**{q['q']}**")
-                    reponses[idx] = st.radio("Votre réponse :", q["options"], key=f"q_{idx}", index=None)
-                    st.divider()
+            if role_soignant != "-- Choisir ma fonction --":
+                # Génération du pool de questions
+                questions_quiz = list(session_active.get("tronc_commun", []))
+                
+                if "IDE" in role_soignant:
+                    questions_quiz.extend(session_active["metiers"].get("IDE", []))
+                elif "AS (" in role_soignant:
+                    questions_quiz.extend(session_active["metiers"].get("AS", []))
+                elif "Médecin" in role_soignant:
+                    questions_quiz.extend(session_active["metiers"].get("Médecin", []))
+                elif "ARM" in role_soignant:
+                    questions_quiz.extend(session_active["metiers"].get("ARM", []))
+                elif "accueil" in role_soignant:
+                    questions_quiz.extend(session_active["metiers"].get("Accueil", []))
+                elif "Brancardier" in role_soignant:
+                    questions_quiz.extend(session_active["metiers"].get("Brancardier", []))
+                elif "ASH" in role_soignant:
+                    questions_quiz.extend(session_active["metiers"].get("ASH", []))
+                elif "Cadre" in role_soignant:
+                    questions_quiz.extend(session_active["metiers"].get("Cadre", []))
 
-                if st.form_submit_button("🚀 Envoyer mes réponses", type="primary"):
-                    if None in reponses.values():
-                        st.error("Veuillez répondre à l'ensemble des questions avant de valider !")
-                    else:
-                        score_obtenu = sum(1 for idx, q in enumerate(questions_quiz) if reponses[idx] == q["rep"])
-                        total_q = len(questions_quiz)
-                        
-                        if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q):
-                            st.balloons()
-                            st.success(f"Réponses enregistrées pour **{st.session_state.user_pseudo}** ! Score obtenu : **{score_obtenu}/{total_q}**")
+                total_q = len(questions_quiz)
+                current_idx = st.session_state.current_q_index
+
+                # --- INTERFACE QUESTION PAR QUESTION ---
+                if current_idx < total_q:
+                    q_data = questions_quiz[current_idx]
+                    
+                    # Barre de progression
+                    st.progress((current_idx + 1) / total_q)
+                    st.caption(f"Question {current_idx + 1} sur {total_q}")
+
+                    # Carte de la question
+                    st.markdown(f"""
+                        <div class="question-card">
+                            <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
+                            <div class="question-title">{q_data['q']}</div>
+                        </div>
+                    """, unsafe_allow_html=True)
+
+                    # Options de réponse
+                    existing_ans = st.session_state.user_quiz_answers.get(current_idx, None)
+                    choix = st.radio(
+                        "Sélectionnez votre réponse :", 
+                        q_data["options"], 
+                        index=q_data["options"].index(existing_ans) if existing_ans in q_data["options"] else None,
+                        key=f"q_dyn_{current_idx}"
+                    )
+
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    col_prev, col_next = st.columns([1, 1])
+
+                    with col_prev:
+                        if current_idx > 0:
+                            if st.button("⬅️ Question précédente", use_container_width=True):
+                                if choix:
+                                    st.session_state.user_quiz_answers[current_idx] = choix
+                                st.session_state.current_q_index -= 1
+                                st.rerun()
+
+                    with col_next:
+                        btn_label = "Suivant ➡️" if current_idx < total_q - 1 else "🏁 Terminer & Valider"
+                        if st.button(btn_label, type="primary", use_container_width=True):
+                            if not choix:
+                                st.warning("Veuillez sélectionner une réponse avant de continuer !")
+                            else:
+                                st.session_state.user_quiz_answers[current_idx] = choix
+                                st.session_state.current_q_index += 1
+                                st.rerun()
+
+                # --- ÉCRAN DE VALIDATION ET RÉSULTAT FINAL ---
+                else:
+                    st.balloons()
+                    st.markdown("### 🎉 Quiz Terminé avec succès !")
+                    
+                    # Calcul du score
+                    score_obtenu = sum(
+                        1 for idx, q in enumerate(questions_quiz) 
+                        if st.session_state.user_quiz_answers.get(idx) == q["rep"]
+                    )
+
+                    st.metric("Votre score final", f"{score_obtenu} / {total_q}")
+
+                    if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q):
+                        st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés sur Google Sheets.")
+
+                    if st.button("🔄 Recommencer le quiz", type="secondary"):
+                        st.session_state.current_q_index = 0
+                        st.session_state.user_quiz_answers = {}
+                        st.rerun()
 
     # --- TAB 2 : MA PROGRESSION PERSONNELLE ---
     with tab_progression:
@@ -667,20 +766,23 @@ else:
 
     # --- TAB 3 : SEMAINES PASSÉES & CLASSEMENT AUTOMATIQUE ---
     with tab_historique:
-        sessions_passees = [s for s in SESSIONS if s["statut"] == "Passee"]
+        sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) == "Passee"]
         if not sessions_passees:
             st.info("Aucune semaine archivée pour le moment.")
         else:
             for s in sessions_passees:
+                str_debut = s['date_debut'].strftime('%d/%m/%Y')
+                str_fin = s['date_fin'].strftime('%d/%m/%Y')
+                
                 st.markdown(
-                    f"<div class='card-passee'><h3 style='color:#4338ca;'>{s['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>Clôturé : {s['dates']}</p>",
+                    f"<div class='card-passee'><h3 style='color:#4338ca;'>{s['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>Clôturé le {str_fin}</p>",
                     unsafe_allow_html=True
                 )
 
                 col_pod, col_corr = st.columns(2)
                 
                 with col_pod:
-                    st.markdown("#### 🏆 Top 10 - Classement (En direct)")
+                    st.markdown("#### 🏆 Top 10 - Classement Final")
                     top10 = charger_top10_semaine(s["id"])
                     if not top10:
                         st.caption("Aucun résultat enregistré pour cette semaine.")
@@ -698,9 +800,15 @@ else:
 
     # --- TAB 4 : SEMAINES À VENIR ---
     with tab_avenir:
-        sessions_futures = [s for s in SESSIONS if s["statut"] == "A venir"]
-        for s in sessions_futures:
-            st.markdown(
-                f"<div class='card-avenir'><h4 style='color:#b45309;'>🔒 {s['titre']}</h4><p style='margin:0;'>📅 Ouverture prévue : <strong>{s['dates']}</strong></p></div>",
-                unsafe_allow_html=True
-            )
+        sessions_futures = [s for s in SESSIONS if obtenir_statut_session(s) == "A venir"]
+        if not sessions_futures:
+            st.info("Aucune session future n'est programmée pour l'instant.")
+        else:
+            for s in sessions_futures:
+                str_debut = s['date_debut'].strftime('%d/%m/%Y')
+                str_fin = s['date_fin'].strftime('%d/%m/%Y')
+                
+                st.markdown(
+                    f"<div class='card-avenir'><h4 style='color:#b45309;'>🔒 {s['titre']}</h4><p style='margin:0;'>📅 Ouverture prévue du <strong>{str_debut} au {str_fin}</strong></p></div>",
+                    unsafe_allow_html=True
+                )
