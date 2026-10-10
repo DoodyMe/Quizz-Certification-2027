@@ -13,63 +13,7 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. LOGO VECTORIEL SUR-MESURE (CANARDS, ECG, ENGRENAGE & TEINTES SOFT)
-# ------------------------------------------------------------------------------
-LOGO_SVG = """
-<svg width="160" height="160" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Fond pastel ultra doux -->
-  <circle cx="250" cy="250" r="210" fill="#ffffff" opacity="0.95" />
-  <circle cx="250" cy="250" r="210" stroke="#99f6e4" stroke-width="4" stroke-dasharray="8 8" />
-  
-  <!-- Silhouette Roue Crantée / Contour en Vert d'eau -->
-  <path d="M210 100 H290 L300 125 C320 130 338 140 354 153 L378 142 L418 192 L400 214 C406 232 408 252 405 272 L428 296 L392 348 L366 339 C351 353 333 365 313 372 L306 398 H244 L237 372 C217 365 199 353 184 339 L158 348 L122 296 L145 272 C142 252 144 232 150 214 L132 192 L172 142 L196 153 C212 140 230 130 250 125 Z" 
-        stroke="#0f766e" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-
-  <!-- Tracé ECG (Ligne cardiaque) -->
-  <path d="M 120 250 H 180 L 195 210 L 210 290 L 230 220 L 245 260 L 260 250 H 380" 
-        stroke="#38bdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-
-  <!-- Caducée Central avec Têtes de Canards -->
-  <g transform="translate(180, 105) scale(0.58)">
-    <!-- Bâton central -->
-    <line x1="125" y1="40" x2="125" y2="340" stroke="#0369a1" stroke-width="12" stroke-linecap="round"/>
-    <circle cx="125" cy="35" r="16" fill="#0369a1"/>
-    
-    <!-- Corps enroulés (style canard/cygne) -->
-    <path d="M 70 140 C 110 100, 140 160, 125 200 C 110 240, 70 260, 125 310" stroke="#0f766e" stroke-width="10" fill="none" stroke-linecap="round"/>
-    <path d="M 180 140 C 140 100, 110 160, 125 200 C 140 240, 180 260, 125 310" stroke="#0f766e" stroke-width="10" fill="none" stroke-linecap="round"/>
-    
-    <!-- Tête de Canard Gauche (avec Bec) -->
-    <g transform="translate(60, 105)">
-      <circle cx="20" cy="20" r="14" fill="#0f766e" />
-      <path d="M 10 22 Q -5 20 -8 28 Q 2 32 12 28 Z" fill="#f59e0b" />
-      <circle cx="18" cy="16" r="3" fill="#ffffff" />
-    </g>
-
-    <!-- Tête de Canard Droite (avec Bec) -->
-    <g transform="translate(170, 105)">
-      <circle cx="20" cy="20" r="14" fill="#0f766e" />
-      <path d="M 30 22 Q 45 20 48 28 Q 38 32 28 28 Z" fill="#f59e0b" />
-      <circle cx="22" cy="16" r="3" fill="#ffffff" />
-    </g>
-
-    <!-- Ailes supérieures -->
-    <path d="M 125 80 C 80 50, 30 70, 20 100 C 50 100, 90 90, 125 110 Z" fill="#0369a1"/>
-    <path d="M 125 80 C 170 50, 220 70, 230 100 C 200 100, 160 90, 125 110 Z" fill="#0369a1"/>
-  </g>
-
-  <!-- Texte Arc "URGENCES + MULHOUSE" -->
-  <path id="textArc" d="M 130 360 A 170 170 0 0 0 370 360" fill="none"/>
-  <text font-family="'Segoe UI', sans-serif" font-weight="800" font-size="28" fill="#0f766e" text-anchor="middle">
-    <textPath href="#textArc" startOffset="50%">
-      URGENCES <tspan fill="#ef4444" font-weight="900">+</tspan> MULHOUSE
-    </textPath>
-  </text>
-</svg>
-"""
-
-# ------------------------------------------------------------------------------
-# 3. CONNEXION GOOGLE SHEETS VIA GSPREAD
+# 2. CONNEXION GOOGLE SHEETS VIA GSPREAD
 # ------------------------------------------------------------------------------
 @st.cache_resource
 def get_gspread_client():
@@ -153,7 +97,7 @@ def charger_top10_semaine(semaine_id):
         return []
 
 # ------------------------------------------------------------------------------
-# 4. STYLE CSS (DESIGN PASTEL HOSPITALIER)
+# 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & INTÉGRATION PROPRE DU LOGO)
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -163,6 +107,15 @@ st.markdown("""
     }
     .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
     .subtitle { color: #0369a1; font-weight: 600; margin-top: 0.2rem; }
+    
+    /* Style pour intégrer harmonieusement l'image du logo */
+    .service-logo img {
+        border-radius: 20px;
+        border: 3px solid #99f6e4;
+        box-shadow: 0 6px 20px rgba(15, 118, 110, 0.12);
+        max-width: 130px;
+    }
+
     .auth-card-header {
         background: white; border-radius: 20px; padding: 20px;
         border: 2px solid #99f6e4; max-width: 600px; margin: 0 auto 15px auto;
@@ -204,7 +157,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 5. DONNÉES & VARIABLES DE SESSION
+# 4. DONNÉES & VARIABLES DE SESSION
 # ------------------------------------------------------------------------------
 ANIMAL_TO_EMOJI = {
     "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
@@ -233,7 +186,7 @@ if "quiz_paused" not in st.session_state:
 def fixer_animal(nom_animal):
     st.session_state.animal_selectionne = nom_animal
 
-# --- BASE DE DONNÉES DES SESSIONS DE QUIZ ---
+# --- SESSIONS DE QUIZ ---
 SESSIONS = [
     {
         "id": 0,
@@ -421,12 +374,17 @@ def obtenir_statut_session(session):
         return "Passee"
 
 # ------------------------------------------------------------------------------
-# 6. BANNIÈRE EN-TÊTE AVEC LE NOUVEAU LOGO
+# 6. BANNIÈRE EN-TÊTE AVEC VOTRE LOGO LOCAL (logo.jpg)
 # ------------------------------------------------------------------------------
 col_logo, col_titre = st.columns([1, 4])
 
 with col_logo:
-    st.markdown(LOGO_SVG, unsafe_allow_html=True)
+    try:
+        st.markdown("<div class='service-logo'>", unsafe_allow_html=True)
+        st.image("logo.jpg")
+        st.markdown("</div>", unsafe_allow_html=True)
+    except Exception:
+        st.warning("⚠️ Fichier 'logo.jpg' introuvable dans le dossier. Veuillez y déposer votre logo.")
 
 with col_titre:
     st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
@@ -710,7 +668,7 @@ else:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- TAB 3 : SEMAINES PASSÉES & CLASSEMENT DÉMOTIQUE ---
+    # --- TAB 3 : SEMAINES PASSÉES & CLASSEMENT ---
     with tab_historique:
         sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) == "Passee"]
         if not sessions_passees:
