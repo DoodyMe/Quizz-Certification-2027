@@ -7,13 +7,69 @@ from google.oauth2.service_account import Credentials
 # 1. CONFIGURATION DE LA PAGE
 # ------------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Révisions Équipe HAS 2027",
+    page_title="Révisions Équipe HAS 2027 - Urgences Mulhouse",
     page_icon="🧠",
     layout="wide"
 )
 
 # ------------------------------------------------------------------------------
-# 2. CONNEXION SÉCURISÉE À GOOGLE SHEETS VIA GSPREAD
+# 2. LOGO VECTORIEL SUR-MESURE (CANARDS, ECG, ENGRENAGE & TEINTES SOFT)
+# ------------------------------------------------------------------------------
+LOGO_SVG = """
+<svg width="160" height="160" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond pastel ultra doux -->
+  <circle cx="250" cy="250" r="210" fill="#ffffff" opacity="0.95" />
+  <circle cx="250" cy="250" r="210" stroke="#99f6e4" stroke-width="4" stroke-dasharray="8 8" />
+  
+  <!-- Silhouette Roue Crantée / Contour en Vert d'eau -->
+  <path d="M210 100 H290 L300 125 C320 130 338 140 354 153 L378 142 L418 192 L400 214 C406 232 408 252 405 272 L428 296 L392 348 L366 339 C351 353 333 365 313 372 L306 398 H244 L237 372 C217 365 199 353 184 339 L158 348 L122 296 L145 272 C142 252 144 232 150 214 L132 192 L172 142 L196 153 C212 140 230 130 250 125 Z" 
+        stroke="#0f766e" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Tracé ECG (Ligne cardiaque) -->
+  <path d="M 120 250 H 180 L 195 210 L 210 290 L 230 220 L 245 260 L 260 250 H 380" 
+        stroke="#38bdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Caducée Central avec Têtes de Canards -->
+  <g transform="translate(180, 105) scale(0.58)">
+    <!-- Bâton central -->
+    <line x1="125" y1="40" x2="125" y2="340" stroke="#0369a1" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="125" cy="35" r="16" fill="#0369a1"/>
+    
+    <!-- Corps enroulés (style canard/cygne) -->
+    <path d="M 70 140 C 110 100, 140 160, 125 200 C 110 240, 70 260, 125 310" stroke="#0f766e" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <path d="M 180 140 C 140 100, 110 160, 125 200 C 140 240, 180 260, 125 310" stroke="#0f766e" stroke-width="10" fill="none" stroke-linecap="round"/>
+    
+    <!-- Tête de Canard Gauche (avec Bec) -->
+    <g transform="translate(60, 105)">
+      <circle cx="20" cy="20" r="14" fill="#0f766e" />
+      <path d="M 10 22 Q -5 20 -8 28 Q 2 32 12 28 Z" fill="#f59e0b" />
+      <circle cx="18" cy="16" r="3" fill="#ffffff" />
+    </g>
+
+    <!-- Tête de Canard Droite (avec Bec) -->
+    <g transform="translate(170, 105)">
+      <circle cx="20" cy="20" r="14" fill="#0f766e" />
+      <path d="M 30 22 Q 45 20 48 28 Q 38 32 28 28 Z" fill="#f59e0b" />
+      <circle cx="22" cy="16" r="3" fill="#ffffff" />
+    </g>
+
+    <!-- Ailes supérieures -->
+    <path d="M 125 80 C 80 50, 30 70, 20 100 C 50 100, 90 90, 125 110 Z" fill="#0369a1"/>
+    <path d="M 125 80 C 170 50, 220 70, 230 100 C 200 100, 160 90, 125 110 Z" fill="#0369a1"/>
+  </g>
+
+  <!-- Texte Arc "URGENCES + MULHOUSE" -->
+  <path id="textArc" d="M 130 360 A 170 170 0 0 0 370 360" fill="none"/>
+  <text font-family="'Segoe UI', sans-serif" font-weight="800" font-size="28" fill="#0f766e" text-anchor="middle">
+    <textPath href="#textArc" startOffset="50%">
+      URGENCES <tspan fill="#ef4444" font-weight="900">+</tspan> MULHOUSE
+    </textPath>
+  </text>
+</svg>
+"""
+
+# ------------------------------------------------------------------------------
+# 3. CONNEXION GOOGLE SHEETS VIA GSPREAD
 # ------------------------------------------------------------------------------
 @st.cache_resource
 def get_gspread_client():
@@ -36,8 +92,7 @@ def charger_utilisateurs():
         sheet = get_sheet().worksheet("Utilisateurs")
         records = sheet.get_all_records()
         return {str(r["Pseudo"]): str(r["Mot_De_Passe"]) for r in records if "Pseudo" in r and r["Pseudo"]}
-    except Exception as e:
-        st.error(f"Erreur lors de la lecture des utilisateurs : {e}")
+    except Exception:
         return {}
 
 def ajouter_utilisateur(pseudo, mdp):
@@ -47,7 +102,7 @@ def ajouter_utilisateur(pseudo, mdp):
         sheet.append_row([date_str, str(pseudo), str(mdp)])
         return True
     except Exception as e:
-        st.error(f"Erreur d'enregistrement dans Google Sheets : {e}")
+        st.error(f"Erreur d'enregistrement Google Sheets : {e}")
         return False
 
 def charger_notes_utilisateur(pseudo):
@@ -55,8 +110,7 @@ def charger_notes_utilisateur(pseudo):
         sheet = get_sheet().worksheet("Reponses")
         records = sheet.get_all_records()
         return [r for r in records if str(r.get("Pseudo")) == str(pseudo)]
-    except Exception as e:
-        st.error(f"Erreur lors du chargement des notes : {e}")
+    except Exception:
         return []
 
 def enregistrer_reponse(pseudo, semaine_id, score, total):
@@ -66,7 +120,7 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
         sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total)])
         return True
     except Exception as e:
-        st.error(f"Erreur de sauvegarde des réponses : {e}")
+        st.error(f"Erreur de sauvegarde : {e}")
         return False
 
 def charger_top10_semaine(semaine_id):
@@ -95,11 +149,11 @@ def charger_top10_semaine(semaine_id):
                 "score": f"{stats['score']}/{stats['total']}"
             })
         return top10
-    except Exception as e:
+    except Exception:
         return []
 
 # ------------------------------------------------------------------------------
-# 3. STYLE CSS (Thème ludo-pédagogique & dynamique)
+# 4. STYLE CSS (DESIGN PASTEL HOSPITALIER)
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -107,8 +161,8 @@ st.markdown("""
         background: linear-gradient(135deg, #e6fffa 0%, #f0f9ff 50%, #f5f3ff 100%);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .main-title { color: #0f766e; font-weight: 800; text-align: center; margin-bottom: 0.2rem; }
-    .subtitle { color: #0369a1; text-align: center; font-weight: 600; margin-bottom: 1.5rem; }
+    .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
+    .subtitle { color: #0369a1; font-weight: 600; margin-top: 0.2rem; }
     .auth-card-header {
         background: white; border-radius: 20px; padding: 20px;
         border: 2px solid #99f6e4; max-width: 600px; margin: 0 auto 15px auto;
@@ -129,32 +183,15 @@ st.markdown("""
     .card-passee { background-color: #f8fafc; border-radius: 20px; padding: 20px; border-left: 8px solid #6366f1; margin-bottom: 15px; }
     .card-avenir { background-color: #fffbeb; border-radius: 20px; padding: 20px; border-left: 8px solid #f59e0b; margin-bottom: 15px; }
     
-    /* Carte Question Interactive */
     .question-card {
-        background: white;
-        border-radius: 24px;
-        padding: 30px;
-        border: 2px solid #99f6e4;
-        box-shadow: 0 10px 25px rgba(15, 118, 110, 0.08);
-        margin-bottom: 20px;
+        background: white; border-radius: 24px; padding: 30px;
+        border: 2px solid #99f6e4; box-shadow: 0 10px 25px rgba(15, 118, 110, 0.08); margin-bottom: 20px;
     }
     .question-badge {
-        background: #ccfbf1;
-        color: #0f766e;
-        padding: 6px 16px;
-        border-radius: 30px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        display: inline-block;
-        margin-bottom: 15px;
+        background: #ccfbf1; color: #0f766e; padding: 6px 16px;
+        border-radius: 30px; font-weight: 700; font-size: 0.9rem; display: inline-block; margin-bottom: 15px;
     }
-    .question-title {
-        color: #0f766e;
-        font-weight: 700;
-        font-size: 1.25rem;
-        margin-bottom: 20px;
-        line-height: 1.5;
-    }
+    .question-title { color: #0f766e; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
 
     .stTabs [data-baseweb="tab-list"] { gap: 12px; justify-content: center; }
     .stTabs [data-baseweb="tab"] {
@@ -167,7 +204,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 4. DONNÉES & VARIABLES DE SESSION
+# 5. DONNÉES & VARIABLES DE SESSION
 # ------------------------------------------------------------------------------
 ANIMAL_TO_EMOJI = {
     "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
@@ -196,11 +233,11 @@ if "quiz_paused" not in st.session_state:
 def fixer_animal(nom_animal):
     st.session_state.animal_selectionne = nom_animal
 
-# --- SESSIONS (SEMAINE 0 DÉMO & SEMAINE 1 À 10 QUESTIONS) ---
+# --- BASE DE DONNÉES DES SESSIONS DE QUIZ ---
 SESSIONS = [
     {
         "id": 0,
-        "titre": "Semaine 0 - Session de Démonstration",
+        "titre": "Semaine 0 - Session de Démonstration & Test",
         "date_debut": datetime.date(2020, 1, 1),
         "date_fin": datetime.date(2030, 12, 31),
         "tronc_commun": [
@@ -332,15 +369,15 @@ SESSIONS = [
                 {"q": "6. [Module Médecin] Concernant les directives anticipées aux urgences, quelle est la règle applicable pour le médecin ?", "options": ["Elles ont une durée de validité limitée à 3 ans", "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)", "Elles ne sont qu'un simple avis consultatif que le médecin peut ignorer librement"], "rep": "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)"},
                 {"q": "7. [Module Médecin] Lors d'une décision de Limitation ou Arrêt de Traitement (LAT) aux urgences, quelle est l'obligation réglementaire ?", "options": ["Décider seul pour ne pas perdre de temps", "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier", "Demander l'autorisation préalable au directeur de l'hôpital"], "rep": "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier"},
                 {"q": "8. [Module Médecin] Un proche réclame des informations médicales sur un patient majeur hospitalisé aux urgences. Le médecin peut lui répondre si :", "options": ["Le proche prouve son lien de parenté direct (livret de famille)", "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche", "Le proche habite sous le même toit que le patient"], "rep": "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche"},
-                {"q": "9. [Module Médecin] Quelle information minimale doit obligatoirement être tracée dans l'EPR (Événement Indésirable / Observation) lors d'une sortie contre avis médical ?", "options": ["L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié", "La mention 'Patient parti' sans autre précision", "Le règlement des frais de séjour"], "rep": "L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié"},
-                {"q": "10. [Module Médecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu d'hospitalisation/passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmitted au médecin traitant dans les 24 heures maximum"}
+                {"q": "9. [Module Médecin] Quelle information minimale doit obligatoirement être tracée dans l'EPR lors d'une sortie contre avis médical ?", "options": ["L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié", "La mention 'Patient parti' sans autre précision", "Le règlement des frais de séjour"], "rep": "L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié"},
+                {"q": "10. [Module Médecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu de passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum"}
             ],
             "ARM": [
                 {"q": "6. [Module ARM] Lors de la création d'un dossier au SAMU/SAS, quelle est la priorité d'identitovigilance pour éviter les doublons ?", "options": ["Saisir uniquement le prénom et le numéro de téléphone portable", "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur", "Utiliser le pseudonyme donné par le patient à l'oral"], "rep": "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur"},
                 {"q": "7. [Module ARM] Un appelant demande confirmation de l'admission aux urgences de son voisin par téléphone. Quelle est votre obligation ?", "options": ["Lui donner la réponse s'il connaît le nom et le prénom du patient", "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité", "Lui transférer immédiatement la ligne du médecin régulateur"], "rep": "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité"},
                 {"q": "8. [Module ARM] Lors de la régulation d'un appel urgent pour détresse vitale, quelle traçabilité est exigée dans le logiciel d'appel ?", "options": ["Rédiger un compte-rendu uniquement si le patient est transporté par le SMUR", "Enregistrer l'horodatage des décisions, le motif de régulation et les moyens envoyés", "Ne rien saisir et faire confiance à la bande d'enregistrement audio"], "rep": "Enregistrer l'horodatage des décisions, le motif de régulation et les moyens envoyés"},
                 {"q": "9. [Module ARM] Que faire en cas de réception d'un appel concernant une suspicion de violence intrafamiliale aiguë ?", "options": ["Passer l'appel en attente indéfinie", "Recueillir la localisation exacte, transmettre immédiatement au médecin régulateur et appliquer la procédure d'alerte dédiée", "Conseiller à la personne de rappeler le lendemain"], "rep": "Recueillir la localisation exacte, transmettre immédiatement au médecin régulateur et appliquer la procédure d'alerte dédiée"},
-                {"q": "10. [Module ARM] Quelle est la règle concernant le partage d'informations médicales entre l'ARM et les équipes de secours sur le terrain (Sapeurs-Pompiers / Ambulanciers) ?", "options": ["Interdiction totale de donner la moindre information", "Transmettre uniquement les éléments strictement nécessaires à la sécurité de l'intervention et à la prise en charge du patient", "Lire l'intégralité de l'historique médical du patient sur la fréquence radio publique"], "rep": "Transmettre uniquement les éléments strictly nécessaires à la sécurité de l'intervention et à la prise en charge du patient"}
+                {"q": "10. [Module ARM] Quelle est la règle concernant le partage d'informations médicales entre l'ARM et les équipes de secours sur le terrain ?", "options": ["Interdiction totale de donner la moindre information", "Transmettre uniquement les éléments strictement nécessaires à la sécurité de l'intervention et à la prise en charge du patient", "Lire l'intégralité de l'historique médical du patient sur la fréquence radio publique"], "rep": "Transmettre uniquement les éléments strictement nécessaires à la sécurité de l'intervention et à la prise en charge du patient"}
             ],
             "Accueil": [
                 {"q": "6. [Module Accueil] Lors de l'enregistrement administratif d'un patient à la banque d'accueil, quel document doit être privilégié pour vérifier l'identité ?", "options": ["La carte de mutuelle ou un justificatif de domicile", "Une pièce d'identité officielle avec photo (CNI, passeport, titre de séjour) complétée de la carte Vitale", "La carte de fidélité ou le permis de conduire uniquement"], "rep": "Une pièce d'identité officielle avec photo (CNI, passeport, titre de séjour) complétée de la carte Vitale"},
@@ -360,8 +397,8 @@ SESSIONS = [
                 {"q": "6. [Module ASH] Quelle est la règle essentielle de bio-nettoyage d'un box d'urgences après la sortie d'un patient ?", "options": ["Vider uniquement les poubelles et passer un coup de balai sec", "Réaliser un bio-nettoyage complet des surfaces et du mobilier avec un produit détergent-désinfectant selon le protocole du service", "Attendre le lendemain matin pour désinfecter la pièce"], "rep": "Réaliser un bio-nettoyage complet des surfaces et du mobilier avec un produit détergent-désinfectant selon le protocole du service"},
                 {"q": "7. [Module ASH] Dans quelle filière d'élimination des déchets devez-vous jeter les gants et compresses usagés non souillés de sang ?", "options": ["Filière DAOM (Déchets Assimilables aux Ordures Ménagères - Sac Noir)", "Filière DASRI (Déchets d'Activités de Soins à Risques Infectieux - Sac Jaune)", "Dans le conteneur pour objets perforants"], "rep": "Filière DAOM (Déchets Assimilables aux Ordures Ménagères - Sac Noir)"},
                 {"q": "8. [Module ASH] Lors de votre intervention dans un box occupé par un patient, quelle est la posture de bientraitance attendue ?", "options": ["Entrer sans frapper et faire du bruit avec le matériel sans parler au patient", "Taper à la porte, se présenter, expliquer la présence pour le nettoyage et respecter l'intimité du soin", "Poser des questions médicales personnelles au patient"], "rep": "Taper à la porte, se présenter, expliquer la présence pour le nettoyage et respecter l'intimité du soin"},
-                {"q": "9. [Module ASH] Que devez-vous faire si vous constatez la présence d'une aiguille usagée abandonnée sur adaptable lors du ménage ?", "options": ["La ramasser à la main et la jeter dans la poubelle noire", "Ne pas toucher l'aiguille à main nue et prévenir immédiatement un soignant (IDE/AS) pour élimination sécurisée dans le collecteur d'OPCT", "La cacher sous le drap"], "rep": "Ne pas toucher l'aiguille à main nue et prévenir immédiatement un soignant (IDE/AS) pour élimination sécurisée dans le collecteur d'OPCT"},
-                {"q": "10. [Module ASH] Quelle est la règle d'hygiène des mains à respecter obligatoirement avant d'entrer et en sortant d'un box de patient aux urgences ?", "options": ["Réaliser une friction hydro-alcoolique (PHA) des mains", "Se rincer les mains à l'eau claire uniquement", "Mettre une paire de gants sans se laver les mains"], "rep": "Réaliser une friction hydro-alcoolique (PHA) des mains"}
+                {"q": "9. [Module ASH] Que devez-vous faire si vous constatez la présence d'une aiguille usagée abandonnée sur un adaptable ?", "options": ["La ramasser à la main et la jeter dans la poubelle noire", "Ne pas toucher l'aiguille à main nue et prévenir immédiatement un soignant pour élimination sécurisée dans le collecteur d'OPCT", "La cacher sous le drap"], "rep": "Ne pas toucher l'aiguille à main nue et prévenir immédiatement un soignant pour élimination sécurisée dans le collecteur d'OPCT"},
+                {"q": "10. [Module ASH] Quelle est la règle d'hygiène des mains à respecter obligatoirement avant d'entrer et en sortant d'un box ?", "options": ["Réaliser une friction hydro-alcoolique (PHA) des mains", "Se rincer les mains à l'eau claire uniquement", "Mettre une paire de gants sans se laver les mains"], "rep": "Réaliser une friction hydro-alcoolique (PHA) des mains"}
             ],
             "Cadre": [
                 {"q": "6. [Module Cadre] Suite à la déclaration d'un Événement Indésirable Grave (EIGS) aux urgences, quelle est la priorité managériale ?", "options": ["Blâmer immédiatement le soignant impliqué dans la fiche d'événement", "Organiser une analyse systémique des causes (REX / CREX) sans recherche de coupable et suivre le plan d'actions correctives", "Classer le dossier sans suite pour ne pas inquiéter la direction"], "rep": "Organiser une analyse systémique des causes (REX / CREX) sans recherche de coupable et suivre le plan d'actions correctives"},
@@ -384,12 +421,24 @@ def obtenir_statut_session(session):
         return "Passee"
 
 # ------------------------------------------------------------------------------
-# 5. ÉCRAN D'AUTHENTIFICATION (SI NON CONNECTÉ)
+# 6. BANNIÈRE EN-TÊTE AVEC LE NOUVEAU LOGO
+# ------------------------------------------------------------------------------
+col_logo, col_titre = st.columns([1, 4])
+
+with col_logo:
+    st.markdown(LOGO_SVG, unsafe_allow_html=True)
+
+with col_titre:
+    st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 class='subtitle'>Service des Urgences & SAMU — Mulhouse</h3>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#64748b; margin-bottom:0;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>", unsafe_allow_html=True)
+
+st.divider()
+
+# ------------------------------------------------------------------------------
+# 7. ÉCRAN D'AUTHENTIFICATION (SI NON CONNECTÉ)
 # ------------------------------------------------------------------------------
 if not st.session_state.user_pseudo:
-    st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>Espace ludique, individuel & sécurisé</p>", unsafe_allow_html=True)
-
     tab_login, tab_register = st.tabs(["🔑 Se connecter", "✨ Créer un compte (1ère visite)"])
     comptes_existants = charger_utilisateurs()
 
@@ -476,7 +525,7 @@ if not st.session_state.user_pseudo:
                                 st.rerun()
 
 # ------------------------------------------------------------------------------
-# 6. ÉCRAN TABLEAU DE BORD CONNECTÉ
+# 8. TABLEAU DE BORD CONNECTÉ
 # ------------------------------------------------------------------------------
 else:
     col_head1, col_head2 = st.columns([4, 1])
@@ -491,7 +540,7 @@ else:
             st.session_state.quiz_paused = False
             st.rerun()
 
-    st.markdown("<h1 class='main-title' style='text-align:left; margin-top:15px;'>🎯 Tableau de bord des Révisions</h1>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color:#0f766e; margin-top:15px;'>🎯 Tableau de bord des Révisions</h2>", unsafe_allow_html=True)
 
     tab_actuel, tab_progression, tab_historique, tab_avenir = st.tabs([
         "🔥 Semaine Actuelle", 
@@ -500,7 +549,7 @@ else:
         "📅 Semaines À Venir"
     ])
 
-    # --- TAB 1 : QUIZ DYNAMIQUE AVEC FONCTION PAUSE ---
+    # --- TAB 1 : QUIZ INTERACTIF AVEC FONCTION PAUSE ---
     with tab_actuel:
         session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
         
@@ -512,7 +561,7 @@ else:
                 unsafe_allow_html=True
             )
 
-            # Gestion du message de reprise de pause
+            # Gestion de la reprise après pause
             if st.session_state.quiz_paused:
                 st.warning(f"⏸️ **Quiz en pause détecté !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
                 c_rep, c_raz = st.columns([1, 1])
@@ -565,11 +614,10 @@ else:
                     total_q = len(questions_quiz)
                     current_idx = st.session_state.current_q_index
 
-                    # --- INTERFACE QUESTION PAR QUESTION ---
+                    # Interface Question par Question
                     if current_idx < total_q:
                         q_data = questions_quiz[current_idx]
                         
-                        # Barre de progression & Bouton Pause
                         col_prog, col_pause = st.columns([4, 1])
                         with col_prog:
                             st.progress((current_idx + 1) / total_q)
@@ -579,7 +627,6 @@ else:
                                 st.session_state.quiz_paused = True
                                 st.rerun()
 
-                        # Carte de la question
                         st.markdown(f"""
                             <div class="question-card">
                                 <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
@@ -587,7 +634,6 @@ else:
                             </div>
                         """, unsafe_allow_html=True)
 
-                        # Options de réponse
                         existing_ans = st.session_state.user_quiz_answers.get(current_idx, None)
                         choix = st.radio(
                             "Sélectionnez votre réponse :", 
@@ -617,7 +663,7 @@ else:
                                     st.session_state.current_q_index += 1
                                     st.rerun()
 
-                    # --- ÉCRAN DE VALIDATION ET RÉSULTAT FINAL ---
+                    # Écran de fin
                     else:
                         st.balloons()
                         st.markdown("### 🎉 Quiz Terminé avec succès !")
@@ -664,7 +710,7 @@ else:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- TAB 3 : SEMAINES PASSÉES & CLASSEMENT AUTOMATIQUE ---
+    # --- TAB 3 : SEMAINES PASSÉES & CLASSEMENT DÉMOTIQUE ---
     with tab_historique:
         sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) == "Passee"]
         if not sessions_passees:
