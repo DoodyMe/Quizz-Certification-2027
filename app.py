@@ -233,4 +233,4 @@ if not st.session_state.user_pseudo:
 
             adjectif_choisi = st.selectbox(
                 "Étape 2 : Choisissez votre Adjectif :", 
-                options=["-- Sélectionner un adjectif --"] + adjectifs_dispon
+                options=["-- Sélectionner un adjectif --"] + adjectifs_dispon)
