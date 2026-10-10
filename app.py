@@ -2,7 +2,7 @@ import datetime
 import streamlit as st
 
 # ------------------------------------------------------------------------------
-# 1. CONFIGURATION ET STYLE CSS (Cadre hospitalier chaleureux & coloré)
+# 1. CONFIGURATION DE LA PAGE
 # ------------------------------------------------------------------------------
 st.set_page_config(
     page_title="Révisions Équipe HAS 2027",
@@ -10,6 +10,9 @@ st.set_page_config(
     layout="wide"
 )
 
+# ------------------------------------------------------------------------------
+# 2. STYLE CSS (Cadre hospitalier chaleureux & coloré)
+# ------------------------------------------------------------------------------
 st.markdown("""
 <style>
     /* Fond général : Dégradé Vert Menthe & Bleu Doux */
@@ -109,30 +112,4 @@ st.markdown("""
 
     .card-avenir {
         background-color: #fffbeb;
-        border-radius: 20px;
-        padding: 20px;
-        border-left: 8px solid #f59e0b;
-        margin-bottom: 15px;
-    }
-
-    /* Customisation des onglets */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 12px;
-        justify-content: center;
-    }
-    .stTabs [data-baseweb="tab"] {
-        background-color: #ffffff;
-        border-radius: 30px;
-        padding: 10px 24px;
-        font-weight: 700;
-        color: #0f766e;
-        border: 1px solid #ccfbf1;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
-        color: white !important;
-        border: none !important;
-    }
-</style>
-""", unsafe_
+        border-radius
