@@ -2,295 +2,287 @@ import datetime
 import streamlit as st
 
 # ------------------------------------------------------------------------------
-# 1. CONFIGURATION ET STYLE CSS (Interface joyeuse & cartes douces)
+# 1. CONFIGURATION ET STYLE CSS (Cadre hospitalier chaleureux & coloré)
 # ------------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Challenge & Révision HAS 2027",
-    page_icon="🧠",
+    page_title="Révisions Équipe HAS 2027",
+    page_icon="🩺",
     layout="wide"
 )
 
 st.markdown("""
 <style>
-    /* Style général doux et épuré */
+    /* Fond général : Dégradé Vert Menthe & Bleu Doux (Soin & Positivité) */
     .stApp {
-        background-color: #f8fafc;
+        background: linear-gradient(135deg, #e6fffa 0%, #f0f9ff 50%, #f5f3ff 100%);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
-    /* Titre principal */
+
+    /* Titres principaux */
     .main-title {
-        color: #1e293b;
+        color: #0f766e;
         font-weight: 800;
         text-align: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.2rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
     }
     
-    /* Style personnalisé pour les onglets */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 12px;
-        justify-content: center;
-    }
-    .stTabs [data-baseweb="tab"] {
-        padding: 10px 24px;
-        background-color: #ffffff;
-        border-radius: 50px;
+    .subtitle {
+        color: #0369a1;
+        text-align: center;
         font-weight: 600;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-    }
-    .stTabs [aria-selected="true"] {
-        background-color: #6366f1 !important;
-        color: white !important;
-        border-color: #6366f1 !important;
+        margin-bottom: 1.5rem;
     }
 
-    /* Carte centrale du profil */
+    /* Carte de Profil / Inscription (Style Macaron pastel) */
     .profile-card {
-        background-color: white;
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        border: 1px solid #e2e8f0;
-        max-width: 650px;
+        background: white;
+        border-radius: 24px;
+        padding: 35px;
+        box-shadow: 0 10px 25px rgba(15, 118, 110, 0.1);
+        border: 2px solid #99f6e4;
+        max-width: 580px;
         margin: 20px auto;
         text-align: center;
     }
 
-    /* Vignette Animal avec Emoji (Forme douce & bleue) */
+    /* Badge Animal Coloré */
     .animal-badge {
         display: inline-flex;
         align-items: center;
         gap: 15px;
         padding: 12px 28px;
         border-radius: 50px;
-        background-color: #DBEAFE; /* Bleu pastel */
-        border: 2px solid #60A5FA;
-        box-shadow: 0 4px 12px rgba(96, 165, 250, 0.2);
+        background-color: #e0f2fe;
+        border: 2px solid #38bdf8;
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
         margin: 15px 0;
     }
-    .animal-emoji {
-        font-size: 2.8rem;
-    }
-    .animal-name {
-        color: #1E40AF;
-        font-weight: 700;
-        font-size: 1.4rem;
-    }
+    .animal-emoji { font-size: 2.6rem; }
+    .animal-name { color: #0369a1; font-weight: 700; font-size: 1.3rem; }
 
-    /* Aperçu du pseudo complet */
-    .pseudo-badge {
-        display: inline-block;
-        padding: 14px 30px;
-        border-radius: 50px;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    /* Header connecté (Corail & Violet vibrant) */
+    .user-header {
+        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
         color: white;
+        padding: 12px 26px;
+        border-radius: 50px;
+        display: inline-block;
         font-weight: 700;
-        font-size: 1.3rem;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        margin: 10px 0;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
     }
 
-    /* Cartes pour le Podium */
-    .podium-card {
-        background-color: white;
-        border-radius: 16px;
-        padding: 16px 20px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.04);
-        border: 1px solid #e2e8f0;
-        margin-bottom: 12px;
+    /* Boîtes colorées des semaines */
+    .card-actuelle {
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 25px;
+        border-left: 8px solid #10b981;
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.08);
+        margin-bottom: 20px;
+    }
+
+    .card-passee {
+        background-color: #f8fafc;
+        border-radius: 20px;
+        padding: 20px;
+        border-left: 8px solid #6366f1;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        margin-bottom: 15px;
+    }
+
+    .card-avenir {
+        background-color: #fffbeb;
+        border-radius: 20px;
+        padding: 20px;
+        border-left: 8px solid #f59e0b;
+        margin-bottom: 15px;
+    }
+
+    /* Customisation des onglets */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 12px;
+        justify-content: center;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background-color: #ffffff;
+        border-radius: 30px;
+        padding: 10px 24px;
+        font-weight: 700;
+        color: #0f766e;
+        border: 1px solid #ccfbf1;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
+        color: white !important;
+        border: none !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 2. DONNÉES (15 animaux, 10 adjectifs = 150 combinaisons uniques)
+# 2. DONNÉES DE L'APPLICATION (15 Animaux x 10 Adjectifs = 150 Combinaisons)
 # ------------------------------------------------------------------------------
 ANIMAL_TO_EMOJI = {
-    "Lapin": "🐇",
-    "Ours": "🐻",
-    "Castor": "🦫",
-    "Elephant": "🐘",
-    "Hamster": "🐹",
-    "Panda": "🐼",
-    "Kangourou": "🦘",
-    "Dauphin": "🐬",
-    "Faucon": "🦅",
-    "Ecureuil": "🐿️",
-    "Lynx": "🐆",
-    "Lémurien": "🐒",
-    "Ornithorinque": "🦆",
-    "Loup": "🐺",
-    "Hérisson": "🦔"
+    "Lapin": "🐇", "Ours": "🐻", "Castor": "🦫", "Elephant": "🐘", "Hamster": "🐹",
+    "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
+    "Lynx": "🐆", "Lémurien": "🐒", "Ornithorinque": "🦆", "Loup": "🐺", "Hérisson": "🦔"
 }
 
 ANIMAUX = list(ANIMAL_TO_EMOJI.keys())
+ADJECTIFS = ["Astucieux", "Timide", "Ambitieux", "Survolté", "Combatif", "Emotif", "Espiègle", "Gourmand", "Malin", "Optimiste"]
 
-ADJECTIFS = [
-    "Astucieux", "Timide", "Ambitieux", "Survolté", "Combatif",
-    "Emotif", "Espiègle", "Gourmand", "Malin", "Optimiste"
-]
-
-# Base de données temporaire en session (sera liée à Google Sheets par la suite)
+# Enregistrements en session
 if "pseudos_reserves" not in st.session_state:
-    st.session_state.pseudos_reserves = [
-        {"animal": "Dauphin", "adjectif": "Malin"},
-        {"animal": "Hérisson", "adjectif": "Ambitieux"},
-    ]
+    st.session_state.pseudos_reserves = [{"animal": "Dauphin", "adjectif": "Malin"}]
 
-# ------------------------------------------------------------------------------
-# 3. BASE DE DONNÉES QUIZZ (Référentiel HAS 2027)
-# ------------------------------------------------------------------------------
-QUIZZ_DATABASE = {
-    "Session 1": {
-        "titre": "Session #1 - Bientraitance & Droits du patient",
-        "date_ouverture": datetime.date(2026, 10, 5),
-        "date_fermeture": datetime.date(2026, 10, 18),
+if "user_pseudo" not in st.session_state:
+    st.session_state.user_pseudo = None
+
+# Programme des sessions de révision
+SESSIONS = [
+    {
+        "id": 1,
+        "titre": "Semaine 1 - Droits du patient & Bientraitance",
+        "statut": "Passee",
+        "dates": "Du 21/09 au 04/10",
         "questions": [
-            {
-                "question": "1. Quel est l'élément clé de la bientraitance selon la HAS ?",
-                "options": ["Le respect de la dignité", "L'évaluation financière", "L'organisation interne"],
-                "reponse_correcte": "Le respect de la dignité",
-                "explication": "La HAS place la dignité et l'autonomie du patient au cœur du référentiel 2027."
-            }
+            {"q": "1. Quel est le délai légal de communication du dossier médical au patient ?", "options": ["48 heures", "8 jours", "15 jours"], "rep": "8 jours"}
+        ],
+        "podium": [
+            {"rang": "🥇 1er", "pseudo": "Dauphin Malin", "score": "10/10"},
+            {"rang": "🥈 2ème", "pseudo": "Loup Combatif", "score": "9/10"}
         ]
     },
-    "Session 2": {
-        "titre": "Session #2 - Prise en charge médicamenteuse",
-        "date_ouverture": datetime.date(2026, 10, 19),
-        "date_fermeture": datetime.date(2026, 11, 1),
+    {
+        "id": 2,
+        "titre": "Semaine 2 - Evaluation & Prise en charge de la douleur",
+        "statut": "Actuelle",
+        "dates": "Du 05/10 au 18/10",
+        "questions": [
+            {"q": "1. Quelle échelle est recommandée pour l'auto-évaluation de la douleur chez l'adulte communiquant ?", "options": ["EVA / EN", "ALGOPLUS", "DN4"], "rep": "EVA / EN"},
+            {"q": "2. Dans quel délai maximal la re-évaluation de la douleur doit-elle être tracée après antalgique IV ?", "options": ["15 à 30 minutes", "1 à 2 heures", "Au changement d'équipe"], "rep": "15 à 30 minutes"}
+        ]
+    },
+    {
+        "id": 3,
+        "titre": "Semaine 3 - Circuit du médicament & Identitovigilance",
+        "statut": "A venir",
+        "dates": "Du 19/10 au 01/11",
         "questions": []
     }
-}
+]
 
 # ------------------------------------------------------------------------------
-# 4. EN-TÊTE ET NAVIGATION
+# ÉCRAN 1 : SÉLECTION DU PSEUDO (SI NON CONNECTÉ)
 # ------------------------------------------------------------------------------
-st.markdown("<h1 class='main-title'>🧠 Challenge Équipe - Révision HAS 2027</h1>", unsafe_allow_html=True)
+if not st.session_state.user_pseudo:
+    st.markdown("<h1 class='main-title'>🩺 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='subtitle'>Espace ludique & anonyme pour l'équipe soignante</p>", unsafe_allow_html=True)
 
-tab_inscription, tab_quiz, tab_podium = st.tabs([
-    "🎭 Mon Profil Anonyme", 
-    "📝 Quiz de la Semaine", 
-    "🏆 Podium & Corrections"
-])
+    with st.container():
+        st.markdown("<div class='profile-card'>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color:#0f766e;'>🎭 Choisissez votre Avatar</h3>", unsafe_allow_html=True)
+        st.write("Sélectionnez un animal puis un adjectif. Ce duo reste votre identifiant unique !")
 
-# ------------------------------------------------------------------------------
-# TAB 1 : INSCRIPTION / SÉLECTION PAR FILTRAGE
-# ------------------------------------------------------------------------------
-with tab_inscription:
-    st.subheader("Choisissez votre Avatar Anonyme")
-    st.write("Sélectionnez votre animal puis votre adjectif pour réserver votre pseudo unique.")
+        animaux_disponibles = [a for a in ANIMAUX if len([p for p in st.session_state.pseudos_reserves if p["animal"] == a]) < len(ADJECTIFS)]
+        animal_choisi = st.selectbox("1. Choisissez votre Animal :", options=["-- Sélectionner --"] + animaux_disponibles)
 
-    # Filtrage des animaux ayant au moins un adjectif disponible
-    animaux_disponibles = []
-    for animal in ANIMAUX:
-        adjectifs_pris = [p["adjectif"] for p in st.session_state.pseudos_reserves if p["animal"] == animal]
-        if len(adjectifs_pris) < len(ADJECTIFS):
-            animaux_disponibles.append(animal)
-
-    if not animaux_disponibles:
-        st.error("Toutes les combinaisons ont été attribuées !")
-    else:
-        # Étape 1 : Animal
-        animal_choisi = st.selectbox("1. Sélectionnez votre Animal :", options=["-- Choisir un animal --"] + animaux_disponibles)
-
-        if animal_choisi != "-- Choisir un animal --":
-            
-            # Vignette dynamique
-            emoji_animal = ANIMAL_TO_EMOJI[animal_choisi]
+        if animal_choisi != "-- Sélectionner --":
+            emoji = ANIMAL_TO_EMOJI[animal_choisi]
             st.markdown(f"""
-                <div style='text-align: center;'>
-                    <div class='animal-badge'>
-                        <span class='animal-emoji'>{emoji_animal}</span>
-                        <span class='animal-name'>{animal_choisi}</span>
-                    </div>
+                <div class='animal-badge'>
+                    <span class='animal-emoji'>{emoji}</span>
+                    <span class='animal-name'>{animal_choisi}</span>
                 </div>
             """, unsafe_allow_html=True)
 
-            # Étape 2 : Adjectifs encore disponibles pour cet animal
             adjectifs_pris = [p["adjectif"] for p in st.session_state.pseudos_reserves if p["animal"] == animal_choisi]
             adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
 
-            adjectif_choisi = st.selectbox("2. Sélectionnez votre Adjectif :", options=["-- Choisir un adjectif --"] + adjectifs_disponibles)
+            adjectif_choisi = st.selectbox("2. Choisissez votre Adjectif :", options=["-- Sélectionner --"] + adjectifs_disponibles)
 
-            if adjectif_choisi != "-- Choisir un adjectif --":
-                pseudo_final = f"{animal_choisi} {adjectif_choisi}"
+            if adjectif_choisi != "-- Sélectionner --":
+                pseudo_complet = f"{animal_choisi} {adjectif_choisi}"
+                st.markdown("<br>", unsafe_allow_html=True)
                 
-                # Aperçu sous forme de bulle
-                st.markdown(f"""
-                    <div style='text-align: center; margin: 20px 0;'>
-                        <div class='pseudo-badge'>✨ {pseudo_final}</div>
-                    </div>
-                """, unsafe_allow_html=True)
-
-                if st.button("Valider et Réserver ce Profil", type="primary", use_container_width=True):
+                if st.button(f"✨ Entrer en tant que {pseudo_complet}", type="primary", use_container_width=True):
                     st.session_state.pseudos_reserves.append({"animal": animal_choisi, "adjectif": adjectif_choisi})
-                    st.success(f"C'est validé ! Votre identifiant unique est : **{pseudo_final}**.")
+                    st.session_state.user_pseudo = pseudo_complet
                     st.rerun()
 
-# ------------------------------------------------------------------------------
-# TAB 2 : PASSAGE DU QUIZ (Bascule automatique Ouverture/Fermeture)
-# ------------------------------------------------------------------------------
-with tab_quiz:
-    session_active = QUIZZ_DATABASE["Session 1"]
-    aujourdhui = datetime.date.today()
-    est_ouvert = session_active["date_ouverture"] <= aujourdhui <= session_active["date_fermeture"]
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    st.subheader(session_active["titre"])
-    
-    col_d1, col_d2 = st.columns(2)
-    col_d1.info(f"📅 **Ouverture :** {session_active['date_ouverture'].strftime('%d/%m/%Y')}")
-    col_d2.warning(f"⏳ **Fermeture :** {session_active['date_fermeture'].strftime('%d/%m/%Y')}")
+# ------------------------------------------------------------------------------
+# ÉCRAN 2 : TABLEAU DE BORD CONNECTÉ
+# ------------------------------------------------------------------------------
+else:
+    # Header profil
+    col_head1, col_head2 = st.columns([4, 1])
+    with col_head1:
+        st.markdown(f"<div class='user-header'>🩺 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
+    with col_head2:
+        if st.button("Changer de profil"):
+            st.session_state.user_pseudo = None
+            st.rerun()
 
-    if est_ouvert:
-        st.success("🟢 Le quiz est actuellement **OUVERT**.")
-        user_pseudo = st.text_input("Saisissez votre pseudo (ex: Dauphin Malin) :")
+    st.markdown("<h1 class='main-title' style='text-align:left; margin-top:15px;'>🎯 Tableau de bord des Révisions</h1>", unsafe_allow_html=True)
+
+    tab_actuel, tab_historique, tab_avenir = st.tabs(["🔥 Semaine Actuelle", "📜 Semaines Passées & Corrections", "📅 Semaines À Venir"])
+
+    # --- TAB 1 : QUIZ EN COURS ---
+    with tab_actuel:
+        session_active = next(s for s in SESSIONS if s["statut"] == "Actuelle")
         
-        if session_active["questions"]:
-            with st.form("form_quiz"):
-                reponses_user = {}
-                for idx, q in enumerate(session_active["questions"]):
-                    reponses_user[idx] = st.radio(q["question"], q["options"], key=f"q_{idx}")
-                
-                if st.form_submit_button("Valider mes réponses", type="primary"):
-                    if not user_pseudo:
-                        st.error("N'oubliez pas d'indiquer votre pseudo !")
-                    else:
-                        st.balloons()
-                        st.success(f"Réponses enregistrées pour **{user_pseudo}** !")
-        else:
-            st.info("Les questions de cette session seront bientôt intégrées.")
-    else:
-        st.error("🔴 Cette session est actuellement fermée. Retrouvez les résultats dans l'onglet Podium & Corrections !")
+        st.markdown("<div class='card-actuelle'>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3>", unsafe_allow_html=True)
+        st.caption(f"📅 Session ouverte : {session_active['dates']}")
+        st.markdown("</div>", unsafe_allow_html=True)
 
-# ------------------------------------------------------------------------------
-# TAB 3 : PODIUM TOP 10 & CORRECTIONS
-# ------------------------------------------------------------------------------
-with tab_podium:
-    st.subheader("🏆 Classement Top 10 & Corrections HAS")
-    
-    col_podium, col_correction = st.columns([1, 1])
+        with st.form("quiz_form"):
+            reponses = {}
+            for idx, q in enumerate(session_active["questions"]):
+                st.write(f"**{q['q']}**")
+                reponses[idx] = st.radio("Votre réponse :", q["options"], key=f"q_{idx}", index=None)
+                st.divider()
 
-    with col_podium:
-        st.markdown("### 🥇 Top 10 de la Session")
-        top_10 = [
-            {"rang": "🥇 1er", "pseudo": "Dauphin Malin", "score": "10/10"},
-            {"rang": "🥈 2ème", "pseudo": "Ecureuil Survolté", "score": "10/10"},
-            {"rang": "🥉 3ème", "pseudo": "Hérisson Ambitieux", "score": "9/10"},
-            {"rang": "4ème", "pseudo": "Castor Optimiste", "score": "9/10"},
-            {"rang": "5ème", "pseudo": "Panda Gourmand", "score": "8/10"},
-        ]
-        for p in top_10:
-            st.markdown(f"""
-                <div class='podium-card'>
-                    <span style='font-size: 1.1rem; font-weight: bold;'>{p['rang']}</span> - 
-                    <span style='font-weight: 600;'>{p['pseudo']}</span> 
-                    <span style='float: right; color: #6366f1; font-weight: bold;'>{p['score']}</span>
-                </div>
-            """, unsafe_allow_html=True)
+            if st.form_submit_button("🚀 Envoyer mes réponses", type="primary"):
+                if None in reponses.values():
+                    st.error("Veuillez répondre à l'ensemble des questions avant de valider !")
+                else:
+                    st.balloons()
+                    st.success(f"Réponses enregistrées avec succès pour **{st.session_state.user_pseudo}** !")
 
-    with col_correction:
-        st.markdown("### 📖 Explications & Référentiel HAS 2027")
-        with st.expander("Question 1 - Bientraitance & Droits du patient", expanded=True):
-            st.write("**Bonne réponse :** Le respect de la dignité")
-            st.info("💡 **Critère HAS 2027 :** L'évaluation de la bientraitance repose en priorité sur la prise en compte du projet de vie et du respect de la personne hébergée/soignée.")
+    # --- TAB 2 : HISTORIQUE & CORRECTIONS ---
+    with tab_historique:
+        sessions_passees = [s for s in SESSIONS if s["statut"] == "Passee"]
+        for s in sessions_passees:
+            st.markdown("<div class='card-passee'>", unsafe_allow_html=True)
+            st.markdown(f"<h3 style='color:#4338ca;'>{s['titre']}</h3>", unsafe_allow_html=True)
+            st.caption(f"Clôturé : {s['dates']}")
+
+            col_pod, col_corr = st.columns(2)
+            
+            with col_pod:
+                st.markdown("#### 🏆 Top 10 - Podium")
+                for p in s.get("podium", []):
+                    st.write(f"**{p['rang']}** — {p['pseudo']} ({p['score']})")
+
+            with col_corr:
+                st.markdown("#### 📖 Corrections & Explications")
+                for q in s["questions"]:
+                    with st.expander(q["q"]):
+                        st.success(f"Bonne réponse : {q['rep']}")
+            
+            st.markdown("</div>", unsafe_allow_html=True)
+
+    # --- TAB 3 : SEMAINES À VENIR ---
+    with tab_avenir:
+        sessions_futures = [s for s in SESSIONS if s["statut"] == "A venir"]
+        for s in sessions_futures:
+            st.markdown("<div class='card-avenir'>", unsafe_allow_html=True)
+            st.markdown(f"<h4 style='color:#b45309;'>🔒 {s['titre']}</h4>", unsafe_allow_html=True)
+            st.write(f"📅 Ouverture prévue : **{s['dates']}**")
+            st.markdown("</div>", unsafe_allow_html=True)
