@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. STYLE CSS (Cadre hospitalier chaleureux & vignettes)
+# 2. STYLE CSS
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -37,14 +37,14 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* Carte de Profil / Inscription */
-    .profile-card-header {
+    /* Carte d'Auth / Connexion */
+    .auth-card-header {
         background: white;
-        border-radius: 24px;
+        border-radius: 20px;
         padding: 20px;
         border: 2px solid #99f6e4;
-        max-width: 650px;
-        margin: 0 auto 20px auto;
+        max-width: 600px;
+        margin: 0 auto 15px auto;
         text-align: center;
         box-shadow: 0 4px 15px rgba(15, 118, 110, 0.08);
     }
@@ -54,15 +54,15 @@ st.markdown("""
         display: inline-flex;
         align-items: center;
         gap: 12px;
-        padding: 10px 25px;
+        padding: 8px 20px;
         border-radius: 50px;
         background-color: #e0f2fe;
         border: 2px solid #38bdf8;
         box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
         margin: 10px 0;
     }
-    .animal-selected-emoji { font-size: 2.2rem; }
-    .animal-selected-name { color: #0369a1; font-weight: 700; font-size: 1.2rem; }
+    .animal-selected-emoji { font-size: 2rem; }
+    .animal-selected-name { color: #0369a1; font-weight: 700; font-size: 1.1rem; }
 
     /* Header connecté */
     .user-header {
@@ -76,7 +76,16 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
     }
 
-    /* Boîtes colorées des semaines */
+    /* Cartes colorées du tableau de bord */
+    .card-progression {
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 20px;
+        border: 2px solid #38bdf8;
+        box-shadow: 0 6px 18px rgba(56, 189, 248, 0.12);
+        margin-bottom: 20px;
+    }
+
     .card-actuelle {
         background-color: #ffffff;
         border-radius: 20px;
@@ -126,7 +135,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 3. DONNÉES DE L'APPLICATION (15 Animaux x 10 Adjectifs = 150 Combinaisons)
+# 3. DONNÉES DE L'APPLICATION
 # ------------------------------------------------------------------------------
 ANIMAL_TO_EMOJI = {
     "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
@@ -137,9 +146,19 @@ ANIMAL_TO_EMOJI = {
 ANIMAUX = list(ANIMAL_TO_EMOJI.keys())
 ADJECTIFS = ["Astucieux", "Timide", "Ambitieux", "Survolté", "Combatif", "Emotif", "Espiègle", "Gourmand", "Malin", "Optimiste"]
 
-# Enregistrements en session
-if "pseudos_reserves" not in st.session_state:
-    st.session_state.pseudos_reserves = [{"animal": "Dauphin", "adjectif": "Malin"}]
+# Base fictive d'utilisateurs enregistrés (Pseudo: Mot_de_passe)
+if "comptes_utilisateurs" not in st.session_state:
+    st.session_state.comptes_utilisateurs = {
+        "Dauphin Malin": "12345",
+        "Loup Combatif": "urgences2027"
+    }
+
+# Historique des notes par utilisateur
+if "historique_reponses" not in st.session_state:
+    st.session_state.historique_reponses = {
+        "Dauphin Malin": [{"semaine": 1, "titre": "Droits du patient", "score": 10, "total": 10, "date": "22/09/2026"}],
+        "Loup Combatif": [{"semaine": 1, "titre": "Droits du patient", "score": 9, "total": 10, "date": "23/09/2026"}]
+    }
 
 if "user_pseudo" not in st.session_state:
     st.session_state.user_pseudo = None
@@ -162,15 +181,7 @@ SESSIONS = [
         ],
         "podium": [
             {"rang": "🥇 1er", "pseudo": "Dauphin Malin", "score": "10/10"},
-            {"rang": "🥈 2ème", "pseudo": "Loup Combatif", "score": "10/10"},
-            {"rang": "🥉 3ème", "pseudo": "Panda Optimiste", "score": "9/10"},
-            {"rang": "4ème", "pseudo": "Cochon Survolté", "score": "9/10"},
-            {"rang": "5ème", "pseudo": "Canard Astucieux", "score": "8/10"},
-            {"rang": "6ème", "pseudo": "Lynx Ambitieux", "score": "8/10"},
-            {"rang": "7ème", "pseudo": "Hérisson Timide", "score": "7/10"},
-            {"rang": "8ème", "pseudo": "Faucon Espiègle", "score": "7/10"},
-            {"rang": "9ème", "pseudo": "Hamster Gourmand", "score": "6/10"},
-            {"rang": "10ème", "pseudo": "Ours Emotif", "score": "6/10"}
+            {"rang": "🥈 2ème", "pseudo": "Loup Combatif", "score": "9/10"}
         ]
     },
     {
@@ -193,95 +204,124 @@ SESSIONS = [
 ]
 
 # ------------------------------------------------------------------------------
-# 4. ÉCRAN 1 : SÉLECTION DU PSEUDO (SI NON CONNECTÉ)
+# 4. ÉCRAN D'AUTHENTIFICATION (SI NON CONNECTÉ)
 # ------------------------------------------------------------------------------
 if not st.session_state.user_pseudo:
     st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>Espace ludique & anonyme pour l'équipe soignante</p>", unsafe_allow_html=True)
+    st.markdown("<p class='subtitle'>Espace ludique, individuel & sécurisé</p>", unsafe_allow_html=True)
 
-    st.markdown("""
-        <div class='profile-card-header'>
-            <h3 style='color:#0f766e; margin:0;'>🎭 Choisissez votre Avatar Anonyme</h3>
-            <p style='color:#64748b; font-size:0.95rem; margin-top:5px;'>1. Cliquez sur votre animal &nbsp;•&nbsp; 2. Choisissez votre adjectif</p>
-        </div>
-    """, unsafe_allow_html=True)
+    tab_login, tab_register = st.tabs(["🔑 Se connecter", "✨ Créer un compte (1ère visite)"])
 
-    st.markdown("<h4 style='text-align:center; color:#0f766e;'>Étape 1 : Cliquez sur un Animal</h4>", unsafe_allow_html=True)
-
-    # Grille de vignettes d'animaux (5 colonnes)
-    cols = st.columns(5)
-    for idx, animal in enumerate(ANIMAUX):
-        emoji = ANIMAL_TO_EMOJI[animal]
-        col = cols[idx % 5]
-        
-        is_selected = (st.session_state.animal_selectionne == animal)
-        btn_label = f"{emoji} {animal}"
-        btn_type = "primary" if is_selected else "secondary"
-        
-        col.button(
-            btn_label, 
-            key=f"btn_anim_{animal}", 
-            type=btn_type, 
-            use_container_width=True,
-            on_click=fixer_animal,
-            args=(animal,)
-        )
-
-    # Étape 2 : Choix de l'adjectif (S'affiche dès qu'un animal est cliqué)
-    if st.session_state.animal_selectionne:
-        animal_choisi = st.session_state.animal_selectionne
-        emoji_choisi = ANIMAL_TO_EMOJI[animal_choisi]
-
-        st.markdown("---")
+    # --- ONGLET 1 : CONNEXION ---
+    with tab_login:
+        st.markdown("<div class='auth-card-header'><h3 style='color:#0f766e; margin:0;'>Connexion à votre espace</h3></div>", unsafe_allow_html=True)
         
         col_l, col_center, col_r = st.columns([1, 2, 1])
         with col_center:
-            st.markdown(
-                f"<div style='text-align:center;'><div class='animal-selected-badge'><span class='animal-selected-emoji'>{emoji_choisi}</span><span class='animal-selected-name'>Animal choisi : {animal_choisi}</span></div></div>",
-                unsafe_allow_html=True
+            pseudos_existants = list(st.session_state.comptes_utilisateurs.keys())
+            if not pseudos_existants:
+                st.info("Aucun compte créé pour le moment. Allez dans l'onglet 'Créer un compte' !")
+            else:
+                pseudo_saisi = st.selectbox("Choisissez votre Pseudo :", options=["-- Sélectionner --"] + pseudos_existants)
+                mdp_saisi = st.text_input("Mot de passe :", type="password")
+
+                if st.button("🚀 Me connecter", type="primary", use_container_width=True):
+                    if pseudo_saisi != "-- Sélectionner --" and mdp_saisi:
+                        mdp_attendu = st.session_state.comptes_utilisateurs.get(pseudo_saisi)
+                        if mdp_saisi == mdp_attendu:
+                            st.session_state.user_pseudo = pseudo_saisi
+                            st.rerun()
+                        else:
+                            st.error("Mot de passe incorrect !")
+                    else:
+                        st.warning("Veuillez sélectionner un pseudo et saisir votre mot de passe.")
+
+    # --- ONGLET 2 : CREATION DE COMPTE ---
+    with tab_register:
+        st.markdown("""
+            <div class='auth-card-header'>
+                <h3 style='color:#0f766e; margin:0;'>🎭 Choisissez votre Avatar & Mot de passe</h3>
+                <p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Ce pseudo et ce mot de passe vous suivront tout au long des révisions.</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<h4 style='text-align:center; color:#0f766e;'>Étape 1 : Cliquez sur un Animal</h4>", unsafe_allow_html=True)
+
+        cols = st.columns(5)
+        for idx, animal in enumerate(ANIMAUX):
+            emoji = ANIMAL_TO_EMOJI[animal]
+            col = cols[idx % 5]
+            
+            is_selected = (st.session_state.animal_selectionne == animal)
+            btn_label = f"{emoji} {animal}"
+            btn_type = "primary" if is_selected else "secondary"
+            
+            col.button(
+                btn_label, 
+                key=f"btn_reg_anim_{animal}", 
+                type=btn_type, 
+                use_container_width=True,
+                on_click=fixer_animal,
+                args=(animal,)
             )
 
-            # Recherche des adjectifs déjà pris pour cet animal
-            adjectifs_pris = [
-                p["adjectif"] for p in st.session_state.pseudos_reserves 
-                if isinstance(p, dict) and p.get("animal") == animal_choisi
-            ]
-            adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
+        if st.session_state.animal_selectionne:
+            animal_choisi = st.session_state.animal_selectionne
+            emoji_choisi = ANIMAL_TO_EMOJI[animal_choisi]
 
-            adjectif_choisi = st.selectbox(
-                "Étape 2 : Choisissez votre Adjectif :", 
-                options=["-- Sélectionner un adjectif --"] + adjectifs_disponibles
-            )
+            st.markdown("---")
+            col_l, col_center, col_r = st.columns([1, 2, 1])
+            with col_center:
+                st.markdown(
+                    f"<div style='text-align:center;'><div class='animal-selected-badge'><span class='animal-selected-emoji'>{emoji_choisi}</span><span class='animal-selected-name'>Animal choisi : {animal_choisi}</span></div></div>",
+                    unsafe_allow_html=True
+                )
 
-            if adjectif_choisi != "-- Sélectionner un adjectif --":
-                pseudo_complet = f"{animal_choisi} {adjectif_choisi}"
-                st.markdown("<br>", unsafe_allow_html=True)
-                
-                if st.button(f"✨ Entrer en tant que {pseudo_complet}", type="primary", use_container_width=True):
-                    st.session_state.pseudos_reserves.append({"animal": animal_choisi, "adjectif": adjectif_choisi})
-                    st.session_state.user_pseudo = pseudo_complet
-                    st.rerun()
+                # Filtrer les adjectifs déjà pris pour cet animal
+                pseudos_pris = list(st.session_state.comptes_utilisateurs.keys())
+                adjectifs_pris = [p.split(" ")[1] for p in pseudos_pris if p.startswith(animal_choisi)]
+                adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
+
+                adjectif_choisi = st.selectbox("Étape 2 : Choisissez votre Adjectif :", options=["-- Sélectionner un adjectif --"] + adjectifs_disponibles)
+
+                if adjectif_choisi != "-- Sélectionner un adjectif --":
+                    pseudo_cree = f"{animal_choisi} {adjectif_choisi}"
+                    
+                    st.markdown("##### Étape 3 : Créez un mot de passe simple")
+                    nouveau_mdp = st.text_input("Mot de passe (5 à 10 caractères) :", type="password", key="new_mdp_input")
+                    
+                    if st.button(f"✨ Enregistrer mon compte ({pseudo_cree})", type="primary", use_container_width=True):
+                        if len(nouveau_mdp) < 3:
+                            st.error("Veuillez saisir un mot de passe plus long.")
+                        else:
+                            st.session_state.comptes_utilisateurs[pseudo_cree] = nouveau_mdp
+                            st.session_state.historique_reponses[pseudo_cree] = []
+                            st.session_state.user_pseudo = pseudo_cree
+                            st.success(f"Compte créé avec succès ! Bienvenue {pseudo_cree}.")
+                            st.rerun()
 
 # ------------------------------------------------------------------------------
-# 5. ÉCRAN 2 : TABLEAU DE BORD CONNECTÉ
+# 5. ÉCRAN TABLEAU DE BORD CONNECTÉ
 # ------------------------------------------------------------------------------
 else:
     # Header profil
     col_head1, col_head2 = st.columns([4, 1])
     with col_head1:
-        st.markdown(
-            f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>",
-            unsafe_allow_html=True
-        )
+        st.markdown(f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
     with col_head2:
-        if st.button("Changer de profil"):
+        if st.button("🔒 Déconnexion"):
             st.session_state.user_pseudo = None
             st.session_state.animal_selectionne = None
             st.rerun()
 
     st.markdown("<h1 class='main-title' style='text-align:left; margin-top:15px;'>🎯 Tableau de bord des Révisions</h1>", unsafe_allow_html=True)
 
-    tab_actuel, tab_historique, tab_avenir = st.tabs(["🔥 Semaine Actuelle", "📜 Semaines Passées & Corrections", "📅 Semaines À Venir"])
+    tab_actuel, tab_progression, tab_historique, tab_avenir = st.tabs([
+        "🔥 Semaine Actuelle", 
+        "📊 Ma Progression", 
+        "📜 Semaines Passées", 
+        "📅 Semaines À Venir"
+    ])
 
     # --- TAB 1 : QUIZ EN COURS ---
     with tab_actuel:
@@ -303,10 +343,49 @@ else:
                 if None in reponses.values():
                     st.error("Veuillez répondre à l'ensemble des questions avant de valider !")
                 else:
+                    # Simulation du calcul du score
+                    score_obtenu = 2 # Ex: 2/2
+                    total_q = len(session_active["questions"])
+                    
+                    # Sauvegarde dans l'historique du profil
+                    st.session_state.historique_reponses[st.session_state.user_pseudo].append({
+                        "semaine": session_active["id"],
+                        "titre": session_active["titre"],
+                        "score": score_obtenu,
+                        "total": total_q,
+                        "date": datetime.date.today().strftime("%d/%m/%Y")
+                    })
+                    
                     st.balloons()
-                    st.success(f"Réponses enregistrées avec succès pour **{st.session_state.user_pseudo}** !")
+                    st.success(f"Réponses enregistrées avec succès pour **{st.session_state.user_pseudo}** ! Score : {score_obtenu}/{total_q}")
 
-    # --- TAB 2 : HISTORIQUE & CORRECTIONS ---
+    # --- TAB 2 : MA PROGRESSION PERSONNELLE ---
+    with tab_progression:
+        st.markdown("<div class='card-progression'>", unsafe_allow_html=True)
+        st.markdown(f"### 📈 Progression de **{st.session_state.user_pseudo}**")
+        
+        mes_notes = st.session_state.historique_reponses.get(st.session_state.user_pseudo, [])
+        
+        if not mes_notes:
+            st.info("Vous n'avez pas encore répondu à un quiz. Participez à la semaine actuelle pour voir apparaître vos statistiques !")
+        else:
+            total_points = sum(item["score"] for item in mes_notes)
+            total_possible = sum(item["total"] for item in mes_notes)
+            pourcentage = int((total_points / total_possible) * 100) if total_possible > 0 else 0
+
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Quiz complétés", len(mes_notes))
+            c2.metric("Total des points", f"{total_points} / {total_possible}")
+            c3.metric("Taux de réussite", f"{pourcentage} %")
+
+            st.divider()
+            st.markdown("#### 📜 Historique détaillé de vos notes :")
+            for item in mes_notes:
+                st.write(f"• **{item['titre']}** (fait le {item['date']}) : **{item['score']}/{item['total']}**")
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    # --- TAB 3 : SEMAINES PASSÉES ---
     with tab_historique:
         sessions_passees = [s for s in SESSIONS if s["statut"] == "Passee"]
         for s in sessions_passees:
@@ -330,7 +409,7 @@ else:
             
             st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- TAB 3 : SEMAINES À VENIR ---
+    # --- TAB 4 : SEMAINES À VENIR ---
     with tab_avenir:
         sessions_futures = [s for s in SESSIONS if s["statut"] == "A venir"]
         for s in sessions_futures:
