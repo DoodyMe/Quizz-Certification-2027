@@ -202,4 +202,113 @@ if not st.session_state.user_pseudo:
 
     # Entête de la carte de profil
     st.markdown("""
-        <div class='profile-card-header
+        <div class='profile-card-header'>
+            <div class='team-badge'>🏥 Équipe des Urgences GHR</div>
+            <h3 style='color:#0f766e; margin-top:5px; margin-bottom:0px;'>🎭 Choisissez votre Avatar</h3>
+            <p style='color:#64748b; font-size:0.95rem;'>Sélectionnez un animal puis un adjectif.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Colonnes pour centrer les sélecteurs
+    col_l, col_center, col_r = st.columns([1, 2, 1])
+
+    with col_center:
+        animaux_disponibles = [a for a in ANIMAUX if len([p for p in st.session_state.pseudos_reserves if p["animal"] == a]) < len(ADJECTIFS)]
+        animal_choisi = st.selectbox("1. Choisissez votre Animal :", options=["-- Sélectionner --"] + animaux_disponibles)
+
+        if animal_choisi != "-- Sélectionner --":
+            emoji = ANIMAL_TO_EMOJI[animal_choisi]
+            st.markdown(f"""
+                <div style='text-align:center;'>
+                    <div class='animal-badge'>
+                        <span class='animal-emoji'>{emoji}</span>
+                        <span class='animal-name'>{animal_choisi}</span>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
+            adjectifs_pris = [p["adjectif"] for p in st.session_state.pseudos_reserves if p["animal"] == animal_choisi]
+            adjectifs_disponibles = [adj for adj in ADJECTIFS if adj not in adjectifs_pris]
+
+            adjectif_choisi = st.selectbox("2. Choisissez votre Adjectif :", options=["-- Sélectionner --"] + adjectifs_disponibles)
+
+            if adjectif_choisi != "-- Sélectionner --":
+                pseudo_complet = f"{animal_choisi} {adjectif_choisi}"
+                st.markdown("<br>", unsafe_allow_html=True)
+                
+                if st.button(f"✨ Entrer en tant que {pseudo_complet}", type="primary", use_container_width=True):
+                    st.session_state.pseudos_reserves.append({"animal": animal_choisi, "adjectif": adjectif_choisi})
+                    st.session_state.user_pseudo = pseudo_complet
+                    st.rerun()
+
+# ------------------------------------------------------------------------------
+# 5. ÉCRAN 2 : TABLEAU DE BORD CONNECTÉ
+# ------------------------------------------------------------------------------
+else:
+    # Header profil
+    col_head1, col_head2 = st.columns([4, 1])
+    with col_head1:
+        st.markdown(f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
+    with col_head2:
+        if st.button("Changer de profil"):
+            st.session_state.user_pseudo = None
+            st.rerun()
+
+    st.markdown("<h1 class='main-title' style='text-align:left; margin-top:15px;'>🎯 Tableau de bord des Révisions</h1>", unsafe_allow_html=True)
+
+    tab_actuel, tab_historique, tab_avenir = st.tabs(["🔥 Semaine Actuelle", "📜 Semaines Passées & Corrections", "📅 Semaines À Venir"])
+
+    # --- TAB 1 : QUIZ EN COURS ---
+    with tab_actuel:
+        session_active = next(s for s in SESSIONS if s["statut"] == "Actuelle")
+        
+        st.markdown("<div class='card-actuelle'>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3>", unsafe_allow_html=True)
+        st.caption(f"📅 Session ouverte : {session_active['dates']}")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        with st.form("quiz_form"):
+            reponses = {}
+            for idx, q in enumerate(session_active["questions"]):
+                st.write(f"**{q['q']}**")
+                reponses[idx] = st.radio("Votre réponse :", q["options"], key=f"q_{idx}", index=None)
+                st.divider()
+
+            if st.form_submit_button("🚀 Envoyer mes réponses", type="primary"):
+                if None in reponses.values():
+                    st.error("Veuillez répondre à l'ensemble des questions avant de valider !")
+                else:
+                    st.balloons()
+                    st.success(f"Réponses enregistrées avec succès pour **{st.session_state.user_pseudo}** !")
+
+    # --- TAB 2 : HISTORIQUE & CORRECTIONS ---
+    with tab_historique:
+        sessions_passees = [s for s in SESSIONS if s["statut"] == "Passee"]
+        for s in sessions_passees:
+            st.markdown("<div class='card-passee'>", unsafe_allow_html=True)
+            st.markdown(f"<h3 style='color:#4338ca;'>{s['titre']}</h3>", unsafe_allow_html=True)
+            st.caption(f"Clôturé : {s['dates']}")
+
+            col_pod, col_corr = st.columns(2)
+            
+            with col_pod:
+                st.markdown("#### 🏆 Top 10 - Podium")
+                for p in s.get("podium", []):
+                    st.write(f"**{p['rang']}** — {p['pseudo']} ({p['score']})")
+
+            with col_corr:
+                st.markdown("#### 📖 Corrections & Explications")
+                for q in s["questions"]:
+                    with st.expander(q["q"]):
+                        st.success(f"Bonne réponse : {q['rep']}")
+            
+            st.markdown("</div>", unsafe_allow_html=True)
+
+    # --- TAB 3 : SEMAINES À VENIR ---
+    with tab_avenir:
+        sessions_futures = [s for s in SESSIONS if s["statut"] == "A venir"]
+        for s in sessions_futures:
+            st.markdown("<div class='card-avenir'>", unsafe_allow_html=True)
+            st.markdown(f"<h4 style='color:#b45309;'>🔒 {s['titre']}</h4>", unsafe_allow_html=True)
+            st.write(f"📅 Ouverture prévue : **{s['dates']}**")
+            st.markdown("</div>", unsafe_allow_html=True)
