@@ -69,6 +69,42 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
         st.error(f"Erreur de sauvegarde des réponses : {e}")
         return False
 
+def charger_top10_semaine(semaine_id):
+    """Calcule le Top 10 automatique en direct depuis Google Sheets."""
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        records = sheet.get_all_records()
+        
+        # Filtrer par semaine
+        reponses_semaine = [r for r in records if str(r.get("Semaine_ID")) == str(semaine_id)]
+        
+        # Garder le meilleur score par utilisateur si plusieurs participations
+        meilleurs_scores = {}
+        for r in reponses_semaine:
+            pseudo = str(r.get("Pseudo"))
+            score = int(r.get("Score", 0))
+            total = int(r.get("Total_Questions", 10))
+            
+            if pseudo not in meilleurs_scores or score > meilleurs_scores[pseudo]["score"]:
+                meilleurs_scores[pseudo] = {"score": score, "total": total}
+        
+        # Trier par score décroissant
+        classement = sorted(meilleurs_scores.items(), key=lambda x: x[1]["score"], reverse=True)
+        
+        # Formater le Top 10
+        top10 = []
+        medailles = ["🥇 1er", "🥈 2ème", "🥉 3ème"]
+        for idx, (pseudo, stats) in enumerate(classement[:10]):
+            rang = medailles[idx] if idx < 3 else f"{idx+1}ème"
+            top10.append({
+                "rang": rang,
+                "pseudo": pseudo,
+                "score": f"{stats['score']}/{stats['total']}"
+            })
+        return top10
+    except Exception as e:
+        return []
+
 # ------------------------------------------------------------------------------
 # 3. STYLE CSS (Thème hospitalier chaleureux & coloré)
 # ------------------------------------------------------------------------------
@@ -223,18 +259,6 @@ SESSIONS = [
         "dates": "Du 21/09 au 04/10",
         "questions": [
             {"q": "1. Quel est le délai légal de communication du dossier médical au patient ?", "options": ["48 heures", "8 jours", "15 jours"], "rep": "8 jours"}
-        ],
-        "podium": [
-            {"rang": "🥇 1er", "pseudo": "Dauphin Malin", "score": "10/10"},
-            {"rang": "🥈 2ème", "pseudo": "Loup Combatif", "score": "10/10"},
-            {"rang": "🥉 3ème", "pseudo": "Panda Optimiste", "score": "9/10"},
-            {"rang": "4ème", "pseudo": "Cochon Survolté", "score": "9/10"},
-            {"rang": "5ème", "pseudo": "Canard Astucieux", "score": "8/10"},
-            {"rang": "6ème", "pseudo": "Lynx Ambitieux", "score": "8/10"},
-            {"rang": "7ème", "pseudo": "Hérisson Timide", "score": "7/10"},
-            {"rang": "8ème", "pseudo": "Faucon Espiègle", "score": "7/10"},
-            {"rang": "9ème", "pseudo": "Hamster Gourmand", "score": "6/10"},
-            {"rang": "10ème", "pseudo": "Ours Emotif", "score": "6/10"}
         ]
     },
     {
@@ -429,7 +453,7 @@ else:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- TAB 3 : SEMAINES PASSÉES ---
+    # --- TAB 3 : SEMAINES PASSÉES & CLASSEMENT AUTOMATIQUE ---
     with tab_historique:
         sessions_passees = [s for s in SESSIONS if s["statut"] == "Passee"]
         for s in sessions_passees:
@@ -441,9 +465,13 @@ else:
             col_pod, col_corr = st.columns(2)
             
             with col_pod:
-                st.markdown("#### 🏆 Top 10 - Classement")
-                for p in s.get("podium", [])[:10]:
-                    st.write(f"**{p['rang']}** — {p['pseudo']} ({p['score']})")
+                st.markdown("#### 🏆 Top 10 - Classement (En direct)")
+                top10 = charger_top10_semaine(s["id"])
+                if not top10:
+                    st.caption("Aucun résultat enregistré pour cette semaine.")
+                else:
+                    for p in top10:
+                        st.write(f"**{p['rang']}** — {p['pseudo']} ({p['score']})")
 
             with col_corr:
                 st.markdown("#### 📖 Corrections & Explications")
