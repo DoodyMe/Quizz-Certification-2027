@@ -79,19 +79,17 @@ def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
             
         # 1. Bouton de téléchargement direct
         st.download_button(
-            label=f"📥 Télécharger la Fiche Mémo officielle ({nom_affichage}) - PDF",
+            label=f"📥 Télécharger la Fiche Mémo ({nom_affichage}) - PDF",
             data=pdf_bytes,
             file_name=f"HAS_2027_Semaine_{semaine_id}_{metier_slug}.pdf",
             mime="application/pdf",
             key=f"dl_pdf_{semaine_id}_{metier_slug}"
         )
         
-        # 2. Visualisation directe intégrée dans un expander
+        # 2. Ouverture propre dans un nouvel onglet via une data URL en base64
         base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-        pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600px" type="application/pdf"></iframe>'
-        
-        with st.expander(f"👁️ Afficher / Masquer la fiche mémo interactive ({nom_affichage})"):
-            st.markdown(pdf_display, unsafe_allow_html=True)
+        pdf_link = f'<a href="data:application/pdf;base64,{base64_pdf}" target="_blank" style="display:inline-block; padding:10px 20px; background-color:#0f766e; color:white; border-radius:10px; text-decoration:none; font-weight:700; margin-top:10px;">👁️ Ouvrir la Fiche Mémo dans un nouvel onglet</a>'
+        st.markdown(pdf_link, unsafe_allow_html=True)
             
     else:
         st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt déposé dans le dossier 'fiches_pdf' de GitHub.")
