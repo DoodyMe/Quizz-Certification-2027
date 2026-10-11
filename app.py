@@ -1,4 +1,5 @@
 import datetime
+import os
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
@@ -67,37 +68,26 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
         st.error(f"Erreur de sauvegarde : {e}")
         return False
 
-def charger_top10_semaine(semaine_id):
-    try:
-        sheet = get_sheet().worksheet("Reponses")
-        records = sheet.get_all_records()
-        reponses_semaine = [r for r in records if str(r.get("Semaine_ID")) == str(semaine_id)]
-        
-        meilleurs_scores = {}
-        for r in reponses_semaine:
-            pseudo = str(r.get("Pseudo"))
-            score = int(r.get("Score", 0))
-            total = int(r.get("Total_Questions", 10))
+# Fonction pour charger un vrai PDF depuis le dossier fiches_pdf/ sur GitHub
+def obtenir_bouton_pdf(semaine_id, metier_slug, nom_affichage):
+    chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
+    
+    if os.path.exists(chemin_pdf):
+        with open(chemin_pdf, "rb") as f:
+            pdf_bytes = f.read()
             
-            if pseudo not in meilleurs_scores or score > meilleurs_scores[pseudo]["score"]:
-                meilleurs_scores[pseudo] = {"score": score, "total": total}
-        
-        classement = sorted(meilleurs_scores.items(), key=lambda x: x[1]["score"], reverse=True)
-        top10 = []
-        medailles = ["🥇 1er", "🥈 2ème", "🥉 3ème"]
-        for idx, (pseudo, stats) in enumerate(classement[:10]):
-            rang = medailles[idx] if idx < 3 else f"{idx+1}ème"
-            top10.append({
-                "rang": rang,
-                "pseudo": pseudo,
-                "score": f"{stats['score']}/{stats['total']}"
-            })
-        return top10
-    except Exception:
-        return []
+        st.download_button(
+            label=f"📥 Télécharger la Fiche Mémo officielle ({nom_affichage}) - PDF",
+            data=pdf_bytes,
+            file_name=f"HAS_2027_Semaine_{semaine_id}_{metier_slug}.pdf",
+            mime="application/pdf",
+            key=f"dl_pdf_{semaine_id}_{metier_slug}"
+        )
+    else:
+        st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt déposé dans le dossier 'fiches_pdf' de GitHub.")
 
 # ------------------------------------------------------------------------------
-# 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & LOGO)
+# 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & VIGNETTES COULEURS)
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -132,7 +122,6 @@ st.markdown("""
     }
     .card-progression { background-color: #ffffff; border-radius: 20px; padding: 20px; border: 2px solid #38bdf8; margin-bottom: 20px; }
     .card-actuelle { background-color: #ffffff; border-radius: 20px; padding: 25px; border-left: 8px solid #10b981; margin-bottom: 20px; }
-    .card-passee { background-color: #f8fafc; border-radius: 20px; padding: 20px; border-left: 8px solid #6366f1; margin-bottom: 15px; }
     .card-avenir { background-color: #fffbeb; border-radius: 20px; padding: 20px; border-left: 8px solid #f59e0b; margin-bottom: 15px; }
     
     .question-card {
@@ -145,12 +134,45 @@ st.markdown("""
     }
     .question-title { color: #0f766e; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
 
-    .stTabs [data-baseweb="tab-list"] { gap: 12px; justify-content: center; }
+    /* BILAN DE FIN DE QUIZ STATIQUE */
+    .result-card-ok {
+        background: #f0fdf4; border-radius: 16px; padding: 18px;
+        border: 2px solid #86efac; margin-bottom: 15px;
+    }
+    .result-card-err {
+        background: #fef2f2; border-radius: 16px; padding: 18px;
+        border: 2px solid #fca5a5; margin-bottom: 15px;
+    }
+
+    /* VIGNETTES SEMAINES PASSÉES & STYLES COULEURS PAR MÉTIER */
+    .vignette-semaine {
+        background: #ffffff; border-radius: 24px; padding: 25px;
+        border: 2px solid #cbd5e1; box-shadow: 0 8px 25px rgba(148, 163, 184, 0.1); margin-bottom: 30px;
+    }
+    .vignette-header {
+        background: linear-gradient(135deg, #0f766e 0%, #0369a1 100%);
+        color: white; padding: 12px 20px; border-radius: 14px; font-weight: 800; font-size: 1.2rem; margin-bottom: 15px;
+    }
+
+    /* CODE COULEURS PASTELS PAR MÉTIER */
+    .memo-box-tc { background: #f0f9ff; border-radius: 16px; padding: 20px; border-left: 6px solid #0284c7; }
+    .memo-box-ide { background: #f0fdf4; border-radius: 16px; padding: 20px; border-left: 6px solid #16a34a; }
+    .memo-box-as { background: #fffbeb; border-radius: 16px; padding: 20px; border-left: 6px solid #d97706; }
+    .memo-box-med { background: #f5f3ff; border-radius: 16px; padding: 20px; border-left: 6px solid #7c3aed; }
+    .memo-box-arm { background: #faf5ff; border-radius: 16px; padding: 20px; border-left: 6px solid #c026d3; }
+    .memo-box-acc { background: #f0fdfa; border-radius: 16px; padding: 20px; border-left: 6px solid #0d9488; }
+    .memo-box-branc { background: #fdf2f8; border-radius: 16px; padding: 20px; border-left: 6px solid #db2777; }
+    .memo-box-ash { background: #f1f5f9; border-radius: 16px; padding: 20px; border-left: 6px solid #475569; }
+    .memo-box-cadre { background: #fff7ed; border-radius: 16px; padding: 20px; border-left: 6px solid #ea580c; }
+
+    .memo-title-text { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: #1e293b; }
+
+    .stTabs [data-baseweb="tab-list"] { gap: 10px; justify-content: flex-start; }
     .stTabs [data-baseweb="tab"] {
-        background-color: #ffffff; border-radius: 30px; padding: 10px 24px; font-weight: 700; color: #0f766e; border: 1px solid #ccfbf1;
+        background-color: #ffffff; border-radius: 20px; padding: 8px 18px; font-weight: 700; color: #334155; border: 1px solid #cbd5e1;
     }
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important; color: white !important; border: none !important;
+        background: #0f766e !important; color: white !important; border: none !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -191,7 +213,7 @@ def fixer_animal(nom_animal):
 def fixer_animal_login(nom_animal):
     st.session_state.login_animal_selectionne = nom_animal
 
-# --- SESSIONS DE QUIZ ---
+# --- SESSIONS DE QUIZ (QUESTIONS COMPLÈTES) & FICHES MÉMO HAS 2027 ---
 SESSIONS = [
     {
         "id": 0,
@@ -246,19 +268,94 @@ SESSIONS = [
             }
         ],
         "metiers": {
-            "IDE": [{"q": "🩺 [Démo IDE] Quelle est l'obligation de traçabilité lors de la réévaluation de la douleur après administration antalgique ?", "options": ["Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique", "Informer oralement la collègue de la relève uniquement", "Attendre la fin du poste pour noter une note globale"], "rep": "Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique"}],
-            "AS": [{"q": "🪴 [Démo AS] Quelle échelle d'évaluation de la douleur est privilégiée chez le sujet âgé non communicant ?", "options": ["L'échelle comportementale ALGOPLUS", "L'Échelle Visuelle Analogique (EVA)", "L'Échelle Numérique (EN)"], "rep": "L'échelle comportementale ALGOPLUS"}],
-            "Médecin": [{"q": "💊 [Démo Médecin] Quelle procédure doit être tracée lors d'une décision de Limitation ou Arrêt de Traitement (LAT) ?", "options": ["La décision collégiale, la consultation de la personne de confiance/directives anticipées", "Un simple mot dans le dossier sans avis collégial", "L'accord verbal du chef de service uniquement"], "rep": "La décision collégiale, la consultation de la personne de confiance/directives anticipées"}],
-            "ARM": [{"q": "📞 [Démo ARM] Quel élément d'identitovigilance est indispensable lors de la création d'un dossier de régulation ?", "options": ["Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon", "Surnom habituel du patient", "Uniquement l'adresse de l'intervention"], "rep": "Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon"}],
-            "Accueil": [{"q": "🏥 [Démo Accueil] Quelle attitude adopter si un patient en salle d'attente signale une douleur thoracique aiguë ?", "options": ["Prévenir immédiatement l'IAO pour une évaluation clinique sans délai", "Lui dire de remettre son ticket dans la borne", "Lui proposer un verre d'eau"], "rep": "Prévenir immédiatement l'IAO pour une évaluation clinique sans délai"}],
-            "Brancardier": [{"q": "🚑 [Démo Brancardier] Quelle action est obligatoire avant de transférer un patient vers le scanner ?", "options": ["Vérifier la concordance de l'identité sur le bracelet d'identification", "Regarder uniquement le numéro de box", "Demander au patient son numéro de téléphone"], "rep": "Vérifier la concordance de l'identité sur le bracelet d'identification"}],
-            "ASH": [{"q": "🧼 [Démo ASH] Quel produit doit être utilisé pour la désinfection d'un box d'urgences entre deux patients ?", "options": ["Un détergent-désinfectant homologué selon le protocole de l'établissement", "Uniquement de l'eau claire", "Du produit à vitres classique"], "rep": "Un détergent-désinfectant homologué selon le protocole de l'établissement"}],
-            "Cadre": [{"q": "📈 [Démo Cadre] Quel outil permet de suivre le niveau de préparation de l'équipe aux exigences HAS ?", "options": ["Le suivi automatisé des participations et du taux de réussite global sur le tableau de bord", "Une interrogation orale individuelle impromptue", "Le contrôle des heures de présence uniquement"], "rep": "Le suivi automatisé des participations et du taux de réussite global sur le tableau de bord"}]
+            "IDE": [{"q": "[Démo IDE] Quelle est l'obligation de traçabilité lors de la réévaluation de la douleur après administration antalgique ?", "options": ["Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique", "Informer oralement la collègue de la relève uniquement", "Attendre la fin du poste pour noter une note globale"], "rep": "Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique"}],
+            "AS": [{"q": "[Démo AS] Quelle échelle d'évaluation de la douleur est privilégiée chez le sujet âgé non communicant ?", "options": ["L'échelle comportementale ALGOPLUS", "L'Échelle Visuelle Analogique (EVA)", "L'Échelle Numérique (EN)"], "rep": "L'échelle comportementale ALGOPLUS"}],
+            "Médecin": [{"q": "[Démo Médecin] Quelle procédure doit être tracée lors d'une décision de Limitation ou Arrêt de Traitement (LAT) ?", "options": ["La décision collégiale, la consultation de la personne de confiance/directives anticipées", "Un simple mot dans le dossier sans avis collégial", "L'accord verbal du chef de service uniquement"], "rep": "La décision collégiale, la consultation de la personne de confiance/directives anticipées"}],
+            "ARM": [{"q": "[Démo ARM] Quel élément d'identitovigilance est indispensable lors de la création d'un dossier de régulation ?", "options": ["Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon", "Surnom habituel du patient", "Uniquement l'adresse de l'intervention"], "rep": "Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon"}],
+            "Accueil": [{"q": "[Démo Accueil] Quelle attitude adopter si un patient en salle d'attente signale une douleur thoracique aiguë ?", "options": ["Prévenir immédiatement l'IAO pour une évaluation clinique sans délai", "Lui dire de remettre son ticket dans la borne", "Lui proposer un verre d'eau"], "rep": "Prévenir immédiatement l'IAO pour une évaluation clinique sans délai"}],
+            "Brancardier": [{"q": "[Démo Brancardier] Quelle action est obligatoire avant de transférer un patient vers le scanner ?", "options": ["Vérifier la concordance de l'identité sur le bracelet d'identification", "Regarder uniquement le numéro de box", "Demander au patient son numéro de téléphone"], "rep": "Vérifier la concordance de l'identité sur le bracelet d'identification"}],
+            "ASH": [{"q": "[Démo ASH] Quel produit doit être utilisé pour la désinfection d'un box d'urgences entre deux patients ?", "options": ["Un détergent-désinfectant homologué selon le protocole de l'établissement", "Uniquement de l'eau claire", "Du produit à vitres classique"], "rep": "Un détergent-désinfectant homologué selon le protocole de l'établissement"}],
+            "Cadre": [{"q": "[Démo Cadre] Quel outil permet de suivre le niveau de préparation de l'équipe aux exigences HAS ?", "options": ["Le suivi automatisé des participations et du taux de réussite global sur le tableau de bord", "Une interrogation orale individuelle impromptue", "Le contrôle des heures de présence uniquement"], "rep": "Le suivi automatisé des participations et du taux de réussite global sur le tableau de bord"}]
+        },
+        "fiches_reflexes": {
+            "Tronc Commun": {
+                "class": "memo-box-tc",
+                "slug": "tronc_commun",
+                "points": [
+                    "**Identitovigilance** : Contrôle obligatoire des 3 items (Nom de naissance, Prénom, Date de naissance) sur le bracelet d'identification à chaque étape de soins.",
+                    "**Bientraitance** : Posture de respect, préservation systématique de l'intimité (fermeture des box) et évaluation prioritaire de la douleur.",
+                    "**Culture de Sécurité** : Déclaration systématique et non punitive des Événements Indésirables (EI) sur le logiciel institutionnel pour l'analyse d'équipe."
+                ]
+            },
+            "IDE": {
+                "class": "memo-box-ide",
+                "slug": "ide",
+                "points": [
+                    "**Traçabilité Douleur** : Inscription obligatoire de l'échelle initiale ET de la réévaluation post-antalgique avec délai d'efficacité sur l'EPR.",
+                    "**Sécurité de l'Administration** : Vérification concordante du bracelet d'identification avant toute injection ou pose de voie veineuse."
+                ]
+            },
+            "AS": {
+                "class": "memo-box-as",
+                "slug": "as",
+                "points": [
+                    "**Évaluation de la Douleur** : Utilisation privilégiée de l'échelle comportementale ALGOPLUS pour les sujets âgés non communicants ou confus.",
+                    "**Prévention** : Recherche systématique des causes réversibles d'inconfort ou d'agitation (globe vésical, fécalome, douleur non verbalisée)."
+                ]
+            },
+            "Médecin": {
+                "class": "memo-box-med",
+                "slug": "medecin",
+                "points": [
+                    "**Décisions de LAT** : Traçabilité obligatoire de la procédure collégiale, de la recherche des directives anticipées et de la consultation de la personne de confiance.",
+                    "**Comptes-rendus de passage** : Rédaction et transmission au médecin traitant ou remise au patient garantie sous 24 heures."
+                ]
+            },
+            "ARM": {
+                "class": "memo-box-arm",
+                "slug": "arm",
+                "points": [
+                    "**Identitovigilance SAMU** : Recueil rigoureux du nom de naissance, prénom et date de naissance avec recherche d'antériorité pour éviter les doublons.",
+                    "**Confidentialité** : Strict respect du secret professionnel lors de la réception des appels de tiers."
+                ]
+            },
+            "Accueil & Admission": {
+                "class": "memo-box-acc",
+                "slug": "accueil",
+                "points": [
+                    "**Vigilance Salle d'Attente** : Alerte immédiate de l'IAO en cas de signalement de douleur aiguë, malaise ou dégradation clinique d'un usager.",
+                    "**Confidentialité au Guichet** : Maintien des distances de sécurité et discrétion lors du recueil des données nominatives."
+                ]
+            },
+            "Brancardier": {
+                "class": "memo-box-branc",
+                "slug": "brancardier",
+                "points": [
+                    "**Transferts Sécurisés** : Vérification active du bracelet d'identification avant tout déplacement vers un plateau technique (Scanner, Radio).",
+                    "**Pudeur et Sécurité** : Relevage systématique des ridelles et recouvrement du patient par un drap de protection."
+                ]
+            },
+            "ASH": {
+                "class": "memo-box-ash",
+                "slug": "ash",
+                "points": [
+                    "**Bio-nettoyage** : Application rigoureuse des procédures de désinfection des surfaces et mobilier au produit détergent-désinfectant homologué entre deux patients.",
+                    "**Hygiène des Mains** : Friction hydro-alcoolique obligatoire avant d'entrer et en sortant de chaque box."
+                ]
+            },
+            "Cadre de Santé": {
+                "class": "memo-box-cadre",
+                "slug": "cadre",
+                "points": [
+                    "**Management de la Qualité** : Pilotage bienveillant des indicateurs de préparation HAS et promotion de la culture positive de l'erreur (CREX / REX).",
+                    "**Accompagnement** : Soutien des équipes dans la mise en œuvre au quotidien des procédures de bientraitance."
+                ]
+            }
         }
     },
     {
         "id": 1,
-        "titre": "Semaine 1 - Droits du patient & Bientraitance (10 questions)",
+        "titre": "Semaine 1 - Droits du patient & Bientraitance",
         "date_debut": datetime.date(2026, 10, 16),
         "date_fin": datetime.date(2026, 11, 1),
         "tronc_commun": [
@@ -328,7 +425,7 @@ SESSIONS = [
                 {"q": "7. [Module Médecin] Lors d'une décision de Limitation ou Arrêt de Traitement (LAT) aux urgences, quelle est l'obligation réglementaire ?", "options": ["Décider seul pour ne pas perdre de temps", "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier", "Demander l'autorisation préalable au directeur de l'hôpital"], "rep": "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier"},
                 {"q": "8. [Module Médecin] Un proche réclame des informations médicales sur un patient majeur hospitalisé aux urgences. Le médecin peut lui répondre si :", "options": ["Le proche prouve son lien de parenté direct (livret de famille)", "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche", "Le proche habite sous le même toit que le patient"], "rep": "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche"},
                 {"q": "9. [Module Médecin] Quelle information minimale doit obligatoirement être tracée dans l'EPR lors d'une sortie contre avis médical ?", "options": ["L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié", "La mention 'Patient parti' sans autre précision", "Le règlement des frais de séjour"], "rep": "L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié"},
-                {"q": "10. [Module Médecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu de passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum"}
+                {"q": "10. [Module Médecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu de passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmitted au médecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum"}
             ],
             "ARM": [
                 {"q": "6. [Module ARM] Lors de la création d'un dossier au SAMU/SAS, quelle est la priorité d'identitovigilance pour éviter les doublons ?", "options": ["Saisir uniquement le prénom et le numéro de téléphone portable", "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur", "Utiliser le pseudonyme donné par le patient à l'oral"], "rep": "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur"},
@@ -365,6 +462,82 @@ SESSIONS = [
                 {"q": "9. [Module Cadre] Comment s'assurer du respect des règles de confidentialité et de secret professionnel au sein de l'équipe ?", "options": ["Rappeler régulièrement les règles de discrétion lors des réunions, veiller à la fermeture des sessions informatiques et auditer la bonne tenue des transmissions", "Attendre qu'un patient porte plainte pour faire une mise au point", "Interdire aux soignants de se parler entre eux"], "rep": "Rappeler régulièrement les règles de discrétion lors des réunions, veiller à la fermeture des sessions informatiques et auditer la bonne tenue des transmissions"},
                 {"q": "10. [Module Cadre] Quel indicateur clé permet au Cadre d'évaluer la dynamique collective de préparation à la certification HAS ?", "options": ["Le taux de participation globale des soignants aux quiz de révision et les thématiques à renforcer", "Le nombre de cafés consommés en salle de repos", "L'ancienneté moyenne des agents du service"], "rep": "Le taux de participation globale des soignants aux quiz de révision et les thématiques à renforcer"}
             ]
+        },
+        "fiches_reflexes": {
+            "Tronc Commun": {
+                "class": "memo-box-tc",
+                "slug": "tronc_commun",
+                "points": [
+                    "**Information & Refus de Soins** : L'information délivrée au patient doit être claire, loyale et appropriée (Critère HAS). En cas de refus, l'expert recherche la traçabilité de l'information sur les risques encourus.",
+                    "**Dossier Médical & Délais** : Communication du dossier sous 8 jours maximum (après un délai de réflexion obligatoire de 48 heures).",
+                    "**Personne de Confiance** : Son avis prévaut sur celui de la famille si le patient n'est plus en mesure d'exprimer sa volonté.",
+                    "**Protection Juridique (Tutelle)** : Le majeur protégé consent lui-même si son état le permet. L'urgence médicale prime si le tuteur est injoignable."
+                ]
+            },
+            "IDE": {
+                "class": "memo-box-ide",
+                "slug": "ide",
+                "points": [
+                    "**Traçabilité Antalgique (Critère Majeur HAS)** : Obligation de tracer l'évaluation initiale de la douleur ET sa réévaluation post-administration.",
+                    "**Prise en charge des Mineurs** : Soins d'urgence dispensés sans accord parental si le mineur le demande (avec un majeur protecteur)."
+                ]
+            },
+            "AS": {
+                "class": "memo-box-as",
+                "slug": "as",
+                "points": [
+                    "**Bientraitance du Sujet Âgé** : Échelle ALGOPLUS. Recherche de causes réversibles (globe, fécalome) avant toute contention.",
+                    "**Brancardage & Intimité** : Respect absolu du pudeur, ridelles levées et secret professionnel."
+                ]
+            },
+            "Médecin": {
+                "class": "memo-box-med",
+                "slug": "medecin",
+                "points": [
+                    "**Directives Anticipées & LAT** : Procédure collégiale formalisée et traçabilité obligatoire dans le dossier.",
+                    "**Sortie Contre Avis Médical** : Traçabilité des informations sur les risques vitaux encourus et formulaire signé."
+                ]
+            },
+            "ARM": {
+                "class": "memo-box-arm",
+                "slug": "arm",
+                "points": [
+                    "**Identitovigilance SAMU / SAS** : Recueil rigoureux du triptyque (Nom de naissance, Prénom, Date de naissance).",
+                    "**Secret Professionnel** : Interdiction absolue de confirmer la présence d'un patient par téléphone à un tiers."
+                ]
+            },
+            "Accueil & Admission": {
+                "class": "memo-box-acc",
+                "slug": "accueil",
+                "points": [
+                    "**Identitovigilance Admission** : Contrôle sur pièce d'identité officielle avec photo + carte Vitale.",
+                    "**Vigilance Salle d'Attente** : Alerte immédiate de l'IAO au moindre signe d'aggravation."
+                ]
+            },
+            "Brancardier": {
+                "class": "memo-box-branc",
+                "slug": "brancardier",
+                "points": [
+                    "**Identitovigilance Transport** : Contrôle actif du bracelet d'identification avant tout déplacement.",
+                    "**Sécurité des Matériels** : Arrimage obligatoire des obus d'oxygène et vérification de la réserve."
+                ]
+            },
+            "ASH": {
+                "class": "memo-box-ash",
+                "slug": "ash",
+                "points": [
+                    "**Bio-nettoyage des Box** : Désinfection rigoureuse avec produit détergent-désinfectant homologué.",
+                    "**Filières Déchets** : Séparation stricte DAOM (Sac noir) et DASRI (Sac jaune)."
+                ]
+            },
+            "Cadre de Santé": {
+                "class": "memo-box-cadre",
+                "slug": "cadre",
+                "points": [
+                    "**Management de la Qualité & REX** : Analyses systémiques non punitives suite à un EIGS.",
+                    "**Sécurité Chariot d'Urgence** : Contrôle quotidien formalisé de l'intégrité du scellé."
+                ]
+            }
         }
     }
 ]
@@ -399,13 +572,12 @@ with col_titre:
 st.divider()
 
 # ------------------------------------------------------------------------------
-# 7. ÉCRAN D'AUTHENTIFICATION (SÉLECTEUR VISUEL PAR ANIMAL POUR ÉVITER LA LISTE GÉANTE)
+# 7. ÉCRAN D'AUTHENTIFICATION
 # ------------------------------------------------------------------------------
 if not st.session_state.user_pseudo:
     tab_login, tab_register = st.tabs(["🔑 Se connecter", "✨ Créer un compte (1ère visite)"])
     comptes_existants = charger_utilisateurs()
 
-    # --- ONGLET 1 : CONNEXION PAR SÉLECTION D'AVATAR ---
     with tab_login:
         st.markdown("<div class='auth-card-header'><h3 style='color:#0f766e; margin:0;'>Connexion rapide à votre espace</h3><p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Sélectionnez votre animal pour retrouver votre profil</p></div>", unsafe_allow_html=True)
         
@@ -438,7 +610,6 @@ if not st.session_state.user_pseudo:
                     unsafe_allow_html=True
                 )
 
-                # Filtrer les pseudos existants pour cet animal uniquement
                 pseudos_animal = [p for p in comptes_existants.keys() if p.startswith(animal_actif)]
 
                 if not pseudos_animal:
@@ -458,7 +629,6 @@ if not st.session_state.user_pseudo:
                         else:
                             st.warning("Veuillez saisir votre mot de passe.")
 
-    # --- ONGLET 2 : CRÉATION DE COMPTE ---
     with tab_register:
         st.markdown("""
             <div class='auth-card-header'>
@@ -543,7 +713,7 @@ else:
         "📅 Semaines À Venir"
     ])
 
-    # --- TAB 1 : QUIZ INTERACTIF AVEC FONCTION PAUSE ---
+    # --- TAB 1 : QUIZ INTERACTIF ---
     with tab_actuel:
         session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
         
@@ -555,7 +725,6 @@ else:
                 unsafe_allow_html=True
             )
 
-            # Gestion de la reprise après pause
             if st.session_state.quiz_paused:
                 st.warning(f"⏸️ **Quiz en pause détecté !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
                 c_rep, c_raz = st.columns([1, 1])
@@ -571,7 +740,7 @@ else:
                         st.rerun()
             else:
                 role_soignant = st.selectbox(
-                    "🩺 Sélectionnez votre fonction pour personnaliser votre parcours :",
+                    "Sélectionnez votre fonction pour personnaliser votre parcours :",
                     options=[
                         "-- Choisir ma fonction --", 
                         "IDE (Infirmier/ère)", 
@@ -608,7 +777,6 @@ else:
                     total_q = len(questions_quiz)
                     current_idx = st.session_state.current_q_index
 
-                    # Interface Question par Question
                     if current_idx < total_q:
                         q_data = questions_quiz[current_idx]
                         
@@ -657,7 +825,6 @@ else:
                                     st.session_state.current_q_index += 1
                                     st.rerun()
 
-                    # Écran de fin
                     else:
                         st.balloons()
                         st.markdown("### 🎉 Quiz Terminé avec succès !")
@@ -672,13 +839,36 @@ else:
                         if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q):
                             st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés sur Google Sheets.")
 
+                        st.divider()
+                        st.markdown("### 📖 Bilan des Réponses")
+                        
+                        for idx, q in enumerate(questions_quiz):
+                            rep_soignant = st.session_state.user_quiz_answers.get(idx, "Non répondu")
+                            est_correct = (rep_soignant == q["rep"])
+                            
+                            card_class = "result-card-ok" if est_correct else "result-card-err"
+                            icon_status = "✅ Correct" if est_correct else "❌ Erreur"
+                            
+                            st.markdown(f"""
+                                <div class="{card_class}">
+                                    <div style="font-weight:700; color:#1e293b; margin-bottom:6px;">
+                                        Question {idx+1} : {q['q']}
+                                    </div>
+                                    <div style="font-size:0.95rem; margin-bottom:4px;">
+                                        <strong>Votre réponse :</strong> {rep_soignant} <span style="font-weight:700;">({icon_status})</span>
+                                    </div>
+                                    {f'<div style="font-size:0.95rem; color:#15803d; font-weight:700;"><strong>Bonne réponse HAS :</strong> {q["rep"]}</div>' if not est_correct else ''}
+                                </div>
+                            """, unsafe_allow_html=True)
+
+                        st.markdown("<br>", unsafe_allow_html=True)
                         if st.button("🔄 Recommencer le quiz", type="secondary"):
                             st.session_state.current_q_index = 0
                             st.session_state.user_quiz_answers = {}
                             st.session_state.quiz_paused = False
                             st.rerun()
 
-    # --- TAB 2 : MA PROGRESSION PERSONNELLE ---
+    # --- TAB 2 : MA PROGRESSION ---
     with tab_progression:
         st.markdown("<div class='card-progression'>", unsafe_allow_html=True)
         st.markdown(f"### 📈 Progression de **{st.session_state.user_pseudo}**")
@@ -704,7 +894,7 @@ else:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- TAB 3 : SEMAINES PASSÉES & CLASSEMENT ---
+    # --- TAB 3 : SEMAINES PASSÉES & FICHES MÉMO OFFICIELLES (PDF) ---
     with tab_historique:
         sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) == "Passee"]
         if not sessions_passees:
@@ -714,28 +904,38 @@ else:
                 str_debut = s['date_debut'].strftime('%d/%m/%Y')
                 str_fin = s['date_fin'].strftime('%d/%m/%Y')
                 
-                st.markdown(
-                    f"<div class='card-passee'><h3 style='color:#4338ca;'>{s['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>Clôturé le {str_fin}</p>",
-                    unsafe_allow_html=True
-                )
+                st.markdown(f"""
+                    <div class="vignette-semaine">
+                        <div class="vignette-header">
+                            📜 {s['titre']}
+                        </div>
+                        <p style="color:#64748b; font-size:0.9rem; margin-bottom:15px;">
+                            Session archivée du <strong>{str_debut}</strong> au <strong>{str_fin}</strong>
+                        </p>
+                """, unsafe_allow_html=True)
 
-                col_pod, col_corr = st.columns(2)
-                
-                with col_pod:
-                    st.markdown("#### 🏆 Top 10 - Classement Final")
-                    top10 = charger_top10_semaine(s["id"])
-                    if not top10:
-                        st.caption("Aucun résultat enregistré pour cette semaine.")
-                    else:
-                        for p in top10:
-                            st.write(f"**{p['rang']}** — {p['pseudo']} ({p['score']})")
+                if "fiches_reflexes" in s:
+                    fiches = s["fiches_reflexes"]
+                    st.markdown("<h5 style='color:#0f766e;'>📌 Fiches Mémos & Synthèses HAS 2027 :</h5>", unsafe_allow_html=True)
+                    
+                    onglets_metiers = list(fiches.keys())
+                    tabs_m = st.tabs(onglets_metiers)
+                    
+                    for idx_m, nom_m in enumerate(onglets_metiers):
+                        fiche_info = fiches[nom_m]
+                        css_class = fiche_info.get("class", "memo-box-tc")
+                        slug_metier = fiche_info.get("slug", "tronc_commun")
+                        points_list = fiche_info.get("points", [])
+                        
+                        with tabs_m[idx_m]:
+                            st.markdown(f"<div class='{css_class}'><div class='memo-title-text'>Synthèse HAS — {nom_m}</div>", unsafe_allow_html=True)
+                            for pt in points_list:
+                                st.markdown(f"• {pt}")
+                            st.markdown("</div>", unsafe_allow_html=True)
+                            
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            obtenir_bouton_pdf(s["id"], slug_metier, nom_m)
 
-                with col_corr:
-                    st.markdown("#### 📖 Corrections Tronc Commun")
-                    for q in s.get("tronc_commun", []):
-                        with st.expander(q["q"]):
-                            st.success(f"Bonne réponse : {q['rep']}")
-                
                 st.markdown("</div>", unsafe_allow_html=True)
 
     # --- TAB 4 : SEMAINES À VENIR ---
