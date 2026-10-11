@@ -72,7 +72,7 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
 
 # Fonction pour afficher et proposer le téléchargement d'un vrai PDF depuis le dossier fiches_pdf/
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
-    chemin_pdf = f"semaine{semaine_id}_{metier_slug}.pdf"  # Adapte si ton fichier est dans fiches_pdf/
+    chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
     
     if os.path.exists(chemin_pdf):
         with open(chemin_pdf, "rb") as f:
