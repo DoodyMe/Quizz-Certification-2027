@@ -70,8 +70,6 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
         st.error(f"Erreur de sauvegarde : {e}")
         return False
 
-from streamlit_pdf_viewer import pdf_viewer
-
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
     # On pointe vers le dossier fiches_pdf/ avec le nom exact du fichier
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
@@ -80,7 +78,7 @@ def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
         with open(chemin_pdf, "rb") as f:
             pdf_bytes = f.read()
             
-        # Bouton de téléchargement discret au-dessus
+        # Bouton de téléchargement
         st.download_button(
             label=f"📥 Télécharger la Fiche Mémo ({nom_affichage}) - PDF",
             data=pdf_bytes,
@@ -91,8 +89,8 @@ def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # Affichage visuel direct du PDF (environ 80% de largeur, soit ~700-800 pixels)
-        pdf_viewer(input=pdf_bytes, width=700)
+        # Affichage visuel direct du PDF (ajusté à ~50% de largeur pour un rendu ergonomique)
+        pdf_viewer(input=pdf_bytes, width=500)
             
     else:
         st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt disponible dans le dossier `fiches_pdf/` sur GitHub (chemin cherché : `{chemin_pdf}`).")
@@ -720,7 +718,7 @@ else:
     tab_actuel, tab_progression, tab_historique, tab_avenir = st.tabs([
         "🔥 Semaine Actuelle", 
         "📊 Ma Progression", 
-        "📜 Semaines Passées", 
+        "📜 Archives & Fiches Mémos", 
         "📅 Semaines À Venir"
     ])
 
@@ -908,51 +906,80 @@ else:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- TAB 3 : SEMAINES PASSÉES & SEMAINE 0 ---
+    # --- TAB 3 : ARCHIVES & FICHES MÉMOS (2 SOUS-ONGLETS) ---
     with tab_historique:
-        # On affiche la Semaine 0 (toujours accessible) + toutes les semaines passées
+        st.header("📜 Archives, Synthèses & Fiches Mémos")
+        st.markdown("Retrouvez ici l'historique cumulé des synthèses ainsi que la bibliothèque des fiches mémos officielles.")
+        
+        # Deux sous-onglets demandés
+        sub_tab_synthese, sub_tab_fiches = st.tabs(["📚 Synthèse (Cumulée)", "📑 Fiches Mémos par Semaine"])
+        
+        # Récupération des sessions passées et de la Semaine 0 (permanente)
         sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) == "Passee" or s["id"] == 0]
-        if not sessions_passees:
-            st.info("Aucune semaine archivée pour le moment.")
-        else:
-            for s in sessions_passees:
-                str_debut = s['date_debut'].strftime('%d/%m/%Y')
-                str_fin = s['date_fin'].strftime('%d/%m/%Y')
-                
-                st.markdown(f"""
-                    <div class="vignette-semaine">
-                        <div class="vignette-header">
-                            📜 {s['titre']}
-                        </div>
-                        <p style="color:#64748b; font-size:0.9rem; margin-bottom:15px;">
-                            Session archivée du <strong>{str_debut}</strong> au <strong>{str_fin}</strong>
-                        </p>
-                """, unsafe_allow_html=True)
-
-                if "fiches_reflexes" in s:
-                    fiches = s["fiches_reflexes"]
-                    st.markdown("<h5 style='color:#0f766e;'>📌 Fiches Mémos & Synthèses HAS 2027 :</h5>", unsafe_allow_html=True)
+        
+        with sub_tab_synthese:
+            st.subheader("Rappels et Synthèses par Semaine (Cumulatif)")
+            st.markdown("Au fil des clôtures de semaines, les points clés s'ajoutent ici pour constituer votre référentiel de révision.")
+            
+            if not sessions_passees:
+                st.info("Aucune synthèse archivée pour le moment.")
+            else:
+                for s in sessions_passees:
+                    str_debut = s['date_debut'].strftime('%d/%m/%Y')
+                    str_fin = s['date_fin'].strftime('%d/%m/%Y')
                     
-                    onglets_metiers = list(fiches.keys())
-                    tabs_m = st.tabs(onglets_metiers)
-                    
-                    for idx_m, nom_m in enumerate(onglets_metiers):
-                        fiche_info = fiches[nom_m]
-                        css_class = fiche_info.get("class", "memo-box-tc")
-                        slug_metier = fiche_info.get("slug", "tronc_commun")
-                        points_list = fiche_info.get("points", [])
-                        
-                        with tabs_m[idx_m]:
-                            st.markdown(f"<div class='{css_class}'><div class='memo-title-text'>Synthèse HAS — {nom_m}</div>", unsafe_allow_html=True)
-                            for pt in points_list:
-                                st.markdown(f"• {pt}")
-                            st.markdown("</div>", unsafe_allow_html=True)
+                    with st.expander(f"📌 {s['titre']} (Du {str_debut} au {str_fin})", expanded=(s["id"] == max([x["id"] for x in sessions_passees]))):
+                        if "fiches_reflexes" in s:
+                            fiches = s["fiches_reflexes"]
+                            onglets_metiers = list(fiches.keys())
+                            tabs_m = st.tabs(onglets_metiers)
                             
-                            st.markdown("<br>", unsafe_allow_html=True)
-                            # Appel de la fonction PDF (Visualisation directe + Bouton de téléchargement)
-                            afficher_et_telecharger_pdf(s["id"], slug_metier, nom_m)
+                            for idx_m, nom_m in enumerate(onglets_metiers):
+                                fiche_info = fiches[nom_m]
+                                css_class = fiche_info.get("class", "memo-box-tc")
+                                points_list = fiche_info.get("points", [])
+                                
+                                with tabs_m[idx_m]:
+                                    st.markdown(f"<div class='{css_class}'><div class='memo-title-text'>Synthèse HAS — {nom_m}</div>", unsafe_allow_html=True)
+                                    for pt in points_list:
+                                        st.markdown(f"• {pt}")
+                                    st.markdown("</div>", unsafe_allow_html=True)
 
-                st.markdown("</div>", unsafe_allow_html=True)
+        with sub_tab_fiches:
+            st.subheader("Consultation des Fiches Mémos PDF")
+            st.markdown("Sélectionnez la semaine et le profil métier pour consulter directement le PDF (à 50% de largeur) ou le télécharger.")
+            
+            if not sessions_passees:
+                st.info("Aucune fiche PDF disponible pour le moment.")
+            else:
+                col_s, col_m = st.columns(2)
+                with col_s:
+                    semaine_choisie = st.selectbox(
+                        "Choisissez la semaine :",
+                        options=sessions_passees,
+                        format_func=lambda x: x["titre"]
+                    )
+                with col_m:
+                    # On récupère les clés des fiches réflexes de la semaine sélectionnée
+                    fiches_dispo = semaine_choisie.get("fiches_reflexes", {})
+                    liste_metiers_fiches = list(fiches_dispo.keys())
+                    
+                    metier_choisi_cle = st.selectbox(
+                        "Choisissez le profil métier :",
+                        options=liste_metiers_fiches
+                    )
+                
+                st.markdown("---")
+                
+                if metier_choisi_cle in fiches_dispo:
+                    slug_metier = fiches_dispo[metier_choisi_cle].get("slug", "tronc_commun")
+                    
+                    # Appel de la fonction d'affichage PDF intégrée (50% de largeur)
+                    afficher_et_telecharger_pdf(
+                        semaine_id=semaine_choisie["id"],
+                        metier_slug=slug_metier,
+                        nom_affichage=metier_choisi_cle
+                    )
 
     # --- TAB 4 : SEMAINES À VENIR ---
     with tab_avenir:
