@@ -570,9 +570,6 @@ def obtenir_statut_session(session):
         return "Passee"
 
 # ------------------------------------------------------------------------------
-# 6. BANNIÈRE EN-TÊTE AVEC DEUX LOGOS (GAUCHE ET DROITE)
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 # 6. BANNIÈRE EN-TÊTE CENTRÉE AVEC DEUX LOGOS
 # ------------------------------------------------------------------------------
 col_gauche, col_milieu, col_droite = st.columns([1, 4, 1])
@@ -597,7 +594,7 @@ with col_milieu:
 with col_droite:
     try:
         st.markdown("<div style='text-align: right; padding-top: 10px;'>", unsafe_allow_html=True)
-        st.image("logo.jpg", width=120)
+        st.image("logo2.jpg", width=120)
         st.markdown("</div>", unsafe_allow_html=True)
     except Exception:
         pass
