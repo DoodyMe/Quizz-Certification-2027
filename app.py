@@ -907,10 +907,10 @@ else:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- TAB 3 : SEMAINES PASSÉES & FICHES MÉMO OFFICIELLES (PDF) ---
+    # --- TAB 3 : SEMAINES PASSÉES & SEMAINE 0 ---
     with tab_historique:
-    # On affiche la Semaine 0 (toujours accessible) + toutes les semaines passées
-        sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) == "Passee"]
+        # On affiche la Semaine 0 (toujours accessible) + toutes les semaines passées
+        sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) == "Passee" or s["id"] == 0]
         if not sessions_passees:
             st.info("Aucune semaine archivée pour le moment.")
         else:
