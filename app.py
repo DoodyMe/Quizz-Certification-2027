@@ -1,5 +1,6 @@
 import datetime
 import os
+import base64
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
@@ -68,14 +69,15 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
         st.error(f"Erreur de sauvegarde : {e}")
         return False
 
-# Fonction pour charger un vrai PDF depuis le dossier fiches_pdf/ sur GitHub
-def obtenir_bouton_pdf(semaine_id, metier_slug, nom_affichage):
+# Fonction pour afficher et proposer le téléchargement d'un vrai PDF depuis le dossier fiches_pdf/
+def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
     
     if os.path.exists(chemin_pdf):
         with open(chemin_pdf, "rb") as f:
             pdf_bytes = f.read()
             
+        # 1. Bouton de téléchargement direct
         st.download_button(
             label=f"📥 Télécharger la Fiche Mémo officielle ({nom_affichage}) - PDF",
             data=pdf_bytes,
@@ -83,6 +85,14 @@ def obtenir_bouton_pdf(semaine_id, metier_slug, nom_affichage):
             mime="application/pdf",
             key=f"dl_pdf_{semaine_id}_{metier_slug}"
         )
+        
+        # 2. Visualisation directe intégrée dans un expander
+        base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+        pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600px" type="application/pdf"></iframe>'
+        
+        with st.expander(f"👁️ Afficher / Masquer la fiche mémo interactive ({nom_affichage})"):
+            st.markdown(pdf_display, unsafe_allow_html=True)
+            
     else:
         st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt déposé dans le dossier 'fiches_pdf' de GitHub.")
 
@@ -213,7 +223,7 @@ def fixer_animal(nom_animal):
 def fixer_animal_login(nom_animal):
     st.session_state.login_animal_selectionne = nom_animal
 
-# --- SESSIONS DE QUIZ (QUESTIONS COMPLÈTES) & FICHES MÉMO HAS 2027 ---
+# --- SESSIONS DE QUIZ & FICHES MÉMO HAS 2027 ---
 SESSIONS = [
     {
         "id": 0,
@@ -425,7 +435,7 @@ SESSIONS = [
                 {"q": "7. [Module Médecin] Lors d'une décision de Limitation ou Arrêt de Traitement (LAT) aux urgences, quelle est l'obligation réglementaire ?", "options": ["Décider seul pour ne pas perdre de temps", "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier", "Demander l'autorisation préalable au directeur de l'hôpital"], "rep": "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier"},
                 {"q": "8. [Module Médecin] Un proche réclame des informations médicales sur un patient majeur hospitalisé aux urgences. Le médecin peut lui répondre si :", "options": ["Le proche prouve son lien de parenté direct (livret de famille)", "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche", "Le proche habite sous le même toit que le patient"], "rep": "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche"},
                 {"q": "9. [Module Médecin] Quelle information minimale doit obligatoirement être tracée dans l'EPR lors d'une sortie contre avis médical ?", "options": ["L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié", "La mention 'Patient parti' sans autre précision", "Le règlement des frais de séjour"], "rep": "L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié"},
-                {"q": "10. [Module Médecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu de passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmitted au médecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum"}
+                {"q": "10. [Module Médecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu de passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum"}
             ],
             "ARM": [
                 {"q": "6. [Module ARM] Lors de la création d'un dossier au SAMU/SAS, quelle est la priorité d'identitovigilance pour éviter les doublons ?", "options": ["Saisir uniquement le prénom et le numéro de téléphone portable", "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur", "Utiliser le pseudonyme donné par le patient à l'oral"], "rep": "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur"},
@@ -739,19 +749,22 @@ else:
                         st.session_state.quiz_paused = False
                         st.rerun()
             else:
+                # LISTE DES MÉTIERS TRIÉE STRICTEMENT PAR ORDRE ALPHABÉTIQUE
+                metiers_tries_alphabetique = [
+                    "-- Choisir ma fonction --",
+                    "ARM (Assistant/e de Régulation Médicale)",
+                    "AS (Aide-Soignant/e)",
+                    "ASH (Agent de Service Hospitalier)",
+                    "Brancardier",
+                    "Cadre de Santé / Encadrement",
+                    "Hôte / Hôtesse d'accueil & Admission",
+                    "IDE (Infirmier/ère)",
+                    "Médecin"
+                ]
+
                 role_soignant = st.selectbox(
                     "Sélectionnez votre fonction pour personnaliser votre parcours :",
-                    options=[
-                        "-- Choisir ma fonction --", 
-                        "IDE (Infirmier/ère)", 
-                        "AS (Aide-Soignant/e)", 
-                        "Médecin", 
-                        "ARM (Assistant/e de Régulation Médicale)",
-                        "Hôte / Hôtesse d'accueil & Admission",
-                        "Brancardier",
-                        "ASH (Agent de Service Hospitalier)",
-                        "Cadre de Santé / Encadrement"
-                    ]
+                    options=metiers_tries_alphabetique
                 )
 
                 if role_soignant != "-- Choisir ma fonction --":
@@ -934,7 +947,8 @@ else:
                             st.markdown("</div>", unsafe_allow_html=True)
                             
                             st.markdown("<br>", unsafe_allow_html=True)
-                            obtenir_bouton_pdf(s["id"], slug_metier, nom_m)
+                            # Appel de la fonction PDF (Visualisation directe + Bouton de téléchargement)
+                            afficher_et_telecharger_pdf(s["id"], slug_metier, nom_m)
 
                 st.markdown("</div>", unsafe_allow_html=True)
 
