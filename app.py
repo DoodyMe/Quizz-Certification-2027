@@ -4,6 +4,7 @@ import base64
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
+from streamlit_pdf_viewer import pdf_viewer
 
 # ------------------------------------------------------------------------------
 # 1. CONFIGURATION DE LA PAGE
@@ -71,28 +72,29 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
 
 # Fonction pour afficher et proposer le téléchargement d'un vrai PDF depuis le dossier fiches_pdf/
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
-    chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
+    chemin_pdf = f"semaine{semaine_id}_{metier_slug}.pdf"  # Adapte si ton fichier est dans fiches_pdf/
     
     if os.path.exists(chemin_pdf):
         with open(chemin_pdf, "rb") as f:
             pdf_bytes = f.read()
             
-        col_dl, col_info = st.columns([2, 3])
-        with col_dl:
-            # Bouton principal de téléchargement
-            st.download_button(
-                label=f"📥 Télécharger la Fiche ({nom_affichage})",
-                data=pdf_bytes,
-                file_name=f"HAS_2027_Semaine_{semaine_id}_{metier_slug}.pdf",
-                mime="application/pdf",
-                key=f"dl_pdf_{semaine_id}_{metier_slug}",
-                use_container_width=True
-            )
-        with col_info:
-            st.caption(f"Fiche officielle validée pour le profil **{nom_affichage}** (Format PDF).")
+        # 1. Bouton de téléchargement propre
+        st.download_button(
+            label=f"📥 Télécharger la Fiche Mémo ({nom_affichage}) - PDF",
+            data=pdf_bytes,
+            file_name=f"HAS_2027_Semaine_{semaine_id}_{metier_slug}.pdf",
+            mime="application/pdf",
+            key=f"dl_pdf_{semaine_id}_{metier_slug}"
+        )
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # 2. Affichage visuel direct et intégré de la jolie fiche dans l'app
+        with st.expander(f"👁️ Afficher la Fiche Mémo en un coup d'œil ({nom_affichage})", expanded=True):
+            pdf_viewer(input=pdf_bytes, width=700)
             
     else:
-        st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt déposé dans le dossier 'fiches_pdf' de GitHub.")
+        st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt déposé.")
 
 # ------------------------------------------------------------------------------
 # 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & VIGNETTES COULEURS)
