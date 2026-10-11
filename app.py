@@ -70,15 +70,17 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
         st.error(f"Erreur de sauvegarde : {e}")
         return False
 
-# Fonction pour afficher et proposer le téléchargement d'un vrai PDF depuis le dossier fiches_pdf/
+from streamlit_pdf_viewer import pdf_viewer
+
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
+    # On pointe vers le dossier fiches_pdf/ avec le nom exact du fichier
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
     
     if os.path.exists(chemin_pdf):
         with open(chemin_pdf, "rb") as f:
             pdf_bytes = f.read()
             
-        # 1. Bouton de téléchargement propre
+        # Bouton de téléchargement discret au-dessus
         st.download_button(
             label=f"📥 Télécharger la Fiche Mémo ({nom_affichage}) - PDF",
             data=pdf_bytes,
@@ -89,12 +91,11 @@ def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # 2. Affichage visuel direct et intégré de la jolie fiche dans l'app
-        with st.expander(f"👁️ Afficher la Fiche Mémo en un coup d'œil ({nom_affichage})", expanded=True):
-            pdf_viewer(input=pdf_bytes, width=700)
+        # Affichage visuel direct du PDF (environ 80% de largeur, soit ~700-800 pixels)
+        pdf_viewer(input=pdf_bytes, width=700)
             
     else:
-        st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt déposé.")
+        st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt disponible dans le dossier `fiches_pdf/` sur GitHub (chemin cherché : `{chemin_pdf}`).")
 
 # ------------------------------------------------------------------------------
 # 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & VIGNETTES COULEURS)
