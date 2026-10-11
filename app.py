@@ -228,8 +228,8 @@ SESSIONS = [
     {
         "id": 0,
         "titre": "Semaine 0 - Session de Démonstration & Test",
-        "date_debut": datetime.date(2020, 1, 1),
-        "date_fin": datetime.date(2030, 12, 31),
+        "date_debut": datetime.date(2026, 1, 1),
+        "date_fin": datetime.date(2027, 12, 31),
         "tronc_commun": [
             {
                 "q": "🔎 [Démo Tronc Commun] Quel est l'objectif principal de cette plateforme de révision automatisée ?",
@@ -909,6 +909,7 @@ else:
 
     # --- TAB 3 : SEMAINES PASSÉES & FICHES MÉMO OFFICIELLES (PDF) ---
     with tab_historique:
+    # On affiche la Semaine 0 (toujours accessible) + toutes les semaines passées
         sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) == "Passee"]
         if not sessions_passees:
             st.info("Aucune semaine archivée pour le moment.")
