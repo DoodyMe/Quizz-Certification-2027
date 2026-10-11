@@ -106,6 +106,8 @@ st.markdown("""
     }
     .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
     .subtitle { color: #0369a1; font-weight: 600; margin-top: 0.2rem; }
+
+    .header-centre { text-align: center; }
     
     .service-logo img {
         border-radius: 20px;
@@ -561,22 +563,23 @@ def obtenir_statut_session(session):
         return "Passee"
 
 # ------------------------------------------------------------------------------
-# 6. BANNIÈRE EN-TÊTE AVEC VOTRE LOGO LOCAL (logo.jpg)
+# 6. BANNIÈRE EN-TÊTE CENTRÉE AVEC LE LOGO LOCAL (logo.jpg)
 # ------------------------------------------------------------------------------
-col_logo, col_titre = st.columns([1, 4])
+_, col_centre, _ = st.columns([1, 3, 1])
 
-with col_logo:
+with col_centre:
+    st.markdown("<div class='header-centre'>", unsafe_allow_html=True)
     try:
-        st.markdown("<div class='service-logo'>", unsafe_allow_html=True)
+        st.markdown("<div class='service-logo' style='display: inline-block;'>", unsafe_allow_html=True)
         st.image("logo.jpg")
         st.markdown("</div>", unsafe_allow_html=True)
     except Exception:
-        st.warning("⚠️ Fichier 'logo.jpg' introuvable dans le dossier. Veuillez y déposer votre logo.")
+        st.warning("⚠️ Fichier 'logo.jpg' introuvable dans le dossier.")
 
-with col_titre:
     st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
     st.markdown("<h3 class='subtitle'>Service des Urgences & SAMU — Mulhouse</h3>", unsafe_allow_html=True)
     st.markdown("<p style='color:#64748b; margin-bottom:0;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 st.divider()
 
