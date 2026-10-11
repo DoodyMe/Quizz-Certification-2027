@@ -107,7 +107,14 @@ st.markdown("""
     .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
     .subtitle { color: #0369a1; font-weight: 600; margin-top: 0.2rem; }
 
-    .header-centre { text-align: center; width: 100%; }
+    .header-global-centre {
+        text-align: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
     
     .service-logo img {
         border-radius: 20px;
@@ -565,26 +572,31 @@ def obtenir_statut_session(session):
 # ------------------------------------------------------------------------------
 # 6. BANNIÈRE EN-TÊTE AVEC DEUX LOGOS (GAUCHE ET DROITE)
 # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# 6. BANNIÈRE EN-TÊTE CENTRÉE AVEC DEUX LOGOS
+# ------------------------------------------------------------------------------
 col_gauche, col_milieu, col_droite = st.columns([1, 4, 1])
 
 with col_gauche:
     try:
-        st.markdown("<div style='text-align: left;'>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: left; padding-top: 10px;'>", unsafe_allow_html=True)
         st.image("logo.jpg", width=120)
         st.markdown("</div>", unsafe_allow_html=True)
     except Exception:
         pass
 
 with col_milieu:
-    st.markdown("<div class='header-centre'>", unsafe_allow_html=True)
-    st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 class='subtitle'>Service des Urgences & SAMU — Mulhouse</h3>", unsafe_allow_html=True)
-    st.markdown("<p style='color:#64748b; margin-bottom:0;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>", unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("""
+        <div class='header-global-centre'>
+            <h1 class='main-title' style='margin: 0; text-align: center;'>🧠 Pause Révision HAS 2027</h1>
+            <h3 class='subtitle' style='margin: 5px 0; text-align: center;'>Service des Urgences & SAMU — Mulhouse</h3>
+            <p style='color:#64748b; margin: 0; text-align: center;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>
+        </div>
+    """, unsafe_allow_html=True)
 
 with col_droite:
     try:
-        st.markdown("<div style='text-align: right;'>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: right; padding-top: 10px;'>", unsafe_allow_html=True)
         st.image("logo.jpg", width=120)
         st.markdown("</div>", unsafe_allow_html=True)
     except Exception:
