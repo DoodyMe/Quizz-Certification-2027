@@ -563,23 +563,35 @@ def obtenir_statut_session(session):
         return "Passee"
 
 # ------------------------------------------------------------------------------
-# 6. BANNIÈRE EN-TÊTE CENTRÉE AVEC LE LOGO LOCAL (logo.jpg)
+# 6. BANNIÈRE EN-TÊTE AVEC DEUX LOGOS (GAUCHE ET DROITE)
 # ------------------------------------------------------------------------------
-_, col_centre, _ = st.columns([1, 3, 1])
+col_gauche, col_milieu, col_droite = st.columns([1, 4, 1])
 
-with col_centre:
-    st.markdown("<div class='header-centre'>", unsafe_allow_html=True)
+# Logo de gauche
+with col_gauche:
     try:
-        st.markdown("<div class='service-logo' style='display: inline-block;'>", unsafe_allow_html=True)
+        st.markdown("<div class='service-logo' style='text-align: left;'>", unsafe_allow_html=True)
         st.image("logo.jpg")
         st.markdown("</div>", unsafe_allow_html=True)
     except Exception:
-        st.warning("⚠️ Fichier 'logo.jpg' introuvable dans le dossier.")
+        pass
 
+# Titre centré au milieu
+with col_milieu:
+    st.markdown("<div class='header-centre'>", unsafe_allow_html=True)
     st.markdown("<h1 class='main-title'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
     st.markdown("<h3 class='subtitle'>Service des Urgences & SAMU — Mulhouse</h3>", unsafe_allow_html=True)
     st.markdown("<p style='color:#64748b; margin-bottom:0;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
+
+# Logo de droite (on utilise le même fichier 'logo.jpg')
+with col_droite:
+    try:
+        st.markdown("<div class='service-logo' style='text-align: right;'>", unsafe_allow_html=True)
+        st.image("logo.jpg")
+        st.markdown("</div>", unsafe_allow_html=True)
+    except Exception:
+        pass
 
 st.divider()
 
