@@ -751,7 +751,7 @@ except Exception:
 try:
     with open("logo2.jpg", "rb") as f:
         encoded_img_d = base64.b64encode(f.read()).decode()
-    logo_droite_html = f"<img src='data:image/jpeg;base64,{encoded_img_d}' style='border-radius:20px; border:3px solid #99f6e4; max-width:110px; display:block; margin:0 auto;'>"
+    logo_droite_html = f"<img src='data:image/jpeg;base64,{encoded_img_d}'"
 except Exception:
     pass
 
