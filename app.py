@@ -71,14 +71,12 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
         return False
 
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
-    # On pointe vers le dossier fiches_pdf/ avec le nom exact du fichier
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
     
     if os.path.exists(chemin_pdf):
         with open(chemin_pdf, "rb") as f:
             pdf_bytes = f.read()
             
-        # Bouton de téléchargement
         st.download_button(
             label=f"📥 Télécharger la Fiche Mémo ({nom_affichage}) - PDF",
             data=pdf_bytes,
@@ -88,8 +86,6 @@ def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
         )
         
         st.markdown("<br>", unsafe_allow_html=True)
-        
-        # Affichage visuel direct du PDF (ajusté à ~50% de largeur pour un rendu ergonomique)
         pdf_viewer(input=pdf_bytes, width=500)
             
     else:
@@ -106,21 +102,14 @@ st.markdown("""
     }
     .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
     .subtitle { color: #0369a1; font-weight: 600; margin-top: 0.2rem; }
-
-    .header-global-centre {
-        text-align: center;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
     
-    .service-logo img {
-        border-radius: 20px;
-        border: 3px solid #99f6e4;
-        box-shadow: 0 6px 20px rgba(15, 118, 110, 0.12);
-        max-width: 130px;
+    .header-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+    }
+    .header-table td {
+        vertical-align: middle;
     }
 
     .auth-card-header {
@@ -152,7 +141,6 @@ st.markdown("""
     }
     .question-title { color: #0f766e; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
 
-    /* BILAN DE FIN DE QUIZ STATIQUE */
     .result-card-ok {
         background: #f0fdf4; border-radius: 16px; padding: 18px;
         border: 2px solid #86efac; margin-bottom: 15px;
@@ -162,17 +150,11 @@ st.markdown("""
         border: 2px solid #fca5a5; margin-bottom: 15px;
     }
 
-    /* VIGNETTES SEMAINES PASSÉES & STYLES COULEURS PAR MÉTIER */
     .vignette-semaine {
         background: #ffffff; border-radius: 24px; padding: 25px;
         border: 2px solid #cbd5e1; box-shadow: 0 8px 25px rgba(148, 163, 184, 0.1); margin-bottom: 30px;
     }
-    .vignette-header {
-        background: linear-gradient(135deg, #0f766e 0%, #0369a1 100%);
-        color: white; padding: 12px 20px; border-radius: 14px; font-weight: 800; font-size: 1.2rem; margin-bottom: 15px;
-    }
 
-    /* CODE COULEURS PASTELS PAR MÉTIER */
     .memo-box-tc { background: #f0f9ff; border-radius: 16px; padding: 20px; border-left: 6px solid #0284c7; }
     .memo-box-ide { background: #f0fdf4; border-radius: 16px; padding: 20px; border-left: 6px solid #16a34a; }
     .memo-box-as { background: #fffbeb; border-radius: 16px; padding: 20px; border-left: 6px solid #d97706; }
@@ -570,34 +552,32 @@ def obtenir_statut_session(session):
         return "Passee"
 
 # ------------------------------------------------------------------------------
-# 6. BANNIÈRE EN-TÊTE CENTRÉE AVEC DEUX LOGOS
+# 6. BANNIÈRE EN-TÊTE UNIVERSELLE (CENTRÉE, 2 LOGOS, COMPATIBLE SAFARI/MAC)
 # ------------------------------------------------------------------------------
-col_gauche, col_milieu, col_droite = st.columns([1, 4, 1])
+logo_gauche_html = ""
+logo_droite_html = ""
 
-with col_gauche:
-    try:
-        st.markdown("<div style='text-align: left; padding-top: 10px;'>", unsafe_allow_html=True)
-        st.image("logo.jpg", width=120)
-        st.markdown("</div>", unsafe_allow_html=True)
-    except Exception:
-        pass
+try:
+    with open("logo.jpg", "rb") as f:
+        encoded_img = base64.b64encode(f.read()).decode()
+    logo_gauche_html = f"<img src='data:image/jpeg;base64,{encoded_img}' style='border-radius:20px; border:3px solid #99f6e4; max-width:110px; display:block; margin:0 auto;'>"
+    logo_droite_html = logo_gauche_html
+except Exception:
+    pass
 
-with col_milieu:
-    st.markdown("""
-        <div class='header-global-centre'>
-            <h1 class='main-title' style='margin: 0; text-align: center;'>🧠 Pause Révision HAS 2027</h1>
-            <h3 class='subtitle' style='margin: 5px 0; text-align: center;'>Service des Urgences & SAMU — Mulhouse</h3>
-            <p style='color:#64748b; margin: 0; text-align: center;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-with col_droite:
-    try:
-        st.markdown("<div style='text-align: right; padding-top: 10px;'>", unsafe_allow_html=True)
-        st.image("logo2.jpg", width=120)
-        st.markdown("</div>", unsafe_allow_html=True)
-    except Exception:
-        pass
+st.markdown(f"""
+    <table class='header-table'>
+        <tr>
+            <td style='width: 15%; text-align: left;'>{logo_gauche_html}</td>
+            <td style='width: 70%; text-align: center;'>
+                <h1 class='main-title' style='margin: 0; font-size: 1.8rem;'>🧠 Pause Révision HAS 2027</h1>
+                <h3 class='subtitle' style='margin: 5px 0;'>Service des Urgences & SAMU — Mulhouse</h3>
+                <p style='color:#64748b; margin: 0; font-size: 0.95rem;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>
+            </td>
+            <td style='width: 15%; text-align: right;'>{logo_droite_html}</td>
+        </tr>
+    </table>
+""", unsafe_allow_html=True)
 
 st.divider()
 
@@ -732,6 +712,7 @@ else:
             st.session_state.current_q_index = 0
             st.session_state.user_quiz_answers = {}
             st.session_state.quiz_paused = False
+            st.session_state.pop("questions_courantes", None)
             st.rerun()
 
     st.markdown("<h2 style='color:#0f766e; margin-top:15px;'>🎯 Tableau de bord des Révisions</h2>", unsafe_allow_html=True)
@@ -743,7 +724,7 @@ else:
         "📅 Semaines À Venir"
     ])
 
-    # --- TAB 1 : QUIZ INTERACTIF ---
+    # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ MAC / SAFARI ---
     with tab_actuel:
         session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
         
@@ -767,9 +748,9 @@ else:
                         st.session_state.current_q_index = 0
                         st.session_state.user_quiz_answers = {}
                         st.session_state.quiz_paused = False
+                        st.session_state.pop("questions_courantes", None)
                         st.rerun()
             else:
-                # LISTE DES MÉTIERS TRIÉE STRICTEMENT PAR ORDRE ALPHABÉTIQUE
                 metiers_tries_alphabetique = [
                     "-- Choisir ma fonction --",
                     "ARM (Assistant/e de Régulation Médicale)",
@@ -784,29 +765,38 @@ else:
 
                 role_soignant = st.selectbox(
                     "Sélectionnez votre fonction pour personnaliser votre parcours :",
-                    options=metiers_tries_alphabetique
+                    options=metiers_tries_alphabetique,
+                    key="select_role_soignant"
                 )
 
                 if role_soignant != "-- Choisir ma fonction --":
-                    questions_quiz = list(session_active.get("tronc_commun", []))
-                    
-                    if "IDE" in role_soignant:
-                        questions_quiz.extend(session_active["metiers"].get("IDE", []))
-                    elif "AS (" in role_soignant:
-                        questions_quiz.extend(session_active["metiers"].get("AS", []))
-                    elif "Médecin" in role_soignant:
-                        questions_quiz.extend(session_active["metiers"].get("Médecin", []))
-                    elif "ARM" in role_soignant:
-                        questions_quiz.extend(session_active["metiers"].get("ARM", []))
-                    elif "accueil" in role_soignant:
-                        questions_quiz.extend(session_active["metiers"].get("Accueil", []))
-                    elif "Brancardier" in role_soignant:
-                        questions_quiz.extend(session_active["metiers"].get("Brancardier", []))
-                    elif "ASH" in role_soignant:
-                        questions_quiz.extend(session_active["metiers"].get("ASH", []))
-                    elif "Cadre" in role_soignant:
-                        questions_quiz.extend(session_active["metiers"].get("Cadre", []))
+                    # Mémorisation sécurisée de la liste pour éviter les blocages de rendu sur Safari
+                    if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant:
+                        st.session_state.role_actif = role_soignant
+                        q_liste = list(session_active.get("tronc_commun", []))
+                        
+                        if "IDE" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("IDE", []))
+                        elif "AS (" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("AS", []))
+                        elif "Médecin" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Médecin", []))
+                        elif "ARM" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("ARM", []))
+                        elif "accueil" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Accueil", []))
+                        elif "Brancardier" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Brancardier", []))
+                        elif "ASH" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("ASH", []))
+                        elif "Cadre" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Cadre", []))
+                            
+                        st.session_state.questions_courantes = q_liste
+                        st.session_state.current_q_index = 0
+                        st.session_state.user_quiz_answers = {}
 
+                    questions_quiz = st.session_state.questions_courantes
                     total_q = len(questions_quiz)
                     current_idx = st.session_state.current_q_index
 
@@ -818,7 +808,7 @@ else:
                             st.progress((current_idx + 1) / total_q)
                             st.caption(f"Question {current_idx + 1} sur {total_q}")
                         with col_pause:
-                            if st.button("⏸️ Pause", help="Mettre le quiz en pause pour revenir plus tard"):
+                            if st.button("⏸️ Pause", key=f"pause_btn_{current_idx}", help="Mettre le quiz en pause"):
                                 st.session_state.quiz_paused = True
                                 st.rerun()
 
@@ -830,11 +820,13 @@ else:
                         """, unsafe_allow_html=True)
 
                         existing_ans = st.session_state.user_quiz_answers.get(current_idx, None)
+                        def_index = q_data["options"].index(existing_ans) if existing_ans in q_data["options"] else 0
+                        
                         choix = st.radio(
                             "Sélectionnez votre réponse :", 
                             q_data["options"], 
-                            index=q_data["options"].index(existing_ans) if existing_ans in q_data["options"] else None,
-                            key=f"q_dyn_{current_idx}"
+                            index=def_index if existing_ans else None,
+                            key=f"radio_q_{session_active['id']}_{current_idx}"
                         )
 
                         st.markdown("<br>", unsafe_allow_html=True)
@@ -842,7 +834,7 @@ else:
 
                         with col_prev:
                             if current_idx > 0:
-                                if st.button("⬅️ Question précédente", use_container_width=True):
+                                if st.button("⬅️ Question précédente", key=f"prev_{current_idx}", use_container_width=True):
                                     if choix:
                                         st.session_state.user_quiz_answers[current_idx] = choix
                                     st.session_state.current_q_index -= 1
@@ -850,11 +842,11 @@ else:
 
                         with col_next:
                             btn_label = "Suivant ➡️" if current_idx < total_q - 1 else "🏁 Terminer & Valider"
-                            if st.button(btn_label, type="primary", use_container_width=True):
-                                if not choix:
+                            if st.button(btn_label, key=f"next_{current_idx}", type="primary", use_container_width=True):
+                                if not choix and not existing_ans:
                                     st.warning("Veuillez sélectionner une réponse avant de continuer !")
                                 else:
-                                    st.session_state.user_quiz_answers[current_idx] = choix
+                                    st.session_state.user_quiz_answers[current_idx] = choix if choix else q_data["options"][0]
                                     st.session_state.current_q_index += 1
                                     st.rerun()
 
@@ -895,10 +887,11 @@ else:
                             """, unsafe_allow_html=True)
 
                         st.markdown("<br>", unsafe_allow_html=True)
-                        if st.button("🔄 Recommencer le quiz", type="secondary"):
+                        if st.button("🔄 Recommencer le quiz", key="restart_quiz_btn", type="secondary"):
                             st.session_state.current_q_index = 0
                             st.session_state.user_quiz_answers = {}
                             st.session_state.quiz_paused = False
+                            st.session_state.pop("questions_courantes", None)
                             st.rerun()
 
     # --- TAB 2 : MA PROGRESSION ---
@@ -932,10 +925,8 @@ else:
         st.header("📜 Archives, Synthèses & Fiches Mémos")
         st.markdown("Retrouvez ici l'historique cumulé des synthèses ainsi que la bibliothèque des fiches mémos officielles.")
         
-        # Deux sous-onglets demandés
         sub_tab_synthese, sub_tab_fiches = st.tabs(["📚 Synthèse (Cumulée)", "📑 Fiches Mémos par Semaine"])
         
-        # Récupération des sessions passées et de la Semaine 0 (permanente)
         sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) == "Passee" or s["id"] == 0]
         
         with sub_tab_synthese:
@@ -978,16 +969,17 @@ else:
                     semaine_choisie = st.selectbox(
                         "Choisissez la semaine :",
                         options=sessions_passees,
-                        format_func=lambda x: x["titre"]
+                        format_func=lambda x: x["titre"],
+                        key="select_semaine_fiche"
                     )
                 with col_m:
-                    # On récupère les clés des fiches réflexes de la semaine sélectionnée
                     fiches_dispo = semaine_choisie.get("fiches_reflexes", {})
                     liste_metiers_fiches = list(fiches_dispo.keys())
                     
                     metier_choisi_cle = st.selectbox(
                         "Choisissez le profil métier :",
-                        options=liste_metiers_fiches
+                        options=liste_metiers_fiches,
+                        key="select_metier_fiche"
                     )
                 
                 st.markdown("---")
@@ -995,7 +987,6 @@ else:
                 if metier_choisi_cle in fiches_dispo:
                     slug_metier = fiches_dispo[metier_choisi_cle].get("slug", "tronc_commun")
                     
-                    # Appel de la fonction d'affichage PDF intégrée (50% de largeur)
                     afficher_et_telecharger_pdf(
                         semaine_id=semaine_choisie["id"],
                         metier_slug=slug_metier,
