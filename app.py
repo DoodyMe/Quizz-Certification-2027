@@ -643,7 +643,7 @@ if not st.session_state.user_pseudo:
     with tab_register:
         st.markdown("""
             <div class='auth-card-header'>
-                <h3 style='color:#0f766e; margin:0;'>🎭 Créez votre Avatar & Mot de passe</h3>
+                <h3 style='color:#0f766e; margin:0;'>😷 Créez votre Avatar & Mot de passe</h3>
                 <p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Ce pseudo et ce mot de passe vous suivront tout au long des révisions.</p>
             </div>
         """, unsafe_allow_html=True)
@@ -716,10 +716,10 @@ else:
             st.session_state.pop("questions_courantes", None)
             st.rerun()
 
-    st.markdown("<h2 style='color:#0f766e; margin-top:15px;'>🎯 Tableau de bord des Révisions</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color:#0f766e; margin-top:15px;'>🗃️ Tableau de bord des Révisions</h2>", unsafe_allow_html=True)
 
     tab_actuel, tab_progression, tab_historique, tab_avenir = st.tabs([
-        "🔥 Semaine Actuelle", 
+        "👨‍🎓 Semaine Actuelle", 
         "📊 Ma Progression", 
         "📜 Archives & Fiches Mémos", 
         "📅 Semaines À Venir"
