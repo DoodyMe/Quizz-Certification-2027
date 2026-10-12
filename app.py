@@ -740,7 +740,7 @@ if not st.session_state.user_pseudo:
 else:
     col_head1, col_head2 = st.columns([4, 1])
     with col_head1:
-        st.markdown(f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='user-header'>🤪 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
     with col_head2:
         if st.button("🔒 Déconnexion"):
             st.session_state.user_pseudo = None
@@ -761,7 +761,7 @@ else:
         "⌛ Semaines À Venir"
     ])
 
-    # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ MAC / SAFARI ---
+   # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ & GESTION DU DÉJÀ-FAIT ---
     with tab_actuel:
         session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
         
@@ -773,163 +773,187 @@ else:
                 unsafe_allow_html=True
             )
 
-            if st.session_state.quiz_paused:
-                st.warning(f"⏸️ **Quiz en pause détecté !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
-                c_rep, c_raz = st.columns([1, 1])
-                with c_rep:
-                    if st.button("▶️ Reprendre mon quiz", type="primary", use_container_width=True):
-                        st.session_state.quiz_paused = False
-                        st.rerun()
-                with c_raz:
-                    if st.button("🔄 Recommencer depuis le début", type="secondary", use_container_width=True):
-                        st.session_state.current_q_index = 0
-                        st.session_state.user_quiz_answers = {}
-                        st.session_state.quiz_paused = False
-                        st.session_state.pop("questions_courantes", None)
-                        st.rerun()
+            # Vérification si l'utilisateur a déjà validé cette session
+            mes_notes_actuelles = charger_notes_utilisateur(st.session_state.user_pseudo)
+            deja_fait = any(str(item.get("Semaine_ID")) == str(session_active["id"]) for item in mes_notes_actuelles)
+
+            # S'il a déjà validé et qu'il n'est pas en train de forcer un recommencement
+            if deja_fait and not st.session_state.get(f"force_recommencer_{session_active['id']}", False):
+                st.success("🎉 Vous avez déjà validé le quiz de cette session !")
+                
+                # On récupère son dernier score pour l'afficher proprement
+                derniere_note = next((item for item in mes_notes_actuelles if str(item.get("Semaine_ID")) == str(session_active["id"])), None)
+                if derniere_note:
+                    st.metric("Votre score enregistré", f"{derniere_note.get('Score')} / {derniere_note.get('Total_Questions')}")
+
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("🔄 Recommencer le quiz pour le plaisir", type="primary", use_container_width=True):
+                    st.session_state[f"force_recommencer_{session_active['id']}"] = True
+                    st.session_state.current_q_index = 0
+                    st.session_state.user_quiz_answers = {}
+                    st.session_state.pop("questions_courantes", None)
+                    st.rerun()
+
             else:
-                metiers_tries_alphabetique = [
-                    "-- Choisir ma fonction --",
-                    "ARM (Assistant/e de Régulation Médicale)",
-                    "AS (Aide-Soignant/e)",
-                    "ASH (Agent de Service Hospitalier)",
-                    "Brancardier",
-                    "Cadre de Santé / Encadrement",
-                    "Hôte / Hôtesse d'accueil & Admission",
-                    "IDE (Infirmier/ère)",
-                    "Médecin"
-                ]
-
-                role_soignant = st.selectbox(
-                    "Sélectionnez votre fonction pour personnaliser votre parcours :",
-                    options=metiers_tries_alphabetique,
-                    key="select_role_soignant"
-                )
-
-                if role_soignant != "-- Choisir ma fonction --":
-                    if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant:
-                        st.session_state.role_actif = role_soignant
-                        q_liste = list(session_active.get("tronc_commun", []))
-                        
-                        if "IDE" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("IDE", []))
-                        elif "AS (" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("AS", []))
-                        elif "Médecin" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("Médecin", []))
-                        elif "ARM" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("ARM", []))
-                        elif "accueil" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("Accueil", []))
-                        elif "Brancardier" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("Brancardier", []))
-                        elif "ASH" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("ASH", []))
-                        elif "Cadre" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("Cadre", []))
-                            
-                        st.session_state.questions_courantes = q_liste
-                        st.session_state.current_q_index = 0
-                        st.session_state.user_quiz_answers = {}
-
-                    questions_quiz = st.session_state.questions_courantes
-                    total_q = len(questions_quiz)
-                    current_idx = st.session_state.current_q_index
-
-                    if current_idx < total_q:
-                        q_data = questions_quiz[current_idx]
-                        
-                        col_prog, col_pause = st.columns([4, 1])
-                        with col_prog:
-                            st.progress((current_idx + 1) / total_q)
-                            st.caption(f"Question {current_idx + 1} sur {total_q}")
-                        with col_pause:
-                            if st.button("⏸️ Pause", key=f"pause_btn_{current_idx}", help="Mettre le quiz en pause"):
-                                st.session_state.quiz_paused = True
-                                st.rerun()
-
-                        st.markdown(f"""
-                            <div class="question-card">
-                                <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
-                                <div class="question-title">{q_data['q']}</div>
-                            </div>
-                        """, unsafe_allow_html=True)
-
-                        existing_ans = st.session_state.user_quiz_answers.get(current_idx, None)
-                        def_index = q_data["options"].index(existing_ans) if existing_ans in q_data["options"] else 0
-                        
-                        choix = st.radio(
-                            "Sélectionnez votre réponse :", 
-                            q_data["options"], 
-                            index=def_index if existing_ans else None,
-                            key=f"radio_q_{session_active['id']}_{current_idx}"
-                        )
-
-                        st.markdown("<br>", unsafe_allow_html=True)
-                        col_prev, col_next = st.columns([1, 1])
-
-                        with col_prev:
-                            if current_idx > 0:
-                                if st.button("⬅️ Question précédente", key=f"prev_{current_idx}", use_container_width=True):
-                                    if choix:
-                                        st.session_state.user_quiz_answers[current_idx] = choix
-                                    st.session_state.current_q_index -= 1
-                                    st.rerun()
-
-                        with col_next:
-                            btn_label = "Suivant ➡️" if current_idx < total_q - 1 else "🏁 Terminer & Valider"
-                            if st.button(btn_label, key=f"next_{current_idx}", type="primary", use_container_width=True):
-                                if not choix and not existing_ans:
-                                    st.warning("Veuillez sélectionner une réponse avant de continuer !")
-                                else:
-                                    st.session_state.user_quiz_answers[current_idx] = choix if choix else q_data["options"][0]
-                                    st.session_state.current_q_index += 1
-                                    st.rerun()
-
-                    else:
-                        st.balloons()
-                        st.markdown("### 🎉 Quiz Terminé avec succès !")
-                        
-                        score_obtenu = sum(
-                            1 for idx, q in enumerate(questions_quiz) 
-                            if st.session_state.user_quiz_answers.get(idx) == q["rep"]
-                        )
-
-                        st.metric("Votre score final", f"{score_obtenu} / {total_q}")
-
-                        if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q):
-                            st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés sur Google Sheets.")
-
-                        st.divider()
-                        st.markdown("### 📖 Bilan des Réponses")
-                        
-                        for idx, q in enumerate(questions_quiz):
-                            rep_soignant = st.session_state.user_quiz_answers.get(idx, "Non répondu")
-                            est_correct = (rep_soignant == q["rep"])
-                            
-                            card_class = "result-card-ok" if est_correct else "result-card-err"
-                            icon_status = "✅ Correct" if est_correct else "❌ Erreur"
-                            
-                            st.markdown(f"""
-                                <div class="{card_class}">
-                                    <div style="font-weight:700; color:#1e293b; margin-bottom:6px;">
-                                        Question {idx+1} : {q['q']}
-                                    </div>
-                                    <div style="font-size:0.95rem; margin-bottom:4px;">
-                                        <strong>Votre réponse :</strong> {rep_soignant} <span style="font-weight:700;">({icon_status})</span>
-                                    </div>
-                                    {f'<div style="font-size:0.95rem; color:#15803d; font-weight:700;"><strong>Bonne réponse HAS :</strong> {q["rep"]}</div>' if not est_correct else ''}
-                                </div>
-                            """, unsafe_allow_html=True)
-
-                        st.markdown("<br>", unsafe_allow_html=True)
-                        if st.button("🔄 Recommencer le quiz", key="restart_quiz_btn", type="secondary"):
+                # Logique normale du quiz interactif
+                if st.session_state.quiz_paused:
+                    st.warning(f"⏸️ **Quiz en pause détecté !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
+                    c_rep, c_raz = st.columns([1, 1])
+                    with c_rep:
+                        if st.button("▶️ Reprendre mon quiz", type="primary", use_container_width=True):
+                            st.session_state.quiz_paused = False
+                            st.rerun()
+                    with c_raz:
+                        if st.button("🔄 Recommencer depuis le début", type="secondary", use_container_width=True):
                             st.session_state.current_q_index = 0
                             st.session_state.user_quiz_answers = {}
                             st.session_state.quiz_paused = False
                             st.session_state.pop("questions_courantes", None)
+                            st.session_state.pop(f"force_recommencer_{session_active['id']}", None)
                             st.rerun()
+                else:
+                    metiers_tries_alphabetique = [
+                        "-- Choisir ma fonction --",
+                        "ARM (Assistant/e de Régulation Médicale)",
+                        "AS (Aide-Soignant/e)",
+                        "ASH (Agent de Service Hospitalier)",
+                        "Brancardier",
+                        "Cadre de Santé / Encadrement",
+                        "Hôte / Hôtesse d'accueil & Admission",
+                        "IDE (Infirmier/ère)",
+                        "Médecin"
+                    ]
 
+                    role_soignant = st.selectbox(
+                        "Sélectionnez votre fonction pour personnaliser votre parcours :",
+                        options=metiers_tries_alphabetique,
+                        key="select_role_soignant"
+                    )
+
+                    if role_soignant != "-- Choisir ma fonction --":
+                        if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant:
+                            st.session_state.role_actif = role_soignant
+                            q_liste = list(session_active.get("tronc_commun", []))
+                            
+                            if "IDE" in role_soignant:
+                                q_liste.extend(session_active["metiers"].get("IDE", []))
+                            elif "AS (" in role_soignant:
+                                q_liste.extend(session_active["metiers"].get("AS", []))
+                            elif "Médecin" in role_soignant:
+                                q_liste.extend(session_active["metiers"].get("Médecin", []))
+                            elif "ARM" in role_soignant:
+                                q_liste.extend(session_active["metiers"].get("ARM", []))
+                            elif "accueil" in role_soignant:
+                                q_liste.extend(session_active["metiers"].get("Accueil", []))
+                            elif "Brancardier" in role_soignant:
+                                q_liste.extend(session_active["metiers"].get("Brancardier", []))
+                            elif "ASH" in role_soignant:
+                                q_liste.extend(session_active["metiers"].get("ASH", []))
+                            elif "Cadre" in role_soignant:
+                                q_liste.extend(session_active["metiers"].get("Cadre", []))
+                                
+                            st.session_state.questions_courantes = q_liste
+                            st.session_state.current_q_index = 0
+                            st.session_state.user_quiz_answers = {}
+
+                        questions_quiz = st.session_state.questions_courantes
+                        total_q = len(questions_quiz)
+                        current_idx = st.session_state.current_q_index
+
+                        if current_idx < total_q:
+                            q_data = questions_quiz[current_idx]
+                            
+                            col_prog, col_pause = st.columns([4, 1])
+                            with col_prog:
+                                st.progress((current_idx + 1) / total_q)
+                                st.caption(f"Question {current_idx + 1} sur {total_q}")
+                            with col_pause:
+                                if st.button("⏸️ Pause", key=f"pause_btn_{current_idx}", help="Mettre le quiz en pause"):
+                                    st.session_state.quiz_paused = True
+                                    st.rerun()
+
+                            st.markdown(f"""
+                                <div class="question-card">
+                                    <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
+                                    <div class="question-title">{q_data['q']}</div>
+                                </div>
+                            """, unsafe_allow_html=True)
+
+                            existing_ans = st.session_state.user_quiz_answers.get(current_idx, None)
+                            def_index = q_data["options"].index(existing_ans) if existing_ans in q_data["options"] else 0
+                            
+                            choix = st.radio(
+                                "Sélectionnez votre réponse :", 
+                                q_data["options"], 
+                                index=def_index if existing_ans else None,
+                                key=f"radio_q_{session_active['id']}_{current_idx}"
+                            )
+
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            col_prev, col_next = st.columns([1, 1])
+
+                            with col_prev:
+                                if current_idx > 0:
+                                    if st.button("⬅️ Question précédente", key=f"prev_{current_idx}", use_container_width=True):
+                                        if choix:
+                                            st.session_state.user_quiz_answers[current_idx] = choix
+                                        st.session_state.current_q_index -= 1
+                                        st.rerun()
+
+                            with col_next:
+                                btn_label = "Suivant ➡️" if current_idx < total_q - 1 else "🏁 Terminer & Valider"
+                                if st.button(btn_label, key=f"next_{current_idx}", type="primary", use_container_width=True):
+                                    if not choix and not existing_ans:
+                                        st.warning("Veuillez sélectionner une réponse avant de continuer !")
+                                    else:
+                                        st.session_state.user_quiz_answers[current_idx] = choix if choix else q_data["options"][0]
+                                        st.session_state.current_q_index += 1
+                                        st.rerun()
+
+                        else:
+                            st.balloons()
+                            st.markdown("### 🎉 Quiz Terminé avec succès !")
+                            
+                            score_obtenu = sum(
+                                1 for idx, q in enumerate(questions_quiz) 
+                                if st.session_state.user_quiz_answers.get(idx) == q["rep"]
+                            )
+
+                            st.metric("Votre score final", f"{score_obtenu} / {total_q}")
+
+                            if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q):
+                                st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés sur Google Sheets.")
+
+                            st.divider()
+                            st.markdown("### 📖 Bilan des Réponses")
+                            
+                            for idx, q in enumerate(questions_quiz):
+                                rep_soignant = st.session_state.user_quiz_answers.get(idx, "Non répondu")
+                                est_correct = (rep_soignant == q["rep"])
+                                
+                                card_class = "result-card-ok" if est_correct else "result-card-err"
+                                icon_status = "✅ Correct" if est_correct else "❌ Erreur"
+                                
+                                st.markdown(f"""
+                                    <div class="{card_class}">
+                                        <div style="font-weight:700; color:#1e293b; margin-bottom:6px;">
+                                            Question {idx+1} : {q['q']}
+                                        </div>
+                                        <div style="font-size:0.95rem; margin-bottom:4px;">
+                                            <strong>Votre réponse :</strong> {rep_soignant} <span style="font-weight:700;">({icon_status})</span>
+                                        </div>
+                                        {f'<div style="font-size:0.95rem; color:#15803d; font-weight:700;"><strong>Bonne réponse HAS :</strong> {q["rep"]}</div>' if not est_correct else ''}
+                                    </div>
+                                """, unsafe_allow_html=True)
+
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            if st.button("🔄 Recommencer le quiz", key="restart_quiz_btn", type="secondary"):
+                                st.session_state.current_q_index = 0
+                                st.session_state.user_quiz_answers = {}
+                                st.session_state.quiz_paused = False
+                                st.session_state.pop("questions_courantes", None)
+                                st.session_state.pop(f"force_recommencer_{session_active['id']}", None)
+                                st.rerun()
     # --- TAB 2 : MA PROGRESSION ---
     with tab_progression:
         st.markdown("<div class='card-progression'>", unsafe_allow_html=True)
