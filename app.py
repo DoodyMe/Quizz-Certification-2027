@@ -719,10 +719,10 @@ else:
     st.markdown("<h2 style='color:#0f766e; margin-top:15px;'>🗃️ Tableau de bord des Révisions</h2>", unsafe_allow_html=True)
 
     tab_actuel, tab_progression, tab_historique, tab_avenir = st.tabs([
-        "👨‍🎓 Semaine Actuelle", 
-        "📊 Ma Progression", 
-        "📜 Archives & Fiches Mémos", 
-        "📅 Semaines À Venir"
+        "🤔❓ Semaine Actuelle", 
+        "🥳 Ma Progression", 
+        "🧐 Archives & Fiches Mémos", 
+        "⌛ Semaines À Venir"
     ])
 
     # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ MAC / SAFARI ---
