@@ -540,8 +540,8 @@ SESSIONS = [
                 ]
             }
         }
-    }
-{
+    },
+    {
         "id": 2,
         "titre": "Semaine 2 - Situations Sanitaires Exceptionnelles (SSE) & Dégradations",
         "date_debut": datetime.date(2026, 11, 2),
@@ -807,7 +807,6 @@ else:
                 )
 
                 if role_soignant != "-- Choisir ma fonction --":
-                    # Mémorisation sécurisée de la liste pour éviter les blocages de rendu sur Safari
                     if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant:
                         st.session_state.role_actif = role_soignant
                         q_liste = list(session_active.get("tronc_commun", []))
