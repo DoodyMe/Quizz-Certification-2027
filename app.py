@@ -542,6 +542,42 @@ SESSIONS = [
         }
     }
 ]
+{
+        "id": 2,
+        "titre": "Semaine 2 - Situations Sanitaires Exceptionnelles (SSE) & Dégradations",
+        "date_debut": datetime.date(2026, 11, 2),
+        "date_fin": datetime.date(2026, 11, 15),
+        "tronc_commun": [],
+        "metiers": {},
+        "fiches_reflexes": {}
+    },
+    {
+        "id": 3,
+        "titre": "Semaine 3 - Médicaments, Prescriptions & Sécurité des Soins",
+        "date_debut": datetime.date(2026, 11, 16),
+        "date_fin": datetime.date(2026, 11, 29),
+        "tronc_commun": [],
+        "metiers": {},
+        "fiches_reflexes": {}
+    },
+    {
+        "id": 4,
+        "titre": "Semaine 4 - Parcours patient, Fluidité & Sujets vulnérables",
+        "date_debut": datetime.date(2026, 11, 30),
+        "date_fin": datetime.date(2026, 12, 13),
+        "tronc_commun": [],
+        "metiers": {},
+        "fiches_reflexes": {}
+    },
+    {
+        "id": 5,
+        "titre": "Semaine 5 - Gestion des Risques & Identitovigilance",
+        "date_debut": datetime.date(2026, 12, 14),
+        "date_fin": datetime.date(2026, 12, 31),
+        "tronc_commun": [],
+        "metiers": {},
+        "fiches_reflexes": {}
+    }
 
 def obtenir_statut_session(session):
     today = datetime.date.today()
