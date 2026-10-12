@@ -739,11 +739,19 @@ def obtenir_statut_session(session):
 logo_gauche_html = ""
 logo_droite_html = ""
 
+# Chargement du logo de gauche
 try:
     with open("logo.jpg", "rb") as f:
-        encoded_img = base64.b64encode(f.read()).decode()
-    logo_gauche_html = f"<img src='data:image/jpeg;base64,{encoded_img}' style='border-radius:20px; border:3px solid #99f6e4; max-width:110px; display:block; margin:0 auto;'>"
-    logo_droite_html = logo_gauche_html
+        encoded_img_g = base64.b64encode(f.read()).decode()
+    logo_gauche_html = f"<img src='data:image/jpeg;base64,{encoded_img_g}' style='border-radius:20px; border:3px solid #99f6e4; max-width:110px; display:block; margin:0 auto;'>"
+except Exception:
+    pass
+
+# Chargement du logo de droite
+try:
+    with open("logo2.jpg", "rb") as f:
+        encoded_img_d = base64.b64encode(f.read()).decode()
+    logo_droite_html = f"<img src='data:image/jpeg;base64,{encoded_img_d}' style='border-radius:20px; border:3px solid #99f6e4; max-width:110px; display:block; margin:0 auto;'>"
 except Exception:
     pass
 
