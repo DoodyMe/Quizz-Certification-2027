@@ -106,9 +106,10 @@ st.markdown("""
     .header-table {
         width: 100%;
         border-collapse: collapse;
-        text-align: center;
+        border: none;
     }
     .header-table td {
+        border: none;
         vertical-align: middle;
     }
 
@@ -566,15 +567,15 @@ except Exception:
     pass
 
 st.markdown(f"""
-    <table class='header-table'>
-        <tr>
-            <td style='width: 15%; text-align: left;'>{logo_gauche_html}</td>
-            <td style='width: 70%; text-align: center;'>
+    <table class='header-table' style='border: none;'>
+        <tr style='border: none;'>
+            <td style='width: 15%; text-align: left; border: none;'>{logo_gauche_html}</td>
+            <td style='width: 70%; text-align: center; border: none;'>
                 <h1 class='main-title' style='margin: 0; font-size: 1.8rem;'>🧠 Pause Révision HAS 2027</h1>
                 <h3 class='subtitle' style='margin: 5px 0;'>Service des Urgences & SAMU — Mulhouse</h3>
                 <p style='color:#64748b; margin: 0; font-size: 0.95rem;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>
             </td>
-            <td style='width: 15%; text-align: right;'>{logo_droite_html}</td>
+            <td style='width: 15%; text-align: right; border: none;'>{logo_droite_html}</td>
         </tr>
     </table>
 """, unsafe_allow_html=True)
