@@ -541,7 +541,6 @@ SESSIONS = [
             }
         }
     }
-]
 {
         "id": 2,
         "titre": "Semaine 2 - Situations Sanitaires Exceptionnelles (SSE) & Dégradations",
@@ -578,6 +577,7 @@ SESSIONS = [
         "metiers": {},
         "fiches_reflexes": {}
     }
+]
 
 def obtenir_statut_session(session):
     today = datetime.date.today()
