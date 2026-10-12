@@ -188,7 +188,7 @@ ANIMAL_TO_EMOJI = {
 }
 
 ANIMAUX = list(ANIMAL_TO_EMOJI.keys())
-ADJECTIFS = ["Astucieux", "Timide", "Ambitieux", "Survolté", "Combatif", "Emotif", "Espiègle", "Gourmand", "Malin", "Optimiste"]
+ADJECTIFS = ["Astucieux", "Timide", "Ambitieux", "Survolté", "Combatif", "Emotif", "Espiègle", "Gourmand", "Malin", "Optimiste", "Tête en l'air"]
 
 if "user_pseudo" not in st.session_state:
     st.session_state.user_pseudo = None
