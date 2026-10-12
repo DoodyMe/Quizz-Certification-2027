@@ -743,7 +743,7 @@ logo_droite_html = ""
 try:
     with open("logo.jpg", "rb") as f:
         encoded_img_g = base64.b64encode(f.read()).decode()
-    logo_gauche_html = f"<img src='data:image/jpeg;base64,{encoded_img_g}' style='border-radius:20px; border:3px solid #99f6e4; max-width:110px; display:block; margin:0 auto;'>"
+    logo_gauche_html = f"<img src='data:image/jpeg;base64,{encoded_img_g}'
 except Exception:
     pass
 
