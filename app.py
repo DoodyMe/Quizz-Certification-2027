@@ -543,12 +543,157 @@ SESSIONS = [
     },
     {
         "id": 2,
-        "titre": "Semaine 2 - Situations Sanitaires Exceptionnelles (SSE) & Dégradations",
+        "titre": "Semaine 2 - Situations Sanitaires Exceptionnelles (SSE) & Mode Dégradé",
         "date_debut": datetime.date(2026, 11, 2),
         "date_fin": datetime.date(2026, 11, 15),
-        "tronc_commun": [],
-        "metiers": {},
-        "fiches_reflexes": {}
+        "tronc_commun": [
+            {
+                "q": "1. [Tronc Commun] Lors du déclenchement d'un Plan Blanc aux urgences, quel est le critère organisationnel déterminant validé par la HAS concernant la libération des lits d'aval ?",
+                "options": [
+                    "L'annulation systématique et immédiate de l'ensemble des interventions chirurgicales programmées non urgentes de tout l'établissement",
+                    "L'identification anticipée des patients extractibles (sorties anticipées, transferts inter-services) selon un protocole médico-administratif prédéfini",
+                    "La fermeture unilatérale de la zone d'accueil et d'orientation (IAO) aux nouveaux arrivants"
+                ],
+                "rep": "L'identification anticipée des patients extractibles (sorties anticipées, transferts inter-services) selon un protocole médico-administratif prédéfini"
+            },
+            {
+                "q": "2. [Tronc Commun] En cas de panne informatique totale du dossier patient informatisé, la bascule sur le mode dégradé papier impose :",
+                "options": [
+                    "La duplication immédiate de l'ensemble des dossiers des patients présents par photocopie des archives papier de la veille",
+                    "L'utilisation des dossiers papiers pré-imprimés standardisés de crise, comportant obligatoirement l'horodatage et la double signature pour chaque prescription",
+                    "Le report de l'ensemble des transmissions écrites à la fin de la panne informatique sans traçabilité intermédiaire"
+                ],
+                "rep": "L'utilisation des dossiers papiers pré-imprimés standardisés de crise, comportant obligatoirement l'horodatage et la double signature pour chaque prescription"
+            },
+            {
+                "q": "3. [Tronc Commun] Quelle est la règle réglementaire absolue régissant la chaîne hiérarchique au sein de la Cellule de Crise Hospitalière (CCH) ?",
+                "options": [
+                    "Le directeur de l'établissement prend toutes les décisions médicales d'urgence",
+                    "Le Directeur des Soins Infirmiers gère l'ensemble de la stratégie tactique du terrain",
+                    "Le Directeur d'établissement (ou son représentant) assure le commandement général, tandis que le Directeur Médical de Crise (DMC) pilote la stratégie médicale"
+                ],
+                "rep": "Le Directeur d'établissement (ou son représentant) assure le commandement général, tandis que le Directeur Médical de Crise (DMC) pilote la stratégie médicale"
+            },
+            {
+                "q": "4. [Tronc Commun] Face à une intrusion armée dans l'établissement (alerte attentat), quelle est la chronologie des consignes de sécurité édictées par le secrétariat général de la défense (SGDSN) ?",
+                "options": [
+                    "Se barricader immédiatement dans le bureau le plus proche sans chercher à fuir",
+                    "Fuir en zone ouverte en emportant impératif le matériel informatique et les dossiers",
+                    "Fuir, à défaut se cacher et se confiner en silence, puis alerter les forces de l'ordre dès que l'accès est possible"
+                ],
+                "rep": "S'échapper (fuir) si l'itinéraire est sûr, à défaut se cacher et se confiner en silence, puis alerter les forces de l'ordre dès que l'accès est possible"
+            },
+            {
+                "q": "5. [Tronc Commun] En situation d'afflux massif de victimes (plan AMAVI) avec saturation de la capacité d'identification administrative, quel système d'identitovigilance de crise est activé ?",
+                "options": [
+                    "L'attribution immédiate d'un triptyque provisoire (ex: Numéro séquentiel unique, genre, et lettre de secteur de tri) couplé à un bracelet à code-barres de crise",
+                    "L'utilisation du numéro de sécurité sociale provisoire à 9 chiffres",
+                    "L'inscription au feutre indélébile du prénom d'usage sur l'avant-bras du patient"
+                ],
+                "rep": "L'attribution immédiate d'un triptyque provisoire (ex: Numéro séquentiel unique, genre, et lettre de secteur de tri) couplé à un bracelet à code-barres de crise"
+            }
+        ],
+        "metiers": {
+            "IDE": [
+                {"q": "6. [Module IDE] Lors d'un tri infirmière d'accueil et d'orientation (IAO) en contexte d'afflux massif de victimes (Plan Blanc actif), quelle est la règle de catégorisation de gravité à appliquer ?", "options": ["Attribuer arbitrairement un box à chaque patient selon son ordre d'arrivée chronologique", "Utiliser une grille de tri validée (ex: échelle triage type SMR ou criticité) pour isoler immédiatement les urgences absolues (U1) des urgences relatives (U2/U3)", "Laisser les patients s'installer dans la salle d'attente générale en attendant un médecin"], "rep": "Utiliser une grille de tri validée (ex: échelle triage type SMR ou criticité) pour isoler immédiatement les urgences absolues (U1) des urgences relatives (U2/U3)"}
+            ],
+            "AS": [
+                {"q": "6. [Module AS] Lors de l'ouverture de la Zone de Regroupement des Victimes (ZRV) aux urgences, quelle est la priorité d'intervention logistique de l'aide-soignant(e) ?", "options": ["Vérifier la disponibilité et l'agencement des stocks critiques (brancards spécifiques, kits d'habillage d'urgence, dispositifs d'oxygénothérapie de secours)", "Nettoyer les bureaux administratifs de l'étage", "Rédiger les fiches de transmission des infirmières"], "rep": "Vérifier la disponibilité et l'agencement des stocks critiques (brancards spécifiques, kits d'habillage d'urgence, dispositifs d'oxygénothérapie de secours)"}
+            ],
+            "Médecin": [
+                {"q": "6. [Module Médecin] En situation de saturation aiguë des urgences (Plan Blanc), quel est le rôle médico-légal et organisationnel du médecin coordinateur de crise en amont ?", "options": ["Déléguer l'ensemble des admissions aux internes sans supervision", "Valider la stratégie de médicalisation du tri, décider des orientations directes vers l'aval spécialisé et superviser la priorisation des examens paracliniques de débordement", "Transférer tous les patients vers la structure privée la plus proche"], "rep": "Valider la stratégie de médicalisation du tri, décider des orientations directes vers l'aval spécialisé et superviser la priorisation des examens paracliniques de débordement"}
+            ],
+            "ARM": [
+                {"q": "6. [Module ARM] En cas de signalement d'un Événement Impliquant de Multiples Victimes (EIMV), quel protocole de qualification l'ARM doit-il appliquer en priorité absolue ?", "options": ["Transférer immédiatement l'appel vers le standard général de l'hôpital", "Recueillir le nombre estimé d'impliqués, la cinétique exacte, la nature du vecteur (chimique, balistique, accidentel) et déclencher la boucle d'alerte du médecin régulateur chef de salle", "Demander aux appelants de se déplacer par leurs propres moyens aux urgences"], "rep": "Recueillir le nombre estimé d'impliqués, la cinétique exacte, la nature du vecteur (chimique, balistique, accidentel) et déclencher la boucle d'alerte du médecin régulateur chef de salle"}
+            ],
+            "Accueil": [
+                {"q": "6. [Module Accueil] Face à la pression des médias et des familles en période de crise sanitaire exceptionnelle (SSE), quelle est la procédure institutionnelle stricte à l'accueil ?", "options": ["Divulguer les noms des blessés aux journalistes pour rassurer le public", "Appliquer le principe de non-divulgation des données nominatives, filtrer l'accès physique selon les directives du PC de crise et orienter vers la cellule d'information du public (CIP)", "Laisser les journalistes entrer librement dans les box de soins"], "rep": "Appliquer le principe de non-divulgation des données nominatives, filtrer l'accès physique selon les directives du PC de crise et orienter vers la cellule d'information du public (CIP)"}
+            ],
+            "Brancardier": [
+                {"q": "6. [Module Brancardier] Lors d'un Plan Blanc impliquant des flux spécifiques de victimes, quelle est la règle cardinale de circulation interne pour les brancardiers ?", "options": ["Emprunter les ascenseurs prioritaires et respecter rigoureusement la sectorisation des flux (séparation stricte des circuits d'entrée et de sortie des victimes pour éviter la congestion)", "Circuler librement dans tous les services sans tenir compte des balisages de crise", "Attendre la fin de l'alerte dans la salle de repos"], "rep": "Emprunter les ascenseurs prioritaires et respecter rigoureusement la sectorisation des flux (séparation stricte des circuits d'entrée et de sortie des victimes pour éviter la congestion)"}
+            ],
+            "ASH": [
+                {"q": "6. [Module ASH] En cas de risque contaminant avéren (biologique ou chimique) lors d'une SSE, quelle est la consigne impérative pour l'ASH dans le traitement des déchets et des surfaces ?", "options": ["Utiliser les circuits et protocoles spécifiques de désinfection par voie aérienne ou produits virucides/sporicides validés, avec port des EPI de niveau adapté", "Traiter les surfaces avec le même détergent standard qu'en période normale sans EPI", "Stocker les déchets contaminés dans les poubelles banales du couloir"], "rep": "Utiliser les circuits et protocoles spécifiques de désinfection par voie aérienne ou produits virucides/sporicides validés, avec port des EPI de niveau adapté"}
+            ],
+            "Cadre": [
+                {"q": "6. [Module Cadre] Quel indicateur opérationnel immédiat le Cadre de Santé doit-il remonter en temps réel à la cellule de crise pour ajuster le dimensionnement du Plan Blanc ?", "options": ["Le nombre de tasses de café consommées par l'équipe de nuit", "Le taux de rotation des box, le volume de patients en attente de l'aval (beds-blocking) et l'état des effectifs soignants disponibles", "Le montant des heures complémentaires du mois précédent"], "rep": "Le taux de rotation des box, le volume de patients en attente de l'aval (beds-blocking) et l'état des effectifs soignants disponibles"}
+            ]
+        },
+        "fiches_reflexes": {
+            "Tronc Commun": {
+                "class": "memo-box-tc",
+                "slug": "tronc_commun",
+                "points": [
+                    "**Plan Blanc & Gouvernance** : Activation conjointe direction / commandement médical de crise (DMC) et libération programmée de l'aval.",
+                    "**Modes Dégradés & Traçabilité** : Utilisation obligatoire des dossiers papier normalisés de crise avec double signature et horodatage strict en cas de panne informatique.",
+                    "**Sécurité Active (Intrusion)** : Maîtrise des consignes de sauvegarde (Fuir - Se cacher - Alerter)."
+                ]
+            },
+            "IDE": {
+                "class": "memo-box-ide",
+                "slug": "ide",
+                "points": [
+                    "**Tri Pré-hospitalier/Intra-hospitalier** : Application rigoureuse des échelles de criticité pour l'identification immédiate des urgences absolues (U1).",
+                    "**Traçabilité de Crise** : Maintien d'un enregistrement minimal mais infaillible des soins critiques administrés sous triptyque de crise."
+                ]
+            },
+            "AS": {
+                "class": "memo-box-as",
+                "slug": "as",
+                "points": [
+                    "**Logistique Opérationnelle** : Mobilisation instantanée des chariots de crise et des stocks de brancardage normé.",
+                    "**Sécurisation des Flux** : Participation active à l'aménagement des zones tampons et de la ZRV."
+                ]
+            },
+            "Médecin": {
+                "class": "memo-box-med",
+                "slug": "medecin",
+                "points": [
+                    "**Régulation & Coordination Interne** : Supervision médicale du tri, arbitrage des priorités d'examens et pilotage des sorties directes vers l'aval.",
+                    "**Validation des Prescriptions de Crise** : Traçabilité formalisée des décisions d'urgence sous contrainte de plateau technique dégradé."
+                ]
+            },
+            "ARM": {
+                "class": "memo-box-arm",
+                "slug": "arm",
+                "points": [
+                    "**Qualification de l'EIMV** : Recueil normé du triptyque d'alerte (Cinétique, Nombre d'impliqués, Gravité potentielle) pour le médecin régulateur.",
+                    "**Sécurisation des Réseaux** : Utilisation exclusive des canaux de communication dédiés en situation critique."
+                ]
+            },
+            "Accueil & Admission": {
+                "class": "memo-box-acc",
+                "slug": "accueil",
+                "points": [
+                    "**Filtrage & Protection des Données** : Application stricte des consignes de non-divulgation des identités et orientation des familles vers la CIP.",
+                    "**Sécurité des Accès** : Verrouillage physique des entrées de l'unité sous tension."
+                ]
+            },
+            "Brancardier": {
+                "class": "memo-box-branc",
+                "slug": "brancardier",
+                "points": [
+                    "**Respect des Circulations** : Application stricte des plans de flux unidirectionnels et sectorisés (propres/contaminés).",
+                    "**Coordination** : Liaison permanente avec le poste de commandement logistique de crise."
+                ]
+            },
+            "ASH": {
+                "class": "memo-box-ash",
+                "slug": "ash",
+                "points": [
+                    "**Bio-nettoyage de Crise** : Application des protocoles spécifiques de désinfection renforcée en zone contaminée.",
+                    "**EPI & Filières** : Port obligatoire des équipements adaptés et gestion sécurisée des flux de déchets spécifiques."
+                ]
+            },
+            "Cadre de Santé": {
+                "class": "memo-box-cadre",
+                "slug": "cadre",
+                "points": [
+                    "**Pilotage & Reporting** : Remontée en temps réel des indicateurs de tension (saturation, lits d'aval, absentéisme/renforts).",
+                    "**Soutien Managérial** : Organisation des rotations d'équipes et accompagnement opérationnel sous tension."
+                ]
+            }
+        }
     },
     {
         "id": 3,
