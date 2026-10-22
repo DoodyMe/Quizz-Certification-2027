@@ -357,7 +357,7 @@ SESSIONS = [
     {
         "id": 1,
         "titre": "Semaine 1 - Droits du patient & Bientraitance",
-        "date_debut": datetime.date(2026, 10, 16),
+        "date_debut": datetime.date(2026, 10, 26),
         "date_fin": datetime.date(2026, 11, 1),
         "tronc_commun": [
             {
