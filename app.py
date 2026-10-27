@@ -153,7 +153,7 @@ st.markdown("""
         border: none;
         vertical-align: middle;
         
-    /* Ajustement responsive de la bannière pour les téléphones */
+   /* Ajustement responsive de la bannière pour les téléphones */
     @media screen and (max-width: 768px) {
         .main-title {
             font-size: 1.2rem !important; /* Réduit la taille du titre sur mobile */
