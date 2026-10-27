@@ -140,6 +140,19 @@ st.markdown("""
         background: linear-gradient(135deg, #e6fffa 0%, #f0f9ff 50%, #f5f3ff 100%);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
+     .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
+    .subtitle { color: #0369a1; font-weight: 600; margin-top: 0.2rem; }
+    
+    .header-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: none;
+    }
+    .header-table td {
+        border: none;
+        vertical-align: middle;
+        
     /* Ajustement responsive de la bannière pour les téléphones */
     @media screen and (max-width: 768px) {
         .main-title {
