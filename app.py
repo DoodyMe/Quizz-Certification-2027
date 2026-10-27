@@ -220,7 +220,7 @@ SESSIONS = [
         "id": 0,
         "titre": "Semaine 0 - Session de Démonstration & Test",
         "date_debut": datetime.date(2026, 1, 1),
-        "date_fin": datetime.date(2027, 12, 31),
+        "date_fin": datetime.date(2026, 12, 31),
         "tronc_commun": [
             {
                 "q": "🔎 [Démo Tronc Commun] Quel est l'objectif principal de cette plateforme de révision automatisée ?",
@@ -743,7 +743,7 @@ logo_droite_html = ""
 try:
     with open("logo.jpg", "rb") as f:
         encoded_img_g = base64.b64encode(f.read()).decode()
-    logo_gauche_html = f"<img src='data:image/jpeg;base64,{encoded_img_g}'"
+    logo_gauche_html = f"<img src='data:image/jpeg;base64,{encoded_img_g}' style='border-radius:20px; border:3px solid #99f6e4; max-width:110px; display:block; margin:0 auto;'>"
 except Exception:
     pass
 
@@ -751,7 +751,7 @@ except Exception:
 try:
     with open("logo2.jpg", "rb") as f:
         encoded_img_d = base64.b64encode(f.read()).decode()
-    logo_droite_html = f"<img src='data:image/jpeg;base64,{encoded_img_d}'"
+    logo_droite_html = f"<img src='data:image/jpeg;base64,{encoded_img_d}' style='border-radius:20px; border:3px solid #99f6e4; max-width:110px; display:block; margin:0 auto;'>"
 except Exception:
     pass
 
@@ -893,7 +893,7 @@ if not st.session_state.user_pseudo:
 else:
     col_head1, col_head2 = st.columns([4, 1])
     with col_head1:
-        st.markdown(f"<div class='user-header'>🤪 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
     with col_head2:
         if st.button("🔒 Déconnexion"):
             st.session_state.user_pseudo = None
@@ -916,7 +916,19 @@ else:
 
    # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ & GESTION DU DÉJÀ-FAIT ---
     with tab_actuel:
-        session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
+        mes_notes_utilisateur = charger_notes_utilisateur(st.session_state.user_pseudo)
+        
+        # Obliger les nouveaux participants à faire la Semaine 0 en premier
+        a_fait_semaine_0 = any(str(item.get("Semaine_ID")) == "0" for item in mes_notes_utilisateur)
+
+        if not a_fait_semaine_0:
+            session_active = next((s for s in SESSIONS if s["id"] == 0), None)
+            if session_active:
+                st.info("👋 **Bienvenue !** Pour votre première connexion, veuillez valider le quiz de démonstration (Semaine 0) avant d'accéder aux semaines suivantes.")
+        else:
+            session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle" and s["id"] != 0), None)
+            if not session_active:
+                session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
         
         if not session_active:
             st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui. Veuillez consulter le calendrier des 'Semaines À Venir' !")
@@ -927,15 +939,14 @@ else:
             )
 
             # Vérification si l'utilisateur a déjà validé cette session
-            mes_notes_actuelles = charger_notes_utilisateur(st.session_state.user_pseudo)
-            deja_fait = any(str(item.get("Semaine_ID")) == str(session_active["id"]) for item in mes_notes_actuelles)
+            deja_fait = any(str(item.get("Semaine_ID")) == str(session_active["id"]) for item in mes_notes_utilisateur)
 
             # S'il a déjà validé et qu'il n'est pas en train de forcer un recommencement
             if deja_fait and not st.session_state.get(f"force_recommencer_{session_active['id']}", False):
                 st.success("🎉 Vous avez déjà validé le quiz de cette session !")
                 
                 # On récupère son dernier score pour l'afficher proprement
-                derniere_note = next((item for item in mes_notes_actuelles if str(item.get("Semaine_ID")) == str(session_active["id"])), None)
+                derniere_note = next((item for item in mes_notes_utilisateur if str(item.get("Semaine_ID")) == str(session_active["id"])), None)
                 if derniere_note:
                     st.metric("Votre score enregistré", f"{derniere_note.get('Score')} / {derniere_note.get('Total_Questions')}")
 
