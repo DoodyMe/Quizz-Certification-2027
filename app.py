@@ -136,32 +136,38 @@ def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
-   
-     .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
-    .subtitle { color: #0369a1; font-weight: 600; margin-top: 0.2rem; }
+    .stApp {
+        background: linear-gradient(135deg, #e6fffa 0%, #f0f9ff 50%, #f5f3ff 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
     
+    /* Correction robuste pour éviter que le texte du titre ne parte en vrac sur mobile */
     .header-table {
         width: 100%;
         border-collapse: collapse;
         border: none;
+        table-layout: fixed;
     }
     .header-table td {
         border: none;
         vertical-align: middle;
-        
-   /* Ajustement responsive de la bannière pour les téléphones */
+        word-wrap: break-word;
+    }
+
+    /* Ajustement responsive de la bannière pour les téléphones */
     @media screen and (max-width: 768px) {
         .main-title {
-            font-size: 1.2rem !important; /* Réduit la taille du titre sur mobile */
+            font-size: 1.1rem !important; 
+            white-space: nowrap; /* Force le titre principal sur une seule ligne si possible */
         }
         .subtitle {
-            font-size: 0.85rem !important; /* Réduit la taille du sous-titre */
+            font-size: 0.8rem !important; 
         }
         .header-table p {
-            font-size: 0.75rem !important; /* Réduit le texte descriptif */
+            font-size: 0.7rem !important; 
         }
         .header-table img {
-            max-width: 60px !important; /* Réduit un peu la taille des logos sur mobile */
+            max-width: 50px !important; 
         }
     }
     
