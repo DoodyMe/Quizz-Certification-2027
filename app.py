@@ -70,6 +70,46 @@ def enregistrer_reponse(pseudo, semaine_id, score, total):
         st.error(f"Erreur de sauvegarde : {e}")
         return False
 
+def calculer_scores_podium():
+    """
+    Calcule le score total cumulé de chaque utilisateur en ne gardant 
+    que la PREMIÈRE tentative validée pour chaque Semaine_ID.
+    """
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        records = sheet.get_all_records()
+        
+        tentatives_uniques = {}
+        
+        for r in records:
+            pseudo = str(r.get("Pseudo"))
+            semaine_id = str(r.get("Semaine_ID"))
+            try:
+                score = int(r.get("Score", 0))
+            except ValueError:
+                score = 0
+                
+            if pseudo and semaine_id:
+                if pseudo not in tentatives_uniques:
+                    tentatives_uniques[pseudo] = {}
+                if semaine_id not in tentatives_uniques[pseudo]:
+                    tentatives_uniques[pseudo][semaine_id] = score
+                    
+        classement = []
+        for pseudo, semaines_dict in tentatives_uniques.items():
+            total_points = sum(semaines_dict.values())
+            nb_quiz = len(semaines_dict)
+            classement.append({
+                "Pseudo": pseudo,
+                "Total_Points": total_points,
+                "Quiz_Completes": nb_quiz
+            })
+            
+        classement = sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
+        return classement
+    except Exception:
+        return []
+
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
     
@@ -836,7 +876,7 @@ if not st.session_state.user_pseudo:
         st.markdown("""
             <div class='auth-card-header'>
                 <h3 style='color:#0f766e; margin:0;'>😷 Créez votre Avatar & Mot de passe</h3>
-                <p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Ce pseudo et ce mot de passe vous suivront tout au long des révisions.</p>
+                <p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Ce pseudo et ce mot de passe te suivront tout au long des révisions.</p>
             </div>
         """, unsafe_allow_html=True)
 
@@ -910,45 +950,54 @@ else:
 
     st.markdown("<h2 style='color:#0f766e; margin-top:15px;'>🗃️ Tableau de bord des Révisions</h2>", unsafe_allow_html=True)
 
-    tab_actuel, tab_progression, tab_historique, tab_avenir = st.tabs([
+    tab_actuel, tab_progression, tab_historique, tab_avenir, tab_podium = st.tabs([
         "🤔❓ Semaine Actuelle", 
         "🥳 Ma Progression", 
         "🧐 Archives & Fiches Mémos", 
-        "⌛ Semaines À Venir"
+        "⌛ Semaines À Venir",
+        "🏆 Podium"
     ])
 
    # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ & GESTION DU DÉJÀ-FAIT ---
     with tab_actuel:
         mes_notes_utilisateur = charger_notes_utilisateur(st.session_state.user_pseudo)
         
-        # Obliger les nouveaux participants à faire la Semaine 0 en premier
-        a_fait_semaine_0 = any(str(item.get("Semaine_ID")) == "0" for item in mes_notes_utilisateur)
+        # Récupère la liste des IDs de semaines déjà validées par l'utilisateur
+        semaines_validees = [str(item.get("Semaine_ID")) for item in mes_notes_utilisateur]
 
-        if not a_fait_semaine_0:
-            session_active = next((s for s in SESSIONS if s["id"] == 0), None)
-            if session_active:
-                st.info("👋 **Bienvenue !** Pour votre première connexion, veuillez valider le quiz de démonstration (Semaine 0) avant d'accéder aux semaines suivantes.")
-        else:
-            session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle" and s["id"] != 0), None)
-            if not session_active:
-                session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
+        # On cherche la première session (dans l'ordre des IDs : 0, 1, 2...) qui n'a PAS encore été validée
+        # et dont la date de début est déjà atteinte ou dépassée (ou la démo id=0)
+        session_active = None
+        for s in SESSIONS:
+            statut = obtenir_statut_session(s)
+            # Une session est accessible si elle est "Actuelle", "Passee", ou si c'est la démo (id=0)
+            if (statut in ["Actuelle", "Passee"] or s["id"] == 0) and str(s["id"]) not in semaines_validees:
+                session_active = s
+                break
         
+        # Si toutes les sessions passées/actuelles ont été faites, on prend par défaut la session "Actuelle" du calendrier
+        if not session_active:
+            session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
+
         if not session_active:
             st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui. Veuillez consulter le calendrier des 'Semaines À Venir' !")
         else:
+            # Petit message d'information s'il a du retard à rattraper
+            if str(session_active["id"]) != str(next((s["id"] for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), session_active["id"])):
+                st.warning(f"⚠️ **Rattrapage en cours :** Tu dois valider la **{session_active['titre']}** avant de pouvoir accéder aux semaines suivantes ! (Tu croyais t'en sortir comme ça ? Eh bien non :D)")
+
             st.markdown(
                 f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>⚡ Session de révision interactive</p></div>",
                 unsafe_allow_html=True
             )
 
-            # Vérification si l'utilisateur a déjà validé cette session
-            deja_fait = any(str(item.get("Semaine_ID")) == str(session_active["id"]) for item in mes_notes_utilisateur)
+            # Vérification si l'utilisateur a déjà validé cette session spécifique
+            deja_fait = str(session_active["id"]) in semaines_validees
 
             # S'il a déjà validé et qu'il n'est pas en train de forcer un recommencement
             if deja_fait and not st.session_state.get(f"force_recommencer_{session_active['id']}", False):
-                st.success("🎉 Vous avez déjà validé le quiz de cette session !")
+                st.success("🎉 Tu as déjà validé le quiz de cette session !")
                 
-                # On récupère son dernier score pour l'afficher proprement
                 derniere_note = next((item for item in mes_notes_utilisateur if str(item.get("Semaine_ID")) == str(session_active["id"])), None)
                 if derniere_note:
                     st.metric("Votre score enregistré", f"{derniere_note.get('Score')} / {derniere_note.get('Total_Questions')}")
@@ -964,7 +1013,7 @@ else:
             else:
                 # Logique normale du quiz interactif
                 if st.session_state.quiz_paused:
-                    st.warning(f"⏸️ **Quiz en pause détecté !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
+                    st.warning(f"⏸️ **Quiz en pause détecté !** Tu étais à la question {st.session_state.current_q_index + 1}.")
                     c_rep, c_raz = st.columns([1, 1])
                     with c_rep:
                         if st.button("▶️ Reprendre mon quiz", type="primary", use_container_width=True):
@@ -1129,7 +1178,7 @@ else:
         mes_notes = charger_notes_utilisateur(st.session_state.user_pseudo)
         
         if not mes_notes:
-            st.info("Vous n'avez pas encore répondu à un quiz. Participez à la semaine actuelle pour voir apparaître vos statistiques !")
+            st.info("Tu n'as pas encore répondu à un quiz. Participe à la semaine actuelle pour voir apparaître tes statistiques !")
         else:
             total_points = sum(int(item["Score"]) for item in mes_notes if "Score" in item)
             total_possible = sum(int(item["Total_Questions"]) for item in mes_notes if "Total_Questions" in item)
@@ -1234,3 +1283,45 @@ else:
                     f"<div class='card-avenir'><h4 style='color:#b45309;'>🔒 {s['titre']}</h4><p style='margin:0;'>📅 Ouverture prévue du <strong>{str_debut} au {str_fin}</strong></p></div>",
                     unsafe_allow_html=True
                 )
+
+    # --- TAB 5 : PODIUM / TOP 10 ---
+    with tab_podium:
+        st.markdown("<h3 style='color:#0f766e;'>🏆 Top 10 — Podium Cumulatif de l'Équipe</h3>", unsafe_allow_html=True)
+        st.markdown("*(Classement général sans distinction de métier, basé uniquement sur le score de la **première participation** de chaque semaine)*")
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        classement = calculer_scores_podium()
+
+        if not classement:
+            st.info("Aucun score enregistré pour l'instant. Soyez le premier à valider un quiz !")
+        else:
+            top_10 = classement[:10]
+            
+            for idx, user_data in enumerate(top_10):
+                rang = idx + 1
+                
+                if rang == 1:
+                    medaille = "🥇"
+                    card_bg = "background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); border: 2px solid #eab308;"
+                elif rang == 2:
+                    medaille = "🥈"
+                    card_bg = "background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 2px solid #94a3b8;"
+                elif rang == 3:
+                    medaille = "🥉"
+                    card_bg = "background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 2px solid #f97316;"
+                else:
+                    medaille = f"#{rang}"
+                    card_bg = "background: #ffffff; border: 1px solid #cbd5e1;"
+
+                st.markdown(f"""
+                    <div style="{card_bg} border-radius: 16px; padding: 15px 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <span style="font-size: 1.5rem; font-weight: 800; min-width: 40px; text-align: center;">{medaille}</span>
+                            <span style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">{user_data['Pseudo']}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 1.1rem; font-weight: 800; color: #0f766e;">{user_data['Total_Points']} pts</span>
+                            <span style="display: block; font-size: 0.8rem; color: #64748b;">({user_data['Quiz_Completes']} quiz validés)</span>
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
