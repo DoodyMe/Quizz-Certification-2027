@@ -18,6 +18,9 @@ st.set_page_config(
 # ------------------------------------------------------------------------------
 # 2. CONNEXION GOOGLE SHEETS VIA GSPREAD
 # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# 2. CONNEXION GOOGLE SHEETS VIA GSPREAD (AVEC CACHE OPTIMISÉ)
+# ------------------------------------------------------------------------------
 @st.cache_resource
 def get_gspread_client():
     scope = [
@@ -34,6 +37,8 @@ def get_sheet():
     client = get_gspread_client()
     return client.open_by_url(st.secrets["spreadsheet_url"])
 
+# On met en cache pour 60 secondes pour éviter de mitrailler Google Sheets en cas de clics répétés
+@st.cache_data(ttl=60)
 def charger_utilisateurs():
     try:
         sheet = get_sheet().worksheet("Utilisateurs")
@@ -47,12 +52,15 @@ def ajouter_utilisateur(pseudo, mdp):
         sheet = get_sheet().worksheet("Utilisateurs")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
         sheet.append_row([date_str, str(pseudo), str(mdp)])
+        # On nettoie le cache des utilisateurs pour forcer la relecture au prochain besoin
+        charger_utilisateurs.clear()
         return True
     except Exception as e:
         st.error(f"Erreur d'enregistrement Google Sheets : {e}")
         return False
 
-def charger_notes_utilisateur(pseudo):
+@st.cache_data(ttl=30)
+def charger_notes_utilisateur_cached(pseudo):
     try:
         sheet = get_sheet().worksheet("Reponses")
         records = sheet.get_all_records()
@@ -60,16 +68,24 @@ def charger_notes_utilisateur(pseudo):
     except Exception:
         return []
 
+def charger_notes_utilisateur(pseudo):
+    return charger_notes_utilisateur_cached(pseudo)
+
 def enregistrer_reponse(pseudo, semaine_id, score, total):
     try:
         sheet = get_sheet().worksheet("Reponses")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
         sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total)])
+        # On vide le cache des notes pour que la progression se mette à jour instantanément
+        charger_notes_utilisateur_cached.clear()
+        if "calculer_scores_podium" in globals():
+            calculer_scores_podium.clear()
         return True
     except Exception as e:
         st.error(f"Erreur de sauvegarde : {e}")
         return False
 
+@st.cache_data(ttl=60)
 def calculer_scores_podium():
     """
     Calcule le score total cumulé de chaque utilisateur en ne gardant 
