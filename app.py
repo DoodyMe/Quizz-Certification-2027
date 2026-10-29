@@ -68,60 +68,68 @@ def charger_notes_utilisateur_cached(pseudo):
 def charger_notes_utilisateur(pseudo):
     return charger_notes_utilisateur_cached(pseudo)
 
-def enregistrer_reponse(pseudo, semaine_id, score, total):
+def enregistrer_reponse(pseudo, semaine_id, score, total, role=""):
     try:
         sheet = get_sheet().worksheet("Reponses")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total)])
-        # On vide le cache des notes pour que la progression se mette à jour instantanément
+               # on crée une colonne "Metier" dans ta feuille Google Sheets "Reponses"
+        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total), str(role)])
+        
         charger_notes_utilisateur_cached.clear()
-        if "calculer_scores_podium" in globals():
-            calculer_scores_podium.clear()
+        if "calculer_scores_podium_par_metier" in globals():
+            calculer_scores_podium_par_metier.clear()
         return True
     except Exception as e:
         st.error(f"Erreur de sauvegarde : {e}")
         return False
 
 @st.cache_data(ttl=60)
-def calculer_scores_podium():
-    """
-    Calcule le score total cumulé de chaque utilisateur en ne gardant 
-    que la PREMIÈRE tentative validée pour chaque Semaine_ID.
-    """
+def calculer_scores_podium_par_metier():
     try:
         sheet = get_sheet().worksheet("Reponses")
         records = sheet.get_all_records()
         
-        tentatives_uniques = {}
+        # Dictionnaire structuré : { "IDE": { "Lapin Astucieux": {semaine_id: score}, ... }, ... }
+        podiums_metiers = {}
         
         for r in records:
             pseudo = str(r.get("Pseudo"))
             semaine_id = str(r.get("Semaine_ID"))
+            # Récupère le métier (si la colonne s'appelle "Metier" dans ton Google Sheet)
+            metier = str(r.get("Metier", "Non spécifié")) 
             try:
                 score = int(r.get("Score", 0))
             except ValueError:
                 score = 0
                 
             if pseudo and semaine_id:
-                if pseudo not in tentatives_uniques:
-                    tentatives_uniques[pseudo] = {}
-                if semaine_id not in tentatives_uniques[pseudo]:
-                    tentatives_uniques[pseudo][semaine_id] = score
+                if metier not in podiums_metiers:
+                    podiums_metiers[metier] = {}
+                if pseudo not in podiums_metiers[metier]:
+                    podiums_metiers[metier][pseudo] = {}
+                
+                # On garde la première tentative de la semaine
+                if semaine_id not in podiums_metiers[metier][pseudo]:
+                    podiums_metiers[metier][pseudo][semaine_id] = score
                     
-        classement = []
-        for pseudo, semaines_dict in tentatives_uniques.items():
-            total_points = sum(semaines_dict.values())
-            nb_quiz = len(semaines_dict)
-            classement.append({
-                "Pseudo": pseudo,
-                "Total_Points": total_points,
-                "Quiz_Completes": nb_quiz
-            })
+        # On transforme pour obtenir un classement trié par métier
+        classement_par_metier = {}
+        for metier, users in podiums_metiers.items():
+            liste_users = []
+            for pseudo, semaines_dict in users.items():
+                total_points = sum(semaines_dict.values())
+                nb_quiz = len(semaines_dict)
+                liste_users.append({
+                    "Pseudo": pseudo,
+                    "Total_Points": total_points,
+                    "Quiz_Completes": nb_quiz
+                })
+            # Tri par points décroissants pour ce métier
+            classement_par_metier[metier] = sorted(liste_users, key=lambda x: x["Total_Points"], reverse=True)
             
-        classement = sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
-        return classement
+        return classement_par_metier
     except Exception:
-        return []
+        return {}
 
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
@@ -1316,44 +1324,96 @@ else:
                     unsafe_allow_html=True
                 )
 
-    # --- TAB 5 : PODIUM / TOP 10 ---
+ # --- TAB 5 : PODIUM / TOP 10 PAR MÉTIER & GÉNÉRAL ---
     with tab_podium:
-        st.markdown("<h3 style='color:#0f766e;'>🏆 Top 10 — Podium Cumulatif de l'Équipe</h3>", unsafe_allow_html=True)
-        st.markdown("*(Classement général sans distinction de métier, basé uniquement sur le score de la **première participation** de chaque semaine)*")
+        st.markdown("<h3 style='color:#0f766e;'>🏆 Podiums & Classements de l'Équipe</h3>", unsafe_allow_html=True)
+        st.markdown("*(Classements cumulatifs basés uniquement sur le score de la **première participation** de chaque semaine)*")
         st.markdown("<br>", unsafe_allow_html=True)
 
-        classement = calculer_scores_podium()
+        podiums_data = calculer_scores_podium_par_metier()
 
-        if not classement:
+        if not podiums_data:
             st.info("Aucun score enregistré pour l'instant. Soyez le premier à valider un quiz !")
         else:
-            top_10 = classement[:10]
+            # On récupère tous les métiers présents dans les données, plus un onglet "Général"
+            metiers_disponibles = sorted(list(podiums_data.keys()))
             
-            for idx, user_data in enumerate(top_10):
-                rang = idx + 1
+            # On crée des sous-onglets dynamiques : un onglet par métier
+            tabs_podiums = st.tabs(["🌟 Général"] + [f"🩺 {m}" for m in metiers_disponibles])
+            
+            # 1. Sous-onglet Général (tous les métiers confondus)
+            with tabs_podiums[0]:
+                st.markdown("#### 🌟 Top 10 Général de l'Équipe")
+                st.markdown("<br>", unsafe_allow_html=True)
                 
-                if rang == 1:
-                    medaille = "🥇"
-                    card_bg = "background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); border: 2px solid #eab308;"
-                elif rang == 2:
-                    medaille = "🥈"
-                    card_bg = "background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 2px solid #94a3b8;"
-                elif rang == 3:
-                    medaille = "🥉"
-                    card_bg = "background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 2px solid #f97316;"
+                # Calcul du général global
+                classement_general = calculer_scores_podium()
+                if not classement_general:
+                    st.info("Aucun score général pour le moment.")
                 else:
-                    medaille = f"#{rang}"
-                    card_bg = "background: #ffffff; border: 1px solid #cbd5e1;"
+                    for idx, user_data in enumerate(classement_general[:10]):
+                        rang = idx + 1
+                        if rang == 1:
+                            medaille = "🥇"
+                            card_bg = "background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); border: 2px solid #eab308;"
+                        elif rang == 2:
+                            medaille = "🥈"
+                            card_bg = "background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 2px solid #94a3b8;"
+                        elif rang == 3:
+                            medaille = "🥉"
+                            card_bg = "background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 2px solid #f97316;"
+                        else:
+                            medaille = f"#{rang}"
+                            card_bg = "background: #ffffff; border: 1px solid #cbd5e1;"
 
-                st.markdown(f"""
-                    <div style="{card_bg} border-radius: 16px; padding: 15px 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <span style="font-size: 1.5rem; font-weight: 800; min-width: 40px; text-align: center;">{medaille}</span>
-                            <span style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">{user_data['Pseudo']}</span>
-                        </div>
-                        <div style="text-align: right;">
-                            <span style="font-size: 1.1rem; font-weight: 800; color: #0f766e;">{user_data['Total_Points']} pts</span>
-                            <span style="display: block; font-size: 0.8rem; color: #64748b;">({user_data['Quiz_Completes']} quiz validés)</span>
-                        </div>
-                    </div>
-                """, unsafe_allow_html=True)
+                        st.markdown(f"""
+                            <div style="{card_bg} border-radius: 16px; padding: 15px 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <span style="font-size: 1.5rem; font-weight: 800; min-width: 40px; text-align: center;">{medaille}</span>
+                                    <span style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">{user_data['Pseudo']}</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="font-size: 1.1rem; font-weight: 800; color: #0f766e;">{user_data['Total_Points']} pts</span>
+                                    <span style="display: block; font-size: 0.8rem; color: #64748b;">({user_data['Quiz_Completes']} quiz validés)</span>
+                                </div>
+                            </div>
+                        """, unsafe_allow_html=True)
+
+            # 2. Sous-onglets par Métier
+            for idx_m, metier in enumerate(metiers_disponibles):
+                with tabs_podiums[idx_m + 1]:
+                    st.markdown(f"#### 🎯 Podium — {metier}")
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    
+                    classement_metier = podiums_data.get(metier, [])
+                    
+                    if not classement_metier:
+                        st.info("Aucun participant dans cette catégorie pour le moment.")
+                    else:
+                        for idx, user_data in enumerate(classement_metier[:10]):
+                            rang = idx + 1
+                            if rang == 1:
+                                medaille = "🥇"
+                                card_bg = "background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); border: 2px solid #eab308;"
+                            elif rang == 2:
+                                medaille = "🥈"
+                                card_bg = "background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 2px solid #94a3b8;"
+                            elif rang == 3:
+                                medaille = "🥉"
+                                card_bg = "background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 2px solid #f97316;"
+                            else:
+                                medaille = f"#{rang}"
+                                card_bg = "background: #ffffff; border: 1px solid #cbd5e1;"
+
+                            st.markdown(f"""
+                                <div style="{card_bg} border-radius: 16px; padding: 15px 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                        <span style="font-size: 1.5rem; font-weight: 800; min-width: 40px; text-align: center;">{medaille}</span>
+                                        <span style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">{user_data['Pseudo']}</span>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span style="font-size: 1.1rem; font-weight: 800; color: #0f766e;">{user_data['Total_Points']} pts</span>
+                                        <span style="display: block; font-size: 0.8rem; color: #64748b;">({user_data['Quiz_Completes']} quiz validés)</span>
+                                    </div>
+                                </div>
+                            """, unsafe_allow_html=True)
