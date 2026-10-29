@@ -84,6 +84,45 @@ def enregistrer_reponse(pseudo, semaine_id, score, total, role=""):
         return False
 
 @st.cache_data(ttl=60)
+def calculer_scores_podium():
+    """
+    Calcule le score total cumulé de chaque utilisateur en ne gardant 
+    que la PREMIÈRE tentative validée pour chaque Semaine_ID.
+    """
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        records = sheet.get_all_records()
+        
+        tentatives_uniques = {}
+        
+        for r in records:
+            pseudo = str(r.get("Pseudo"))
+            semaine_id = str(r.get("Semaine_ID"))
+            try:
+                score = int(r.get("Score", 0))
+            except ValueError:
+                score = 0
+                
+            if pseudo and semaine_id:
+                if pseudo not in tentatives_uniques:
+                    tentatives_uniques[pseudo] = {}
+                if semaine_id not in tentatives_uniques[pseudo]:
+                    tentatives_uniques[pseudo][semaine_id] = score
+                    
+        classement = []
+        for pseudo, semaines_dict in tentatives_uniques.items():
+            total_points = sum(semaines_dict.values())
+            nb_quiz = len(semaines_dict)
+            classement.append({
+                "Pseudo": pseudo,
+                "Total_Points": total_points,
+                "Quiz_Completes": nb_quiz
+            })
+            
+        classement = sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
+        return classement
+    except Exception:
+        return []
 def calculer_scores_podium_par_metier():
     try:
         sheet = get_sheet().worksheet("Reponses")
