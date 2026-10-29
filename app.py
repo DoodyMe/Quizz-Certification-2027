@@ -16,9 +16,6 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. CONNEXION GOOGLE SHEETS VIA GSPREAD
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 # 2. CONNEXION GOOGLE SHEETS VIA GSPREAD (AVEC CACHE OPTIMISÉ)
 # ------------------------------------------------------------------------------
 @st.cache_resource
@@ -157,6 +154,10 @@ st.markdown("""
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
+    /* Force l'affichage des textes en couleur sombre, même en mode sombre */
+p, span, label, .question-title {
+    color: #1e293b !important;
+}
     /* Correction robuste pour éviter que le texte du titre ne parte en vrac sur mobile */
     .header-table {
         width: 100%;
