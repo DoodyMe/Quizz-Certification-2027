@@ -369,7 +369,7 @@ SESSIONS = [
         "id": 0,
         "titre": "Semaine 0 - Session de Démonstration & Test",
         "date_debut": datetime.date(2026, 1, 1),
-        "date_fin": datetime.date(2026, 12, 31),
+        "date_fin": datetime.date(2026, 10, 26),
         "tronc_commun": [
             {
                 "q": "🔎 [Démo Tronc Commun] Quel est l'objectif principal de cette plateforme de révision automatisée ?",
