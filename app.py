@@ -1037,15 +1037,19 @@ else:
         "🏆 Podium"
     ])
 
-   # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ & GESTION DU DÉJÀ-FAIT ---
+  # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ & GESTION DU DÉJÀ-FAIT ---
     with tab_actuel:
+        # On s'assure d'avoir les données fraîches en vidant le cache des notes à chaque affichage de l'onglet
+        charger_notes_utilisateur_cached.clear()
         mes_notes_utilisateur = charger_notes_utilisateur(st.session_state.user_pseudo)
         
         # Récupère la liste des IDs de semaines déjà validées par l'utilisateur
         semaines_validees = [str(item.get("Semaine_ID")) for item in mes_notes_utilisateur]
 
+        # Identifier la session actuelle du calendrier calendaire
+        session_calendrier_actuelle = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), SESSIONS[0])
+
         # On cherche la première session (dans l'ordre des IDs : 0, 1, 2...) qui n'a PAS encore été validée
-        # et dont la date de début est déjà atteinte ou dépassée (ou la démo id=0)
         session_active = None
         for s in SESSIONS:
             statut = obtenir_statut_session(s)
@@ -1056,14 +1060,14 @@ else:
         
         # Si toutes les sessions passées/actuelles ont été faites, on prend par défaut la session "Actuelle" du calendrier
         if not session_active:
-            session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), None)
+            session_active = session_calendrier_actuelle
 
         if not session_active:
             st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui. Veuillez consulter le calendrier des 'Semaines À Venir' !")
         else:
-            # Petit message d'information s'il a du retard à rattraper
-            if str(session_active["id"]) != str(next((s["id"] for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), session_active["id"])):
-                st.warning(f"⚠️ **Rattrapage en cours :** Tu dois valider la **{session_active['titre']}** avant de pouvoir accéder aux semaines suivantes ! (Tu croyais t'en sortir comme ça ? Eh bien non :D)")
+            # Message de rattrapage UNIQUEMENT si l'ID de la session active est STRICTEMENT INFÉRIEUR à la session actuelle du calendrier
+            if session_active["id"] < session_calendrier_actuelle["id"] and str(session_active["id"]) not in semaines_validees:
+                st.warning(f"⚠️ **Rattrapage en cours :** Vous devez valider la **{session_active['titre']}** avant de pouvoir accéder aux semaines suivantes !")
 
             st.markdown(
                 f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>⚡ Session de révision interactive</p></div>",
@@ -1075,7 +1079,7 @@ else:
 
             # S'il a déjà validé et qu'il n'est pas en train de forcer un recommencement
             if deja_fait and not st.session_state.get(f"force_recommencer_{session_active['id']}", False):
-                st.success("🎉 Tu as déjà validé le quiz de cette session !")
+                st.success("🎉 Vous avez déjà validé le quiz de cette session !")
                 
                 derniere_note = next((item for item in mes_notes_utilisateur if str(item.get("Semaine_ID")) == str(session_active["id"])), None)
                 if derniere_note:
@@ -1092,7 +1096,7 @@ else:
             else:
                 # Logique normale du quiz interactif
                 if st.session_state.quiz_paused:
-                    st.warning(f"⏸️ **Quiz en pause détecté !** Tu étais à la question {st.session_state.current_q_index + 1}.")
+                    st.warning(f"⏸️ **Quiz en pause détecté !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
                     c_rep, c_raz = st.columns([1, 1])
                     with c_rep:
                         if st.button("▶️ Reprendre mon quiz", type="primary", use_container_width=True):
@@ -1216,8 +1220,11 @@ else:
 
                             st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
-                            if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q):
+                            # On enregistre avec le rôle métier
+                            if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
                                 st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés sur Google Sheets.")
+                                # On force le nettoyage immédiat du cache des notes pour basculer directement à la suite
+                                charger_notes_utilisateur_cached.clear()
 
                             st.divider()
                             st.markdown("### 📖 Bilan des Réponses")
@@ -1242,7 +1249,7 @@ else:
                                 """, unsafe_allow_html=True)
 
                             st.markdown("<br>", unsafe_allow_html=True)
-                            if st.button("🔄 Recommencer le quiz", key="restart_quiz_btn", type="secondary"):
+                            if st.button("🔄 Valider et passer à la suite", key="restart_quiz_btn", type="primary"):
                                 st.session_state.current_q_index = 0
                                 st.session_state.user_quiz_answers = {}
                                 st.session_state.quiz_paused = False
