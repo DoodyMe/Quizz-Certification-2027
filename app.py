@@ -56,6 +56,10 @@ def ajouter_utilisateur(pseudo, mdp):
         st.error(f"Erreur d'enregistrement Google Sheets : {e}")
         return False
 
+# ------------------------------------------------------------------------------
+# FONCTIONS DE GESTION DES NOTES ET DES PODIUMS
+# ------------------------------------------------------------------------------
+
 @st.cache_data(ttl=30)
 def charger_notes_utilisateur_cached(pseudo):
     try:
@@ -72,12 +76,14 @@ def enregistrer_reponse(pseudo, semaine_id, score, total, role=""):
     try:
         sheet = get_sheet().worksheet("Reponses")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-               # on crée une colonne "Metier" dans ta feuille Google Sheets "Reponses"
-        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total), str(role)])
+        metier_str = str(role) if role else "Non renseigné"
         
+        # Enregistrement dans les colonnes : Horodateur | Pseudo | Semaine_ID | Score | Total | Metier
+        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total), metier_str])
+        
+        # On vide le cache des notes pour rafraîchir l'affichage instantanément
         charger_notes_utilisateur_cached.clear()
-        if "calculer_scores_podium_par_metier" in globals():
-            calculer_scores_podium_par_metier.clear()
+        
         return True
     except Exception as e:
         st.error(f"Erreur de sauvegarde : {e}")
@@ -86,15 +92,13 @@ def enregistrer_reponse(pseudo, semaine_id, score, total, role=""):
 @st.cache_data(ttl=60)
 def calculer_scores_podium():
     """
-    Calcule le score total cumulé de chaque utilisateur en ne gardant 
-    que la PREMIÈRE tentative validée pour chaque Semaine_ID.
+    Calcule le score total cumulé de chaque utilisateur (Top Général).
     """
     try:
         sheet = get_sheet().worksheet("Reponses")
         records = sheet.get_all_records()
         
         tentatives_uniques = {}
-        
         for r in records:
             pseudo = str(r.get("Pseudo"))
             semaine_id = str(r.get("Semaine_ID"))
@@ -119,23 +123,27 @@ def calculer_scores_podium():
                 "Quiz_Completes": nb_quiz
             })
             
-        classement = sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
-        return classement
+        return sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
     except Exception:
         return []
+
+@st.cache_data(ttl=60)
 def calculer_scores_podium_par_metier():
+    """
+    Calcule le score total cumulé de chaque utilisateur classé par corps de métier.
+    """
     try:
         sheet = get_sheet().worksheet("Reponses")
         records = sheet.get_all_records()
         
-        # Dictionnaire structuré : { "IDE": { "Lapin Astucieux": {semaine_id: score}, ... }, ... }
         podiums_metiers = {}
-        
         for r in records:
             pseudo = str(r.get("Pseudo"))
             semaine_id = str(r.get("Semaine_ID"))
-            # Récupère le métier (si la colonne s'appelle "Metier" dans ton Google Sheet)
-            metier = str(r.get("Metier", "Non spécifié")) 
+            metier = str(r.get("Metier", r.get("métier", r.get("Role", "Non renseigné"))))
+            if not metier or metier.strip() == "" or metier == "None":
+                metier = "Non renseigné"
+                
             try:
                 score = int(r.get("Score", 0))
             except ValueError:
@@ -147,11 +155,9 @@ def calculer_scores_podium_par_metier():
                 if pseudo not in podiums_metiers[metier]:
                     podiums_metiers[metier][pseudo] = {}
                 
-                # On garde la première tentative de la semaine
                 if semaine_id not in podiums_metiers[metier][pseudo]:
                     podiums_metiers[metier][pseudo][semaine_id] = score
                     
-        # On transforme pour obtenir un classement trié par métier
         classement_par_metier = {}
         for metier, users in podiums_metiers.items():
             liste_users = []
@@ -163,13 +169,11 @@ def calculer_scores_podium_par_metier():
                     "Total_Points": total_points,
                     "Quiz_Completes": nb_quiz
                 })
-            # Tri par points décroissants pour ce métier
             classement_par_metier[metier] = sorted(liste_users, key=lambda x: x["Total_Points"], reverse=True)
             
         return classement_par_metier
     except Exception:
         return {}
-
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
     
@@ -1215,8 +1219,8 @@ else:
                             st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
                             # On enregistre avec le rôle métier
-                            if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
-                                st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés sur Google Sheets.")
+    if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
+    st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés.")
                                 # On force le nettoyage immédiat du cache des notes pour basculer directement à la suite
                                 charger_notes_utilisateur_cached.clear()
 
