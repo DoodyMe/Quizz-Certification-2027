@@ -15,6 +15,30 @@ st.set_page_config(
     layout="wide"
 )
 
+if "user_pseudo" not in st.session_state:
+    # On regarde si un pseudo est présent dans l'URL (ex: ?pseudo=MonPseudo)
+    params = st.query_params
+    if "pseudo" in params:
+        st.session_state.user_pseudo = params["pseudo"]
+
+# Si toujours pas de pseudo, on affiche l'écran de connexion
+if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
+    st.markdown("<h2 style='text-align: center; color: #0f766e;'>🧠 Pause Révision HAS 2027</h2>", unsafe_allow_html=True)
+    # ... ton formulaire de saisie de pseudo ...
+    pseudo_saisi = st.text_input("Entrez votre pseudo pour accéder au quiz :")
+    if st.button("Se connecter", type="primary"):
+        if pseudo_saisi.strip():
+            st.session_state.user_pseudo = pseudo_saisi.strip()
+            # On stocke dans l'URL pour survivre aux actualisations (F5)
+            st.query_params["pseudo"] = pseudo_saisi.strip()
+            st.rerun()
+        else:
+            st.warning("Veuillez entrer un pseudo valide.")
+    st.stop() # Stoppe l'exécution du reste tant qu'on n'est pas connecté
+else:
+    # S'il est connecté, on s'assure que l'URL garde bien son pseudo en mémoire
+    st.query_params["pseudo"] = st.session_state.user_pseudo
+
 # ------------------------------------------------------------------------------
 # 2. CONNEXION GOOGLE SHEETS VIA GSPREAD (AVEC CACHE OPTIMISÉ)
 # ------------------------------------------------------------------------------
@@ -1042,45 +1066,26 @@ else:
 
   # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ & GESTION DU DÉJÀ-FAIT ---
     with tab_actuel:
-        # On s'assure d'avoir les données fraîches en vidant le cache des notes à chaque affichage de l'onglet
+        # On s'assure d'avoir les notes à jour
         charger_notes_utilisateur_cached.clear()
         mes_notes_utilisateur = charger_notes_utilisateur(st.session_state.user_pseudo)
-        
-        # Récupère la liste des IDs de semaines déjà validées par l'utilisateur
         semaines_validees = [str(item.get("Semaine_ID")) for item in mes_notes_utilisateur]
 
-        # Identifier la session actuelle du calendrier calendaire
-        session_calendrier_actuelle = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), SESSIONS[0])
-
-        # On cherche la première session (dans l'ordre des IDs : 0, 1, 2...) qui n'a PAS encore été validée
-        session_active = None
-        for s in SESSIONS:
-            statut = obtenir_statut_session(s)
-            # Une session est accessible si elle est "Actuelle", "Passee", ou si c'est la démo (id=0)
-            if (statut in ["Actuelle", "Passee"] or s["id"] == 0) and str(s["id"]) not in semaines_validees:
-                session_active = s
-                break
-        
-        # Si toutes les sessions passées/actuelles ont été faites, on prend par défaut la session "Actuelle" du calendrier
-        if not session_active:
-            session_active = session_calendrier_actuelle
+        # La session active affichée est TOUJOURS celle qui a le statut "Actuelle" dans le calendrier
+        session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), SESSIONS[0])
 
         if not session_active:
-            st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui. Veuillez consulter le calendrier des 'Semaines À Venir' !")
+            st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui.")
         else:
-            # Message de rattrapage UNIQUEMENT si l'ID de la session active est STRICTEMENT INFÉRIEUR à la session actuelle du calendrier
-            if session_active["id"] < session_calendrier_actuelle["id"] and str(session_active["id"]) not in semaines_validees:
-                st.warning(f"⚠️ **Rattrapage en cours :** Vous devez valider la **{session_active['titre']}** avant de pouvoir accéder aux semaines suivantes !")
-
             st.markdown(
                 f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>⚡ Session de révision interactive</p></div>",
                 unsafe_allow_html=True
             )
 
-            # Vérification si l'utilisateur a déjà validé cette session spécifique
+            # Vérification si l'utilisateur a déjà validé cette session
             deja_fait = str(session_active["id"]) in semaines_validees
 
-            # S'il a déjà validé et qu'il n'est pas en train de forcer un recommencement
+            # S'il a déjà validé et qu'il ne force pas le recommencement
             if deja_fait and not st.session_state.get(f"force_recommencer_{session_active['id']}", False):
                 st.success("🎉 Vous avez déjà validé le quiz de cette session !")
                 
@@ -1097,16 +1102,16 @@ else:
                     st.rerun()
 
             else:
-                # Logique normale du quiz interactif
+                # Logique normale du quiz (choix du métier puis questions)
                 if st.session_state.quiz_paused:
-                    st.warning(f"⏸️ **Quiz en pause détecté !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
+                    st.warning(f"⏸️ **Quiz en pause !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
                     c_rep, c_raz = st.columns([1, 1])
                     with c_rep:
-                        if st.button("▶️ Reprendre mon quiz", type="primary", use_container_width=True):
+                        if st.button("▶️ Reprendre", type="primary", use_container_width=True):
                             st.session_state.quiz_paused = False
                             st.rerun()
                     with c_raz:
-                        if st.button("🔄 Recommencer depuis le début", type="secondary", use_container_width=True):
+                        if st.button("🔄 Recommencer", type="secondary", use_container_width=True):
                             st.session_state.current_q_index = 0
                             st.session_state.user_quiz_answers = {}
                             st.session_state.quiz_paused = False
@@ -1170,7 +1175,7 @@ else:
                                 st.progress((current_idx + 1) / total_q)
                                 st.caption(f"Question {current_idx + 1} sur {total_q}")
                             with col_pause:
-                                if st.button("⏸️ Pause", key=f"pause_btn_{current_idx}", help="Mettre le quiz en pause"):
+                                if st.button("⏸️ Pause", key=f"pause_btn_{current_idx}"):
                                     st.session_state.quiz_paused = True
                                     st.rerun()
 
@@ -1196,7 +1201,7 @@ else:
 
                             with col_prev:
                                 if current_idx > 0:
-                                    if st.button("⬅️ Question précédente", key=f"prev_{current_idx}", use_container_width=True):
+                                    if st.button("⬅️ Précédent", key=f"prev_{current_idx}", use_container_width=True):
                                         if choix:
                                             st.session_state.user_quiz_answers[current_idx] = choix
                                         st.session_state.current_q_index -= 1
@@ -1206,7 +1211,7 @@ else:
                                 btn_label = "Suivant ➡️" if current_idx < total_q - 1 else "🏁 Terminer & Valider"
                                 if st.button(btn_label, key=f"next_{current_idx}", type="primary", use_container_width=True):
                                     if not choix and not existing_ans:
-                                        st.warning("Veuillez sélectionner une réponse avant de continuer !")
+                                        st.warning("Veuillez sélectionner une réponse !")
                                     else:
                                         st.session_state.user_quiz_answers[current_idx] = choix if choix else q_data["options"][0]
                                         st.session_state.current_q_index += 1
@@ -1223,10 +1228,9 @@ else:
 
                             st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
-                        # On enregistre avec le rôle métier
+                            # Enregistrement avec le rôle métier (qui va alimenter la colonne F)
                             if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
                                 st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés.")
-                                # On force le nettoyage immédiat du cache des notes pour basculer directement à la suite
                                 charger_notes_utilisateur_cached.clear()
 
                             st.divider()
@@ -1247,12 +1251,12 @@ else:
                                         <div style="font-size:0.95rem; margin-bottom:4px;">
                                             <strong>Votre réponse :</strong> {rep_soignant} <span style="font-weight:700;">({icon_status})</span>
                                         </div>
-                                        {f'<div style="font-size:0.95rem; color:#15803d; font-weight:700;"><strong>Bonne réponse HAS :</strong> {q["rep"]}</div>' if not est_correct else ''}
+                                        {f'<div style="font-size:0.95rem; color:#15803d; font-weight:700;"><strong>Bonne réponse :</strong> {q["rep"]}</div>' if not est_correct else ''}
                                     </div>
                                 """, unsafe_allow_html=True)
 
                             st.markdown("<br>", unsafe_allow_html=True)
-                            if st.button("🔄 Valider et passer à la suite", key="restart_quiz_btn", type="primary"):
+                            if st.button("🔄 Recommencer", key="restart_quiz_btn", type="primary"):
                                 st.session_state.current_q_index = 0
                                 st.session_state.user_quiz_answers = {}
                                 st.session_state.quiz_paused = False
