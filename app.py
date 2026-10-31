@@ -1223,9 +1223,9 @@ else:
 
                             st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
-                        # À la fin du quiz (quand le score est calculé) :
+                        # On enregistre avec le rôle métier
                             if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
-                            st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés.")
+                                st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés.")
                                 # On force le nettoyage immédiat du cache des notes pour basculer directement à la suite
                                 charger_notes_utilisateur_cached.clear()
 
