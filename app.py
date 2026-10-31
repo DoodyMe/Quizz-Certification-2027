@@ -1297,7 +1297,7 @@ else:
         
 sub_tab_synthese, sub_tab_fiches = st.tabs(["📚 Synthèse (Cumulée)", "📑 Fiches Mémos par Semaine"])
         
-        # MODIFICATION ICI : On inclut "Actuelle" en plus de "Passee" et de la Semaine 0
+        # On inclut "Actuelle" en plus de "Passee" et de la Semaine 0
         sessions_incluses = [s for s in SESSIONS if obtenir_statut_session(s) in ["Passee", "Actuelle"] or s["id"] == 0]
         
         with sub_tab_synthese:
