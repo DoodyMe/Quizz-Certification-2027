@@ -1256,6 +1256,7 @@ else:
                                 st.session_state.pop("questions_courantes", None)
                                 st.session_state.pop(f"force_recommencer_{session_active['id']}", None)
                                 st.rerun()
+                                
     # --- TAB 2 : MA PROGRESSION ---
     with tab_progression:
         st.markdown("<div class='card-progression'>", unsafe_allow_html=True)
