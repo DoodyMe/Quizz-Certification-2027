@@ -201,11 +201,7 @@ st.markdown("""
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
-    /* Force l'affichage des textes en couleur sombre, même en mode sombre */
-p, span, label, .question-title {
-    color: #1e293b !important;
-}
-    /* Correction robuste pour éviter que le texte du titre ne parte en vrac sur mobile */
+    /* Correction robuste de la bannière sur mobile */
     .header-table {
         width: 100%;
         border-collapse: collapse;
@@ -218,11 +214,10 @@ p, span, label, .question-title {
         word-wrap: break-word;
     }
 
-    /* Ajustement responsive de la bannière pour les téléphones */
     @media screen and (max-width: 768px) {
         .main-title {
             font-size: 1.1rem !important; 
-            white-space: nowrap; /* Force le titre principal sur une seule ligne si possible */
+            white-space: nowrap;
         }
         .subtitle {
             font-size: 0.8rem !important; 
@@ -240,12 +235,15 @@ p, span, label, .question-title {
         border: 2px solid #99f6e4; max-width: 600px; margin: 0 auto 15px auto;
         text-align: center; box-shadow: 0 4px 15px rgba(15, 118, 110, 0.08);
     }
+
+    /* Badge animal parfaitement lisible avec texte sombre forcé */
     .animal-selected-badge {
-        display: inline-flex; align-items: center; gap: 12px; padding: 8px 20px;
-        border-radius: 50px; background-color: #e0f2fe; border: 2px solid #38bdf8; margin: 10px 0;
+        display: inline-flex; align-items: center; gap: 12px; padding: 10px 22px;
+        border-radius: 50px; background-color: #e0f2fe !important; border: 2px solid #38bdf8 !important; margin: 10px 0;
     }
     .animal-selected-emoji { font-size: 2rem; }
-    .animal-selected-name { color: #0369a1; font-weight: 700; font-size: 1.1rem; }
+    .animal-selected-name { color: #0369a1 !important; font-weight: 800; font-size: 1.15rem; }
+
     .user-header {
         background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
         color: white; padding: 12px 26px; border-radius: 50px; display: inline-block; font-weight: 700;
@@ -262,7 +260,7 @@ p, span, label, .question-title {
         background: #ccfbf1; color: #0f766e; padding: 6px 16px;
         border-radius: 30px; font-weight: 700; font-size: 0.9rem; display: inline-block; margin-bottom: 15px;
     }
-    .question-title { color: #0f766e; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
+    .question-title { color: #0f766e !important; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
 
     .result-card-ok {
         background: #f0fdf4; border-radius: 16px; padding: 18px;
@@ -271,11 +269,6 @@ p, span, label, .question-title {
     .result-card-err {
         background: #fef2f2; border-radius: 16px; padding: 18px;
         border: 2px solid #fca5a5; margin-bottom: 15px;
-    }
-
-    .vignette-semaine {
-        background: #ffffff; border-radius: 24px; padding: 25px;
-        border: 2px solid #cbd5e1; box-shadow: 0 8px 25px rgba(148, 163, 184, 0.1); margin-bottom: 30px;
     }
 
     .memo-box-tc { background: #f0f9ff; border-radius: 16px; padding: 20px; border-left: 6px solid #0284c7; }
@@ -288,11 +281,12 @@ p, span, label, .question-title {
     .memo-box-ash { background: #f1f5f9; border-radius: 16px; padding: 20px; border-left: 6px solid #475569; }
     .memo-box-cadre { background: #fff7ed; border-radius: 16px; padding: 20px; border-left: 6px solid #ea580c; }
 
-    .memo-title-text { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: #1e293b; }
+    .memo-title-text { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: #1e293b !important; }
 
+    /* Style des onglets principaux et secondaires avec contrastes forcés */
     .stTabs [data-baseweb="tab-list"] { gap: 10px; justify-content: flex-start; }
     .stTabs [data-baseweb="tab"] {
-        background-color: #ffffff; border-radius: 20px; padding: 8px 18px; font-weight: 700; color: #334155; border: 1px solid #cbd5e1;
+        background-color: #ffffff !important; border-radius: 20px; padding: 8px 18px; font-weight: 700; color: #334155 !important; border: 1px solid #cbd5e1 !important;
     }
     .stTabs [aria-selected="true"] {
         background: #0f766e !important; color: white !important; border: none !important;
