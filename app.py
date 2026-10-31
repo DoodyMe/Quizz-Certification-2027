@@ -60,6 +60,10 @@ def ajouter_utilisateur(pseudo, mdp):
 # FONCTIONS DE GESTION DES NOTES ET DES PODIUMS
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+# FONCTIONS DE GESTION DES NOTES ET DES PODIUMS
+# ------------------------------------------------------------------------------
+
 @st.cache_data(ttl=30)
 def charger_notes_utilisateur_cached(pseudo):
     try:
@@ -174,6 +178,7 @@ def calculer_scores_podium_par_metier():
         return classement_par_metier
     except Exception:
         return {}
+        
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
     
@@ -1218,9 +1223,9 @@ else:
 
                             st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
-                         # On enregistre avec le rôle métier
+                        # À la fin du quiz (quand le score est calculé) :
                             if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
-                                st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés.")
+                            st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés.")
                                 # On force le nettoyage immédiat du cache des notes pour basculer directement à la suite
                                 charger_notes_utilisateur_cached.clear()
 
