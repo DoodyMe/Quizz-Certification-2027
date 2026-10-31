@@ -1298,20 +1298,20 @@ else:
         sub_tab_synthese, sub_tab_fiches = st.tabs(["📚 Synthèse (Cumulée)", "📑 Fiches Mémos par Semaine"])
         
         # On inclut "Actuelle" en plus de "Passee" et de la Semaine 0
-        sessions_incluses = [s for s in SESSIONS if obtenir_statut_session(s) in ["Passee", "Actuelle"] or s["id"] == 0]
+        sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) in ["Passee", "Actuelle"] or s["id"] == 0]
         
         with sub_tab_synthese:
             st.subheader("Rappels et Synthèses par Semaine (Cumulatif)")
             st.markdown("Au fil des clôtures de semaines, les points clés s'ajoutent ici pour constituer votre référentiel de révision.")
             
-            if not sessions_incluses:
+            if not sessions_passees:
                 st.info("Aucune synthèse disponible pour le moment.")
             else:
-                for s in sessions_incluses:
+                for s in sessions_passees:
                     str_debut = s['date_debut'].strftime('%d/%m/%Y') if hasattr(s['date_debut'], 'strftime') else s['date_debut']
                     str_fin = s['date_fin'].strftime('%d/%m/%Y') if hasattr(s['date_fin'], 'strftime') else s['date_fin']
                     
-                    with st.expander(f"📌 {s['titre']} (Du {str_debut} au {str_fin})", expanded=(s["id"] == max([x["id"] for x in sessions_incluses]))):
+                    with st.expander(f"📌 {s['titre']} (Du {str_debut} au {str_fin})", expanded=(s["id"] == max([x["id"] for x in sessions_passees]))):
                         if "fiches_reflexes" in s:
                             fiches = s["fiches_reflexes"]
                             onglets_metiers = list(fiches.keys())
