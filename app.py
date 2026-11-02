@@ -627,30 +627,382 @@ SESSIONS = [
                 "rep": "L'attribution immédiate d'un avatar (Animal + couleur) pré-imprimés"
             }
         ],
-        "metiers": {
+    "metiers": {
             "IDE": [
-                {"q": "6. [Module IDE] Lors d'un tri infirmière d'accueil et d'orientation (IAO) en contexte d'afflux massif de victimes (Plan Blanc actif), quelle est la règle de catégorisation de gravité à appliquer ?", "options": ["Attribuer arbitrairement un box à chaque patient selon son ordre d'arrivée chronologique", "Utiliser une grille de tri validée (ex: échelle triage type SMR ou criticité) pour isoler immédiatement les urgences absolues (U1) des urgences relatives (U2/U3)", "Laisser les patients s'installer dans la salle d'attente générale en attendant un médecin"], "rep": "Utiliser une grille de tri validée (ex: échelle triage type SMR ou criticité) pour isoler immédiatement les urgences absolues (U1) des urgences relatives (U2/U3)"}
+                {
+                    "q": "6. [Module IDE] Lors d'un tri IAO en situation d'afflux massif de victimes (Plan Blanc), quelle modalité de réévaluation des patients en attente est exigée par la HAS ?",
+                    "options": [
+                        "Une réévaluation clinique selon une périodicité stricte adaptée au niveau de criticité initial.",
+                        "Une réévaluation déclenchée par l'appel spontané du patient ou de son accompagnant en cas de besoin.",
+                        "Un contrôle visuel global de la salle d'attente réalisé par l'IDE toutes les heures."
+                    ],
+                    "rep": "Une réévaluation clinique formalisée selon une périodicité stricte adaptée au niveau de criticité initial, avec traçabilité de tout changement d'état."
+                },
+                {
+                    "q": "7. [Module IDE] En mode dégradé informatique (panne totale de l'EPR), quelle règle de double contrôle s'applique pour l'administration des médicaments à haut risque (MHR) ?",
+                    "options": [
+                        "La préparation et l'administration par un seul soignant de garde pour aller plus vite, sous réserve de validation informatique le lendemain.",
+                        "Le double contrôle nominatif (préparateur et administrant) croisé avec la prescription écrite et signée sur le support papier de crise.",
+                        "La suspension immédiate de l'administration de tout médicament à haut risque jusqu'au rétablissement complet du réseau."
+                    ],
+                    "rep": "Le double contrôle nominatif (préparateur et administrant) croisé avec la prescription écrite et signée sur le support papier de crise."
+                },
+                {
+                    "q": "8. [Module IDE] Face à la gestion des déchets d'activités de soins (DASRI) dans un secteur confiné d'urgence, quel critère réglementaire de conditionnement est audité ?",
+                    "options": [
+                        "L'utilisation exclusive de sacs poubelles noirs renforcés pour tous les types de déchets afin de faciliter l'évacuation rapide.",
+                        "Le respect impératif des limites de remplissage des fûts et conteneurs d'OPCT avec fermeture hermétique provisoire dès que les trois quarts sont atteints.",
+                        "Le stockage temporaire des déchets souillés sur les plans de travail des box en attendant la fin de la vacation."
+                    ],
+                    "rep": "Le respect impératif des limites de remplissage des fûts et conteneurs d'OPCT avec fermeture hermétique provisoire dès que les trois quarts sont atteints."
+                },
+                {
+                    "q": "9. [Module IDE] En situation de tension extrême avec des patients agités, à quel moment la pose d'une contention physique peut-elle être initiée par l'IDE ?",
+                    "options": [
+                        "Dès l'apparition de cris/coups, de manière préventive pour protéger le matériel de soins et les autres patients.",
+                        "Sur prescription médicale écrite après échec des alternatives.",
+                        "Sur décision de l'IDE en accord avec les agents de sécurité de l'hôpital et du médecin."
+                    ],
+                    "rep": "Sur prescription médicale écrite après échec des alternatives."
+                },
+                {
+                    "q": "10. [Module IDE] Quelle est l'exigence de la HAS concernant les transmissions écrites inter-équipes en période de crise sanitaire (Plan Blanc) ?",
+                    "options": [
+                        "Le remplacement de tout support écrit par des transmissions orales pour s'adapter à la vitesse de l'événement.",
+                        "L'utilisation des supports de traçabilité de crise formalisés consignant l'état des patients, les examens en attente et les alertes.",
+                        "Le report global de la rédaction des dossiers de soins."
+                    ],
+                    "rep": "L'utilisation des supports de traçabilité de crise formalisés consignant l'état des patients, les examens en attente et les alertes."
+                }
             ],
             "AS": [
-                {"q": "6. [Module AS] Lors de l'ouverture de la Zone de Regroupement des Victimes (ZRV) aux urgences, quelle est la priorité d'intervention logistique de l'aide-soignant(e) ?", "options": ["Vérifier la disponibilité et l'agencement des stocks critiques (brancards spécifiques, kits d'habillage d'urgence, dispositifs d'oxygénothérapie de secours)", "Nettoyer les bureaux administratifs de l'étage", "Rédiger les fiches de transmission des infirmières"], "rep": "Vérifier la disponibilité et l'agencement des stocks critiques (brancards spécifiques, kits d'habillage d'urgence, dispositifs d'oxygénothérapie de secours)"}
+                {
+                    "q": "6. [Module AS] Lors de l'activation et de l'aménagement de la Zone de Regroupement des Victimes (ZRV) aux urgences, quel contrôle logistique relève de la responsabilité de l'AS ?",
+                    "options": [
+                        "L'inventaire des dossiers administratifs et des cartes Vitale des patients.",
+                        "La vérification de la disponibilité et de l'intégrité opérationnelle des kits d'oxygénothérapie de secours et des dispositifs d'évacuation rapide.",
+                        "Le paramétrage des écrans d'affichage dynamique de la salle d'attente."
+                    ],
+                    "rep": "La vérification de la disponibilité et de l'intégrité opérationnelle des kits d'oxygénothérapie de secours et des dispositifs d'évacuation rapide."
+                },
+                {
+                    "q": "7. [Module AS] En mode dégradé logistique (rupture des flux informatisés de réapprovisionnement), comment l'AS trace-t-elle les consommables utilisés ?",
+                    "options": [
+                        "En ne notant rien, les stocks étant régulés automatiquement par l'établissement en fin de mois.",
+                        "En reportant les consommations sur les bons de sortie de stock papier de crise spécifiques pour permettre au cadre de réajuster les commandes.",
+                        "En stockant de manière individuelle le matériel excédentaire dans le casier de l'équipe."
+                    ],
+                    "rep": "En reportant les consommations sur les bons de sortie de stock papier de crise spécifiques pour permettre au cadre de réajuster les commandes."
+                },
+                {
+                    "q": "8. [Module AS] Face à un patient grabataire maintenu de façon prolongée sur un brancard de crise aux urgences, quelle action de prévention des escarres est attendue ?",
+                    "options": [
+                        "L'application biquotidienne de talc sur les zones d'appui sans modifier la position du patient.",
+                        "La réalisation de changements posturaux réguliers (toutes les 3 à 4 heures), l'inspection cutanée et la traçabilité des mesures de prévention.",
+                        "Le maintien strict de la position allongée à plat dos pour éviter tout risque de glissement."
+                    ],
+                    "rep": "La réalisation de changements posturaux réguliers (toutes les 3 à 4 heures), l'inspection cutanée et la traçabilité des mesures de prévention."
+                },
+                {
+                    "q": "9. [Module AS] Quelle est la règle d'hygiène des mains à observer rigoureusement lors de l'enchaînement des soins auprès de multiples victimes en ZRV ?",
+                    "options": [
+                        "Conserver la même paire de gants propres du début à la fin de la vacation pour gagner du temps.",
+                        "Effectuer une friction hydro-alcoolique (PHA) entre chaque patient et procéder à un changement systématique de gants en cas de contact avec des fluides biologiques.",
+                        "Se laver les mains uniquement à l'eau tiède sans solution hydro-alcoolique entre chaque patient."
+                    ],
+                    "rep": "Effectuer une friction hydro-alcoolique (PHA) entre chaque patient et procéder à un changement systématique de gants en cas de contact avec des fluides biologiques."
+                },
+                {
+                    "q": "10. [Module AS] Comment l'AS doit-elle gérer la communication avec les proches de patients présents dans les couloirs lors d'une tension extrême ?",
+                    "options": [
+                        "Leur communiquer les premiers éléments de diagnostic médical pour dissiper leur inquiétude.",
+                        "Accueillir avec empathie, rappeler les règles de circulation de crise et orienter vers la structure d'information dédiée sans divulguer de données nominatives.",
+                        "Exiger leur sortie immédiate de l'enceinte de l'hôpital sous peine d'appel des forces de l'ordre."
+                    ],
+                    "rep": "Accueillir avec empathie, rappeler les règles de circulation de crise et orienter vers la structure d'information dédiée sans divulguer de données nominatives."
+                }
             ],
             "Médecin": [
-                {"q": "6. [Module Médecin] En situation de saturation aiguë des urgences (Plan Blanc), quel est le rôle médico-légal et organisationnel du médecin coordinateur de crise en amont ?", "options": ["Déléguer l'ensemble des admissions aux internes sans supervision", "Valider la stratégie de médicalisation du tri, décider des orientations directes vers l'aval spécialisé et superviser la priorisation des examens paracliniques de débordement", "Transférer tous les patients vers la structure privée la plus proche"], "rep": "Valider la stratégie de médicalisation du tri, décider des orientations directes vers l'aval spécialisé et superviser la priorisation des examens paracliniques de débordement"}
+                {
+                    "q": "6. [Module Médecin] En situation de saturation aiguë des urgences (Plan Blanc), quel critère médico-légal valide la décision de sortie précoce ou d'orientation directe vers l'aval ?",
+                    "options": [
+                        "L'absence de réclamation du patient après quatre heures d'attente dans les couloirs.",
+                        "La formalisation d'une évaluation médicale de sécurité, la validation des critères de stabilité et la transmission des consignes écrites au médecin traitant.",
+                        "L'accord tacite de l'interne de garde sans validation par un médecin sénior."
+                    ],
+                    "rep": "La formalisation d'une évaluation médicale de sécurité, la validation des critères de stabilité et la transmission des consignes écrites au médecin traitant."
+                },
+                {
+                    "q": "7. [Module Médecin] Lors d'un afflux massif de victimes (AMV), sur quoi se fonde la doctrine de triage médico-chirurgical (PMA / Accueil des urgences) ?",
+                    "options": [
+                        "L'ordre d'arrivée chronologique des patients sur le site des urgences, sans distinction de pathologie.",
+                        "La hiérarchisation rapide de la criticité (urgences absolues U1 vs relatives U2/U3) pour optimiser l'allocation immédiate des ressources vitales.",
+                        "La réalisation systématique d'un bilan radiologique complet pour tous les impliqués avant toute orientation."
+                    ],
+                    "rep": "La hiérarchisation rapide de la criticité (urgences absolues U1 vs relatives U2/U3) pour optimiser l'allocation immédiate des ressources vitales."
+                },
+                {
+                    "q": "8. [Module Médecin] En mode dégradé informatique, quelles mentions obligatoires doivent impérativement figurer sur une prescription médicale d'urgence rédigée sur papier ?",
+                    "options": [
+                        "Le tampon de l'hôpital et les initiales du médecin sans autre formalité.",
+                        "La lisibilité de l'écriture, l'identification nominative du prescripteur (nom/qualité), sa signature manuscrite, la date et l'horodatage précis.",
+                        "La transcription ultérieure par le secrétariat sans contre-signature du médecin prescripteur."
+                    ],
+                    "rep": "La lisibilité de l'écriture, l'identification nominative du prescripteur (nom/qualité), sa signature manuscrite, la date et l'horodatage précis."
+                },
+                {
+                    "q": "9. [Module Médecin] En contexte de tension extrême aux urgences, quelle règle encadre la prise de décision collégiale de limitation ou d'arrêt de traitement (LAT) ?",
+                    "options": [
+                        "La décision unilatérale du médecin sénior de garde pour ne pas engorger le service de réanimation.",
+                        "Le respect intangible de la procédure collégiale, la consultation des directives anticipées ou de la personne de confiance, et la traçabilité formelle de la discussion.",
+                        "Le report systématique de la discussion au-delà de la fin de la vague épidémique ou de la crise."
+                    ],
+                    "rep": "Le respect intangible de la procédure collégiale, la consultation des directives anticipées ou de la personne de confiance, et la traçabilité formelle de la discussion."
+                },
+                {
+                    "q": "10. [Module Médecin] Quelle est l'attente majeure de la HAS concernant l'organisation du retour d'expérience (REX) après une séquence de crise SSE ?",
+                    "options": [
+                        "La constitution d'un rapport de synthèse anonyme classé sans suite dans les archives de l'hôpital.",
+                        "La mise en place d'une analyse systémique non punitive (CREX) des dysfonctionnements pour transformer les retours de terrain en plans d'actions correctives.",
+                        "La recherche individuelle d'un responsable à sanctionner en cas de dépassement des délais de prise en charge."
+                    ],
+                    "rep": "La mise en place d'une analyse systémique non punitive (CREX) des dysfonctionnements pour transformer les retours de terrain en plans d'actions correctives."
+                }
             ],
             "ARM": [
-                {"q": "6. [Module ARM] En cas de signalement d'un Événement Impliquant de Multiples Victimes (EIMV), quel protocole de qualification l'ARM doit-il appliquer en priorité absolue ?", "options": ["Transférer immédiatement l'appel vers le standard général de l'hôpital", "Recueillir le nombre estimé d'impliqués, la cinétique exacte, la nature du vecteur (chimique, balistique, accidentel) et déclencher la boucle d'alerte du médecin régulateur chef de salle", "Demander aux appelants de se déplacer par leurs propres moyens aux urgences"], "rep": "Recueillir le nombre estimé d'impliqués, la cinétique exacte, la nature du vecteur (chimique, balistique, accidentel) et déclencher la boucle d'alerte du médecin régulateur chef de salle"}
+                {
+                    "q": "6. [Module ARM] Lors de la prise d'un appel signalant un Événement Impliquant de Multiples Victimes (EIMV), quel est le triptyque de qualification prioritaire pour l'ARM ?",
+                    "options": [
+                        "L'identité de l'appelant, son opérateur téléphonique et son adresse mail.",
+                        "La localisation exacte de l'événement, la nature précise du vecteur/de l'étiologie, et l'estimation chiffrée du nombre de impliqués.",
+                        "La disponibilité immédiate des ambulances privées de la commune voisine."
+                    ],
+                    "rep": "La localisation exacte de l'événement, la nature précise du vecteur/de l'étiologie, et l'estimation chiffrée du nombre de impliqués."
+                },
+                {
+                    "q": "7. [Module ARM] En cas d'effet d'appel massif saturant les lignes d'urgence du SAMU, quelle est la conduite à tenir immédiate pour l'ARM ?",
+                    "options": [
+                        "Décrocher et maintenir les appelants non urgents en ligne pour leur expliquer la situation de saturation.",
+                        "Activer le protocole de régulation de crise, prioriser l'accès aux lignes dédiées/rouges et appliquer les messages pré-enregistrés de filtrage.",
+                        "Fermer le standard téléphonique en redirigeant vers le 15 national général."
+                    ],
+                    "rep": "Activer le protocole de régulation de crise, prioriser l'accès aux lignes dédiées/rouges et appliquer les messages pré-enregistrés de filtrage."
+                },
+                {
+                    "q": "8. [Module ARM] Quelle est la règle déontologique stricte de l'ARM face à un tiers réclamant des informations sur des victimes transportées lors d'un accident majeur ?",
+                    "options": [
+                        "Confirmer la prise en charge si l'appelant donne le nom de famille exact du patient.",
+                        "Maintenir le secret professionnel absolu, refuser toute divulgation d'identité par téléphone et orienter vers la cellule d'information officielle.",
+                        "Transmettre le dossier médical complet par fax ou mail sécurisé."
+                    ],
+                    "rep": "Maintenir le secret professionnel absolu, refuser toute divulgation d'identité par téléphone et orienter vers la cellule d'information officielle."
+                },
+                {
+                    "q": "9. [Module ARM] En mode dégradé des outils informatiques de régulation (CENTAURE), que doit faire l'ARM ?",
+                    "options": [
+                        "Suspendre l'enregistrement des départs de moyens en attendant le redémarrage informatique.",
+                        "Recourir immédiatement aux fiches de régulation papier de secours et consigner de façon chronologique et doublement horodatée chaque engagement.",
+                        "Utiliser un carnet de notes personnel non standardisé qui sera détruit en fin de poste."
+                    ],
+                    "rep": "Recourir immédiatement aux fiches de régulation papier de secours et consigner de façon chronologique et doublement horodatée chaque engagement."
+                },
+                {
+                    "q": "10. [Module ARM] Comment l'ARM sécurise-t-elle la coordination des moyens héliportés ou terrestres engagés sur une SSE ?",
+                    "options": [
+                        "En coupant les communications radio dès que le vecteur quitte la base héliportée.",
+                        "En assurant un suivi de liaison continu, en validant les consignes de guidage et en traçant infailliblement les heures d'engagement et de libération.",
+                        "En déléguant le suivi des transmissions aux conducteurs eux-mêmes."
+                    ],
+                    "rep": "En assurant un suivi de liaison continu, en validant les consignes de guidage et en traçant infailliblement les heures d'engagement et de libération."
+                }
             ],
             "Accueil": [
-                {"q": "6. [Module Accueil] Face à la pression des médias et des familles en période de crise sanitaire exceptionnelle (SSE), quelle est la procédure institutionnelle stricte à l'accueil ?", "options": ["Divulguer les noms des blessés aux journalistes pour rassurer le public", "Appliquer le principe de non-divulgation des données nominatives, filtrer l'accès physique selon les directives du PC de crise et orienter vers la cellule d'information du public (CIP)", "Laisser les journalistes entrer librement dans les box de soins"], "rep": "Appliquer le principe de non-divulgation des données nominatives, filtrer l'accès physique selon les directives du PC de crise et orienter vers la cellule d'information du public (CIP)"}
+                {
+                    "q": "6. [Module Accueil] Face à l'afflux de familles aux urgences cherchant des informations sur des impliqués lors d'un Plan Blanc, quelle est la règle administrative ?",
+                    "options": [
+                        "Afficher la liste des entrées sur un tableau d'affichage à l'entrée de la salle d'attente.",
+                        "Appliquer la non-divulgation stricte des identités par les agents d'accueil et orienter impérativement les familles vers la Cellule d'Information du Public (CIP).",
+                        "Autoriser les familles à accéder aux box de soins pour identifier leur proche."
+                    ],
+                    "rep": "Appliquer la non-divulgation stricte des identités par les agents d'accueil et orienter impérativement les familles vers la Cellule d'Information du Public (CIP)."
+                },
+                {
+                    "q": "7. [Module Accueil] En cas de panne informatique des logiciels d'admission, comment l'agent d'accueil procède-t-il ?",
+                    "options": [
+                        "Refuser l'enregistrement administratif des patients jusqu'au retour complet de la connexion réseau.",
+                        "Utiliser les registres et feuillets d'admission papier de crise, consigner les identités (ou triptyques) et assurer la rétro-saisie informatique différée.",
+                        "Créer des dossiers fictifs avec des numéros aléatoires sans lien avec l'état civil."
+                    ],
+                    "rep": "Utiliser les registres et feuillets d'admission papier de crise, consigner les identités (ou triptyques) et assurer la rétro-saisie informatique différée."
+                },
+                {
+                    "q": "8. [Module Accueil] Quel est le rôle de l'agent d'accueil dans la sécurisation physique de la zone d'admission lors d'une alerte de type menace extérieure ?",
+                    "options": [
+                        "Laisser les portes automatiques ouvertes pour faciliter l'évacuation rapide des usagers de la salle d'attente.",
+                        "Activer le verrouillage des accès du guichet selon les consignes du PC de crise, filtrer les entrées et déclencher les alarmes dédiées si requis.",
+                        "Demander l'avis de chaque patient avant d'envisager la fermeture des portes."
+                    ],
+                    "rep": "Activer le verrouillage des accès du guichet selon les consignes du PC de crise, filtrer les entrées et déclencher les alarmes dédiées si requis."
+                },
+                {
+                    "q": "9. [Module Accueil] Comment maintenir la confidentialité des données à la banque d'accueil en situation d'afflux tendu ?",
+                    "options": [
+                        "Énoncer à haute voix les motifs de consultation pour accélérer la rotation de la file d'attente.",
+                        "Respecter la distance de discrétion, veiller à l'invisibilité des écrans nominatifs pour le public et baisser la voix lors des recueils d'état civil.",
+                        "Laisser les dossiers ouverts sur le comptoir en l'absence de l'agent."
+                    ],
+                    "rep": "Respecter la distance de discrétion, veiller à l'invisibilité des écrans nominatifs pour le public et baisser la voix lors des recueils d'état civil."
+                },
+                {
+                    "q": "10. [Module Accueil] Quelle est la procédure pour la gestion des objets de valeur d'un patient pris en charge en urgence absolue de crise ?",
+                    "options": [
+                        "Laisser les effets personnels dans les vêtements posés au pied du brancard.",
+                        "Réaliser un inventaire contradictoire formalisé et transférer immédiatement les valeurs dans le coffre sécurisé de l'établissement.",
+                        "Confier les objets au premier accompagnant présent dans les couloirs."
+                    ],
+                    "rep": "Réaliser un inventaire contradictoire formalisé et transférer immédiatement les valeurs dans le coffre sécurisé de l'établissement."
+                }
             ],
             "Brancardier": [
-                {"q": "6. [Module Brancardier] Lors d'un Plan Blanc impliquant des flux spécifiques de victimes, quelle est la règle cardinale de circulation interne pour les brancardiers ?", "options": ["Emprunter les ascenseurs prioritaires et respecter rigoureusement la sectorisation des flux (séparation stricte des circuits d'entrée et de sortie des victimes pour éviter la congestion)", "Circuler librement dans tous les services sans tenir compte des balisages de crise", "Attendre la fin de l'alerte dans la salle de repos"], "rep": "Emprunter les ascenseurs prioritaires et respecter rigoureusement la sectorisation des flux (séparation stricte des circuits d'entrée et de sortie des victimes pour éviter la congestion)"}
+                {
+                    "q": "6. [Module Brancardier] En situation de Plan Blanc, quelle règle régit les déplacements des brancards au sein de l'établissement ?",
+                    "options": [
+                        "Emprunter les trajets les plus courts en traversant les zones confinées sans signalisation.",
+                        "Respecter strictement le plan de circulation sectorisé et les sens unidirectionnels (séparation des flux entrants/sortants et propres/contaminés) définis par la logistique de crise.",
+                        "Utiliser exclusivement les ascenseurs publics de l'hôpital."
+                    ],
+                    "rep": "Respecter strictement le plan de circulation sectorisé et les sens unidirectionnels (séparation des flux entrants/sortants et propres/contaminés) définis par la logistique de crise."
+                },
+                {
+                    "q": "7. [Module Brancardier] Quelle vérification d'identitovigilance le brancardier réalise-t-il impérativement avant tout transport de patient vers l'imagerie ?",
+                    "options": [
+                        "Interroger le patient sur son numéro de chambre.",
+                        "Contrôler la concordance stricte entre l'identité figurant sur le bon de transport et celle inscrite sur le bracelet d'identification physique du patient.",
+                        "Se fier uniquement à l'indication verbale du numéro de box."
+                    ],
+                    "rep": "Contrôler la concordance stricte entre l'identité figurant sur le bon de transport et celle inscrite sur le bracelet d'identification physique du patient."
+                },
+                {
+                    "q": "8. [Module Brancardier] En contexte d'afflux massif, quelle est la cadence de désinfection exigée pour le matériel de brancardage ?",
+                    "options": [
+                        "Un nettoyage hebdomadaire du parc de brancards le week-end.",
+                        "Une désinfection systématique des surfaces de contact (matelas, ridelles, poignées) avec un produit détergent-désinfectant homologué entre chaque patient.",
+                        "Un simple essuyage à l'eau claire sans produit actif."
+                    ],
+                    "rep": "Une désinfection systématique des surfaces de contact (matelas, ridelles, poignées) avec un produit détergent-désinfectant homologué entre chaque patient."
+                },
+                {
+                    "q": "9. [Module Brancardier] Quelle précaution d'arrimage est indispensable lors du transport d'un patient sous oxygénothérapie ?",
+                    "options": [
+                        "Poser la bouteille d'oxygène à plat le long des jambes du patient sur le brancard.",
+                        "Fixer solidement l'obus dans son support dédié attitré, vérifier l'autonomie et s'assurer que les ridelles du brancard sont relevées.",
+                        "Porter la bouteille à la main en marchant à côté du brancard."
+                    ],
+                    "rep": "Fixer solidement l'obus dans son support dédié attitré, vérifier l'autonomie et s'assurer que les ridelles du brancard sont relevées."
+                },
+                {
+                    "q": "10. [Module Brancardier] Quelle est l'action du brancardier en cas de modification de l'état clinique d'un patient pendant son transport ?",
+                    "options": [
+                        "Poursuivre le trajet jusqu'à la destination finale sans modifier son allure.",
+                        "Alerter immédiatement l'équipe médicale ou paramédicale d'accueil à l'arrivée (ou via les canaux de crise) et transmettre les observations cliniques.",
+                        "Faire demi-tour de sa propre initiative sans prévenir."
+                    ],
+                    "rep": "Alerter immédiatement l'équipe médicale ou paramédicale d'accueil à l'arrivée (ou via les canaux de crise) et transmettre les observations cliniques."
+                }
             ],
             "ASH": [
-                {"q": "6. [Module ASH] En cas de risque contaminant avéren (biologique ou chimique) lors d'une SSE, quelle est la consigne impérative pour l'ASH dans le traitement des déchets et des surfaces ?", "options": ["Utiliser les circuits et protocoles spécifiques de désinfection par voie aérienne ou produits virucides/sporicides validés, avec port des EPI de niveau adapté", "Traiter les surfaces avec le même détergent standard qu'en période normale sans EPI", "Stocker les déchets contaminés dans les poubelles banales du couloir"], "rep": "Utiliser les circuits et protocoles spécifiques de désinfection par voie aérienne ou produits virucides/sporicides validés, avec port des EPI de niveau adapté"}
+                {
+                    "q": "6. [Module ASH] En cas de risque contaminant avéré (biologique ou chimique) lors d'une SSE, quelle méthode de bio-nettoyage l'ASH applique-t-il ?",
+                    "options": [
+                        "Un balayage à sec pour éliminer rapidement les débris au sol.",
+                        "L'application rigoureuse du protocole de désinfection terminale renforcée avec des produits virucides/sporicides aux temps de contact requis, en portant les EPI adaptés.",
+                        "Un lavage des surfaces avec du savon classique sans temps de pose."
+                    ],
+                    "rep": "L'application rigoureuse du protocole de désinfection terminale renforcée avec des produits virucides/sporicides aux temps de contact requis, en portant les EPI adaptés."
+                },
+                {
+                    "q": "7. [Module ASH] Quelle est la règle de tri et d'évacuation des linges et déchets souillés en période de crise ?",
+                    "options": [
+                        "Regrouper l'ensemble des linges et des déchets dans les mêmes grands conteneurs municipaux.",
+                        "Respecter la séparation stricte des filières (DASRI, DAOM, linges en sacs hydrosolubles étanches) pour prévenir toute contamination croisée.",
+                        "Jeter les déchets par les ouvertures des box de soins."
+                    ],
+                    "rep": "Respecter la séparation stricte des filières (DASRI, DAOM, linges en sacs hydrosolubles étanches) pour prévenir toute contamination croisée."
+                },
+                {
+                    "q": "8. [Module ASH] Quelle est l'exigence d'hygiène des mains pour l'ASH manipulant des zones ou des déchets à risque ?",
+                    "options": [
+                        "Garder la même paire de gants tout au long de la journée sans friction.",
+                        "Réaliser une friction hydro-alcoolique avant et après chaque manipulation de déchets ou de zone contaminée, et obligatoirement après le retrait des gants.",
+                        "Se rincer les mains à l'eau tiède sans solution hydro-alcoolique."
+                    ],
+                    "rep": "Réaliser une friction hydro-alcoolique avant et après chaque manipulation de déchets ou de zone contaminée, et obligatoirement après le retrait des gants."
+                },
+                {
+                    "q": "9. [Module ASH] Que doit faire l'ASH s'il découvre un instrument piquant/tranchant abandonné sur un plan de travail ?",
+                    "options": [
+                        "Le ramasser à main nue pour le jeter dans la poubelle d'ordures ménagères.",
+                        "Ne jamais toucher le dispositif à main nue, baliser la zone si nécessaire et prévenir immédiatement un soignant pour élimination sécurisée dans un collecteur d'OPCT.",
+                        "Le glisser sous le matelas du box de soin."
+                    ],
+                    "rep": "Ne jamais toucher le dispositif à main nue, baliser la zone si nécessaire et prévenir immédiatement un soignant pour élimination sécurisée dans un collecteur d'OPCT."
+                },
+                {
+                    "q": "10. [Module ASH] Comment l'ASH concilie-t-il bientraitance environnementale et tension de crise lors de l'entretien d'un box occupé ?",
+                    "options": [
+                        "Pénétrer dans le box sans frapper et sans adresser la parole au patient.",
+                        "Frapper à la porte, se présenter, expliquer l'intervention de nettoyage, respecter l'intimité et veiller à préserver un cadre propre et apaisant malgré la tension.",
+                        "Nettoyer uniquement le centre de la pièce sans se préoccuper du confort du patient."
+                    ],
+                    "rep": "Frapper à la porte, se présenter, expliquer l'intervention de nettoyage, respecter l'intimité et veiller à préserver un cadre propre et apaisant malgré la tension."
+                }
             ],
             "Cadre": [
-                {"q": "6. [Module Cadre] Quel indicateur opérationnel immédiat le Cadre de Santé doit-il remonter en temps réel à la cellule de crise pour ajuster le dimensionnement du Plan Blanc ?", "options": ["Le nombre de tasses de café consommées par l'équipe de nuit", "Le taux de rotation des box, le volume de patients en attente de l'aval (beds-blocking) et l'état des effectifs soignants disponibles", "Le montant des heures complémentaires du mois précédent"], "rep": "Le taux de rotation des box, le volume de patients en attente de l'aval (beds-blocking) et l'état des effectifs soignants disponibles"}
+                {
+                    "q": "6. [Module Cadre] Quels indicateurs de tension opérationnelle le Cadre de Santé doit-il suivre et remonter en temps réel à la cellule de crise ?",
+                    "options": [
+                        "Le nombre de pauses café réalisées par l'équipe administrative de garde.",
+                        "Le taux d'occupation des box, le volume de patients en attente d'aval (beds-blocking), les délais d'attente à l'IAO et l'adéquation des effectifs soignants.",
+                        "Le total des heures de nuit cumulées sur le mois précédent."
+                    ],
+                    "rep": "Le taux d'occupation des box, le volume de patients en attente d'aval (beds-blocking), les délais d'attente à l'IAO et l'adéquation des effectifs soignants."
+                },
+                {
+                    "q": "7. [Module Cadre] Face à l'épuisement des équipes en situation de crise prolongée, quelle est la responsabilité managériale prioritaire du Cadre ?",
+                    "options": [
+                        "Exiger des journées de travail continues de 24 heures sans interruption pour maintenir les effectifs.",
+                        "Planifier des rotations équitables, veiller au respect des temps de pause obligatoires, mettre en place un soutien et surveiller les signes d'épuisement.",
+                        "Ignorer la fatigue des agents tant que les indicateurs de flux restent stables."
+                    ],
+                    "rep": "Planifier des rotations équitables, veiller au respect des temps de pause obligatoires, mettre en place un soutien et surveiller les signes d'épuisement."
+                },
+                {
+                    "q": "8. [Module Cadre] Comment le Cadre s'assure-t-il de la sécurité des soins en mode dégradé informatique dans son unité ?",
+                    "options": [
+                        "Laisser chaque agent s'organiser de manière autonome sans contrôle des supports papier.",
+                        "Superviser la mise en place immédiate des dossiers papier de crise, auditer leur conformité (signatures, horodatages) et valider la traçabilité des transmissions.",
+                        "Interdire la prescription de tout traitement durant toute la durée de la panne informatique."
+                    ],
+                    "rep": "Superviser la mise en place immédiate des dossiers papier de crise, auditer leur conformité (signatures, horodatages) et valider la traçabilité des transmissions."
+                },
+                {
+                    "q": "9. [Module Cadre] Quelle démarche le Cadre adopte-t-il face aux signalements d'Événements Indésirables (EI) survenus pendant la gestion de la crise ?",
+                    "options": [
+                        "Dissimuler les incidents pour ne pas pénaliser l'image de l'établissement auprès de la direction.",
+                        "Promouvoir la culture positive de sécurité, encourager la déclaration immédiate des EI et animer l'analyse collective des causes pour ajuster les pratiques.",
+                        "Sanctionner immédiatement l'agent impliqué dans l'incident sans analyse systémique."
+                    ],
+                    "rep": "Promouvoir la culture positive de sécurité, encourager la déclaration immédiate des EI et animer l'analyse collective des causes pour ajuster les pratiques."
+                },
+                {
+                    "q": "10. [Module Cadre] Dans le cadre de la préparation à la visite HAS, quel rôle d'évaluation interne joue le Cadre de Santé sur le terrain ?",
+                    "options": [
+                        "Remplir les dossiers de manière fictive la veille du passage des experts de la HAS.",
+                        "Réaliser des audits flash réguliers (traçabilité de la douleur, identitovigilance, chariots d'urgence) et impliquer l'équipe dans l'démarche qualité continue.",
+                        "Interdire aux experts d'interroger les soignants non cadres de l'unité."
+                    ],
+                    "rep": "Réaliser des audits flash réguliers (traçabilité de la douleur, identitovigilance, chariots d'urgence) et impliquer l'équipe dans l'démarche qualité continue."
+                }
             ]
         },
         "fiches_reflexes": {
@@ -661,6 +1013,10 @@ SESSIONS = [
                     "**Plan Blanc & Gouvernance** : Activation conjointe direction / commandement médical de crise (DMC) et libération programmée de l'aval.",
                     "**Modes Dégradés & Traçabilité** : Utilisation obligatoire des dossiers papier normalisés de crise avec double signature et horodatage strict en cas de panne informatique.",
                     "**Sécurité Active (Intrusion)** : Maîtrise des consignes de sauvegarde (Fuir - Se cacher - Alerter)."
+                    "**Plan Blanc & Cellule de Crise** : Déclenchement officiel par la Direction / ARS. Ouverture des lits d'aval et des zones tampons.",
+                    "**Tri & Afflux Massif (NOVI)** : Utilisation des méthodes de tri standardisées (START / fiches de tri).",
+                    "**Mode Dégradé & Informatique** : Recours immédiat aux dossiers papiers de crise nominatifs et traçabilité chronologique rigoureuse.",
+                    "**Communication de Crise** : Interdiction absolue de divulguer des données nominatives à l'extérieur (cellule de communication officielle)."
                 ]
             },
             "IDE": {
@@ -669,6 +1025,8 @@ SESSIONS = [
                 "points": [
                     "**Tri Pré-hospitalier/Intra-hospitalier** : Application rigoureuse des échelles de criticité pour l'identification immédiate des urgences absolues (U1).",
                     "**Traçabilité de Crise** : Maintien d'un enregistrement minimal mais infaillible des soins critiques administrés sous triptyque de crise."
+                     sen"**Tri IAO de Crise** : Identification immédiate des urgences absolues (UA) en zone d'accueil renforcée.",
+                    "**Sécurité des Soins en Mode Dégradé** : Double lecture des prescriptions et traçabilité papier nominative et horodatée."
                 ]
             },
             "AS": {
@@ -677,6 +1035,8 @@ SESSIONS = [
                 "points": [
                     "**Logistique Opérationnelle** : Mobilisation instantanée des chariots de crise et des stocks de brancardage normé.",
                     "**Sécurisation des Flux** : Participation active à l'aménagement des zones tampons et de la ZRV."
+                    "**Logistique de Crise** : Renfort immédiat pour l'installation des zones d'extension et l'acheminement du matériel lourd.",
+                    "**Identitovigilance SSE** : Utilisation des bracelets et numéros de crise provisoires pour les victimes anonymes."
                 ]
             },
             "Médecin": {
@@ -685,6 +1045,8 @@ SESSIONS = [
                 "points": [
                     "**Régulation & Coordination Interne** : Supervision médicale du tri, arbitrage des priorités d'examens et pilotage des sorties directes vers l'aval.",
                     "**Validation des Prescriptions de Crise** : Traçabilité formalisée des décisions d'urgence sous contrainte de plateau technique dégradé."
+                    "**Commandement Médical & Triage** : Rôle du médecin chef de triage et coordination étroite avec le SAMU-Centre 15.",
+                    "**Traçabilité Allégée de Crise** : Conservation des informations cliniques essentielles sur support papier de crise."
                 ]
             },
             "ARM": {
@@ -693,6 +1055,8 @@ SESSIONS = [
                 "points": [
                     "**Qualification de l'EIMV** : Recueil normé du triptyque d'alerte (Cinétique, Nombre d'impliqués, Gravité potentielle) pour le médecin régulateur.",
                     "**Sécurisation des Réseaux** : Utilisation exclusive des canaux de communication dédiés en situation critique."
+                    "**Régulation en Flux Tendu** : Priorisation des appels d'urgence vitale et main courante papier de secours.",
+                    "**Orientation des Familles** : Redirection systématique vers la cellule d'information du public (CIP)."
                 ]
             },
             "Accueil & Admission": {
@@ -701,6 +1065,8 @@ SESSIONS = [
                 "points": [
                     "**Filtrage & Protection des Données** : Application stricte des consignes de non-divulgation des identités et orientation des familles vers la CIP.",
                     "**Sécurité des Accès** : Verrouillage physique des entrées de l'unité sous tension."
+                    "**Filtrage & Admissions Rapides** : Bascule sur le circuit papier d'urgence et gestion rigoureuse des flux de proches.",
+                    "**Sécurité & Médias** : Refus d'accès aux journalistes et orientation vers le point d'accueil familles (PAF)."
                 ]
             },
             "Brancardier": {
@@ -709,6 +1075,8 @@ SESSIONS = [
                 "points": [
                     "**Respect des Circulations** : Application stricte des plans de flux unidirectionnels et sectorisés (propres/contaminés).",
                     "**Coordination** : Liaison permanente avec le poste de commandement logistique de crise."
+                    "**Fluidité & Évacuations** : Priorisation des transferts urgents (imagerie, bloc) et application des consignes d'évacuation PMR.",
+                    "**Vérification Matériel** : Disponibilité permanente des brancards, chaises d'évacuation et obus d'oxygène."
                 ]
             },
             "ASH": {
@@ -717,6 +1085,8 @@ SESSIONS = [
                 "points": [
                     "**Bio-nettoyage de Crise** : Application des protocoles spécifiques de désinfection renforcée en zone contaminée.",
                     "**EPI & Filières** : Port obligatoire des équipements adaptés et gestion sécurisée des flux de déchets spécifiques."
+                    "**Bio-nettoyage en Rotation Rapide** : Désinfection active et continue des box de soins en flux tendu.",
+                    "**Gestion des Déchets de Crise** : Multiplication des collecteurs DASRI au plus près des zones de soins."
                 ]
             },
             "Cadre de Santé": {
@@ -725,6 +1095,8 @@ SESSIONS = [
                 "points": [
                     "**Pilotage & Reporting** : Remontée en temps réel des indicateurs de tension (saturation, lits d'aval, absentéisme/renforts).",
                     "**Soutien Managérial** : Organisation des rotations d'équipes et accompagnement opérationnel sous tension."
+                    "**Management Opérationnel & Rappel** : Activation du plan de rappel, soutien psychologique et gestion des temps de pause.",
+                    "**REX Post-Crise** : Organisation obligatoire du retour d'expérience à chaud et rédaction du plan d'actions correctives."
                 ]
             }
         }
