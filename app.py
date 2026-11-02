@@ -1329,8 +1329,9 @@ tab_actuel, tab_progression, tab_historique, tab_avenir, tab_podium = st.tabs([
 ])
 
 # --- TAB 1 : QUIZ INTERACTIF (PARCOURS STRICT ET SÉQUENTIEL) ---
+# --- TAB 1 : QUIZ INTERACTIF (PARCOURS STRICT ET SÉQUENTIEL) ---
 with tab_actuel:
-    charger_notes_utilisateur_cached.clear()
+    # ❌ SUPPRIMÉ : charger_notes_utilisateur_cached.clear() ne doit pas être ici à chaque clic !
     mes_notes_utilisateur = charger_notes_utilisateur(st.session_state.user_pseudo)
     semaines_validees = [str(item.get("Semaine_ID")) for item in mes_notes_utilisateur]
 
@@ -1510,9 +1511,9 @@ with tab_actuel:
 
                         st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
-                        # Utilisation stricte et explicite de session_active["id"] pour l'enregistrement
                         if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
                             st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont bien été enregistrés pour la session {session_active['titre']}.")
+                            # C'est ICI qu'on vide le cache proprement après une validation réussie :
                             charger_notes_utilisateur_cached.clear()
 
                         st.divider()
