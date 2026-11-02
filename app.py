@@ -1238,56 +1238,55 @@ with tab_historique:
                                     st.markdown(f"• {pt}")
                                 st.markdown("</div>", unsafe_allow_html=True)
 
-    with sub_tab_fiches:
+with sub_tab_fiches:
         st.subheader("Consultation des Fiches Mémos PDF")
-        st.markdown("Sélectionnez la semaine et le profil métier pour consulter directement le PDF (à 50% de largeur) ou le télécharger.")
+        st.markdown("Retrouve ici les fiches officielles. *(Note : La fiche de la semaine en cours se débloque une fois le quiz validé !)*")
         
         if not sessions_passees:
             st.info("Aucune fiche PDF disponible pour le moment.")
         else:
-            col_s, col_m = st.columns(2)
-            with col_s:
-                semaine_choisie = st.selectbox(
-                    "Choisissez la semaine :",
-                    options=sessions_passees,
-                    format_func=lambda x: x["titre"],
-                    key="select_semaine_fiche"
-                )
-            with col_m:
-                fiches_dispo = semaine_choisie.get("fiches_reflexes", {})
-                liste_metiers_fiches = list(fiches_dispo.keys())
-                
-                metier_choisi_cle = st.selectbox(
-                    "Choisissez le profil métier :",
-                    options=liste_metiers_fiches,
-                    key="select_metier_fiche"
-                )
-            
-            st.markdown("---")
-            
-            if metier_choisi_cle in fiches_dispo:
-                slug_metier = fiches_dispo[metier_choisi_cle].get("slug", "tronc_commun")
-                
-                afficher_et_telecharger_pdf(
-                    semaine_id=semaine_choisie["id"],
-                    metier_slug=slug_metier,
-                    nom_affichage=metier_choisi_cle
-                )
+            # Récupération des semaines déjà validées par l'utilisateur
+            mes_notes_actuelles = charger_notes_utilisateur(st.session_state.user_pseudo)
+            semaines_validees_ids = [str(item.get("Semaine_ID")) for item in mes_notes_actuelles]
 
-# --- TAB 4 : SEMAINES À VENIR ---
-with tab_avenir:
-    sessions_futures = [s for s in SESSIONS if obtenir_statut_session(s) == "A venir"]
-    if not sessions_futures:
-        st.info("Aucune session future n'est programmée pour l'instant.")
-    else:
-        for s in sessions_futures:
-            str_debut = s['date_debut'].strftime('%d/%m/%Y')
-            str_fin = s['date_fin'].strftime('%d/%m/%Y')
-            
-            st.markdown(
-                f"<div class='card-avenir'><h4 style='color:#b45309;'>🔒 {s['titre']}</h4><p style='margin:0;'>📅 Ouverture prévue du <strong>{str_debut} au {str_fin}</strong></p></div>",
-                unsafe_allow_html=True
-            )
+            # Filtrage : on autorise les semaines passées ou celles dont le quiz a déjà été validé
+            sessions_fiches_disponibles = []
+            for s in sessions_passees:
+                statut = obtenir_statut_session(s)
+                if statut == "Passee" or str(s["id"]) in semaines_validees_ids or s["id"] == 0:
+                    sessions_fiches_disponibles.append(s)
+
+            if not sessions_fiches_disponibles:
+                st.warning("🔒 La fiche mémo de la semaine actuelle sera accessible ici dès que tu auras validé ton quiz !")
+            else:
+                col_s, col_m = st.columns(2)
+                with col_s:
+                    semaine_choisie = st.selectbox(
+                        "Choisis la semaine :",
+                        options=sessions_fiches_disponibles,
+                        format_func=lambda x: x["titre"],
+                        key="select_semaine_fiche_securise"
+                    )
+                with col_m:
+                    fiches_dispo = semaine_choisie.get("fiches_reflexes", {})
+                    liste_metiers_fiches = list(fiches_dispo.keys())
+                    
+                    metier_choisi_cle = st.selectbox(
+                        "Choisis ton profil métier :",
+                        options=liste_metiers_fiches,
+                        key="select_metier_fiche_securise"
+                    )
+                
+                st.markdown("---")
+                
+                if metier_choisi_cle in fiches_dispo:
+                    slug_metier = fiches_dispo[metier_choisi_cle].get("slug", "tronc_commun")
+                    
+                    afficher_et_telecharger_pdf(
+                        semaine_id=semaine_choisie["id"],
+                        metier_slug=slug_metier,
+                        nom_affichage=metier_choisi_cle
+                    )
 
 # --- TAB 5 : PODIUMS PAR MÉTIER & GÉNÉRAL ---
 with tab_podium:
