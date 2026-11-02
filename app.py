@@ -956,42 +956,64 @@ tab_actuel, tab_progression, tab_historique, tab_avenir, tab_podium = st.tabs([
     "🏆 Podium"
 ])
 
-# --- TAB 1 : QUIZ INTERACTIF ---
+# --- TAB 1 : QUIZ INTERACTIF (PARCOURS STRICT ET SÉQUENTIEL) ---
 with tab_actuel:
     charger_notes_utilisateur_cached.clear()
     mes_notes_utilisateur = charger_notes_utilisateur(st.session_state.user_pseudo)
     semaines_validees = [str(item.get("Semaine_ID")) for item in mes_notes_utilisateur]
 
-    session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), SESSIONS[0])
+    # 1. Récupération de toutes les sessions ouvertes/passées/démo triées strictement par ID (0, 1, 2...)
+    sessions_ouvertes = sorted(
+        [s for s in SESSIONS if obtenir_statut_session(s) in ["Actuelle", "Passee"] or s["id"] == 0],
+        key=lambda x: x["id"]
+    )
 
-    if not session_active:
+    # 2. Détermination automatique de LA PREMIÈRE session non encore validée (Parcours strict)
+    session_active = None
+    for s in sessions_ouvertes:
+        if str(s["id"]) not in semaines_validees:
+            session_active = s
+            break
+
+    # Si toutes les sessions ouvertes ont déjà été validées, on pointe vers la dernière (semaine actuelle)
+    tous_les_quiz_faits = (session_active is None)
+    if tous_les_quiz_faits and sessions_ouvertes:
+        session_active = sessions_ouvertes[-1]
+
+    if not sessions_ouvertes:
         st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui.")
     else:
+        if tous_les_quiz_faits:
+            st.success("🏆 Bravo ! Tu as validé tous les quiz disponibles jusqu'à présent dans l'ordre.")
+            st.markdown("<br>", unsafe_allow_html=True)
+
         st.markdown(
-            f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>⚡ Session de révision interactive</p></div>",
+            f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>⚡ Parcours séquentiel guidé</p></div>",
             unsafe_allow_html=True
         )
 
         deja_fait = str(session_active["id"]) in semaines_validees
 
         if deja_fait and not st.session_state.get(f"force_recommencer_{session_active['id']}", False):
-            st.success("🎉 Vous avez déjà validé le quiz de cette session !")
+            st.success("🎉 Tu as déjà validé le quiz de cette session !")
             
             derniere_note = next((item for item in mes_notes_utilisateur if str(item.get("Semaine_ID")) == str(session_active["id"])), None)
             if derniere_note:
-                st.metric("Votre score enregistré", f"{derniere_note.get('Score')} / {derniere_note.get('Total_Questions')}")
+                st.metric("Ton score enregistré", f"{derniere_note.get('Score')} / {derniere_note.get('Total_Questions')}")
 
             st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("🔄 Recommencer le quiz pour le plaisir", type="primary", use_container_width=True):
-                st.session_state[f"force_recommencer_{session_active['id']}"] = True
-                st.session_state.current_q_index = 0
-                st.session_state.user_quiz_answers = {}
-                st.session_state.pop("questions_courantes", None)
-                st.rerun()
-
+            if tous_les_quiz_faits:
+                if st.button("🔄 Recommencer ce quiz pour le plaisir", type="primary", use_container_width=True):
+                    st.session_state[f"force_recommencer_{session_active['id']}"] = True
+                    st.session_state.current_q_index = 0
+                    st.session_state.user_quiz_answers = {}
+                    st.session_state.pop("questions_courantes", None)
+                    st.rerun()
+            else:
+                st.info("👉 Passe à la session suivante ou attends l'ouverture de la prochaine.")
         else:
             if st.session_state.quiz_paused:
-                st.warning(f"⏸️ **Quiz en pause !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
+                st.warning(f"⏸️ **Quiz en pause !** Tu étais à la question {st.session_state.current_q_index + 1}.")
                 c_rep, c_raz = st.columns([1, 1])
                 with c_rep:
                     if st.button("▶️ Reprendre", type="primary", use_container_width=True):
@@ -1025,8 +1047,9 @@ with tab_actuel:
                 )
 
                 if role_soignant != "-- Choisir ma fonction --":
-                    if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant:
+                    if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant or st.session_state.get("session_id_courante") != session_active["id"]:
                         st.session_state.role_actif = role_soignant
+                        st.session_state.session_id_courante = session_active["id"]
                         q_liste = list(session_active.get("tronc_commun", []))
                         
                         if "IDE" in role_soignant:
@@ -1115,8 +1138,9 @@ with tab_actuel:
 
                         st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
+                        # Utilisation stricte et explicite de session_active["id"] pour l'enregistrement
                         if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
-                            st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés.")
+                            st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont bien été enregistrés pour la session {session_active['titre']}.")
                             charger_notes_utilisateur_cached.clear()
 
                         st.divider()
@@ -1147,6 +1171,7 @@ with tab_actuel:
                             st.session_state.user_quiz_answers = {}
                             st.session_state.quiz_paused = False
                             st.session_state.pop("questions_courantes", None)
+                            st.session_state.pop("session_id_courante", None)
                             st.session_state.pop(f"force_recommencer_{session_active['id']}", None)
                             st.rerun()
                             
