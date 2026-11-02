@@ -16,123 +16,7 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. CONNEXION GOOGLE SHEETS VIA GSPREAD
-# ------------------------------------------------------------------------------
-@st.cache_resource
-def get_gspread_client():
-    scope = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive"
-    ]
-    credentials = Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"],
-        scopes=scope
-    )
-    return gspread.authorize(credentials)
-
-def get_sheet():
-    client = get_gspread_client()
-    return client.open_by_url(st.secrets["spreadsheet_url"])
-
-def charger_utilisateurs():
-    try:
-        sheet = get_sheet().worksheet("Utilisateurs")
-        records = sheet.get_all_records()
-        return {str(r["Pseudo"]): str(r.get("Mot_De_Passe", "")) for r in records if "Pseudo" in r and r["Pseudo"]}
-    except Exception:
-        return {}
-
-def ajouter_utilisateur(pseudo, mdp, animal=""):
-    try:
-        sheet = get_sheet().worksheet("Utilisateurs")
-        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([date_str, str(pseudo), str(mdp), str(animal)])
-        return True
-    except Exception as e:
-        st.error(f"Erreur d'enregistrement Google Sheets : {e}")
-        return False
-
-def charger_notes_utilisateur(pseudo):
-    try:
-        sheet = get_sheet().worksheet("Reponses")
-        records = sheet.get_all_records()
-        return [r for r in records if str(r.get("Pseudo")) == str(pseudo)]
-    except Exception:
-        return []
-
-def enregistrer_reponse(pseudo, semaine_id, score, total):
-    try:
-        sheet = get_sheet().worksheet("Reponses")
-        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total)])
-        return True
-    except Exception as e:
-        st.error(f"Erreur de sauvegarde : {e}")
-        return False
-
-def calculer_scores_podium():
-    """
-    Calcule le score total cumulé de chaque utilisateur en ne gardant 
-    que la PREMIÈRE tentative validée pour chaque Semaine_ID.
-    """
-    try:
-        sheet = get_sheet().worksheet("Reponses")
-        records = sheet.get_all_records()
-        
-        tentatives_uniques = {}
-        
-        for r in records:
-            pseudo = str(r.get("Pseudo"))
-            semaine_id = str(r.get("Semaine_ID"))
-            try:
-                score = int(r.get("Score", 0))
-            except ValueError:
-                score = 0
-                
-            if pseudo and semaine_id:
-                if pseudo not in tentatives_uniques:
-                    tentatives_uniques[pseudo] = {}
-                if semaine_id not in tentatives_uniques[pseudo]:
-                    tentatives_uniques[pseudo][semaine_id] = score
-                    
-        classement = []
-        for pseudo, semaines_dict in tentatives_uniques.items():
-            total_points = sum(semaines_dict.values())
-            nb_quiz = len(semaines_dict)
-            classement.append({
-                "Pseudo": pseudo,
-                "Total_Points": total_points,
-                "Quiz_Completes": nb_quiz
-            })
-            
-        classement = sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
-        return classement
-    except Exception:
-        return []
-
-def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
-    chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
-    
-    if os.path.exists(chemin_pdf):
-        with open(chemin_pdf, "rb") as f:
-            pdf_bytes = f.read()
-            
-        st.download_button(
-            label=f"📥 Télécharger la Fiche Mémo ({nom_affichage}) - PDF",
-            data=pdf_bytes,
-            file_name=f"HAS_2027_Semaine_{semaine_id}_{metier_slug}.pdf",
-            mime="application/pdf",
-            key=f"dl_pdf_{semaine_id}_{metier_slug}"
-        )
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        pdf_viewer(input=pdf_bytes, width=500)
-            
-    else:
-        st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt disponible dans le dossier `fiches_pdf/` sur GitHub (chemin cherché : `{chemin_pdf}`).")
-
-# ------------------------------------------------------------------------------
-# 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & VIGNETTES COULEURS)
+# 2. STYLE CSS & LOGOS BANNIÈRE
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -141,7 +25,6 @@ st.markdown("""
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
-    /* Correction robuste pour éviter que le texte du titre ne parte en vrac sur mobile */
     .header-table {
         width: 100%;
         border-collapse: collapse;
@@ -154,76 +37,25 @@ st.markdown("""
         word-wrap: break-word;
     }
 
-    /* Ajustement responsive de la bannière pour les téléphones */
     @media screen and (max-width: 768px) {
-        .main-title {
-            font-size: 1.1rem !important; 
-            white-space: nowrap; /* Force le titre principal sur une seule ligne si possible */
-        }
-        .subtitle {
-            font-size: 0.8rem !important; 
-        }
-        .header-table p {
-            font-size: 0.7rem !important; 
-        }
-        .header-table img {
-            max-width: 50px !important; 
-        }
+        .main-title { font-size: 1.1rem !important; white-space: nowrap; }
+        .subtitle { font-size: 0.8rem !important; }
     }
     
     .auth-card-header {
-        background: white; border-radius: 20px; padding: 20px;
+        background: white; border-radius: 20px; padding: 25px;
         border: 2px solid #99f6e4; max-width: 600px; margin: 0 auto 15px auto;
         text-align: center; box-shadow: 0 4px 15px rgba(15, 118, 110, 0.08);
     }
-    .animal-selected-badge {
-        display: inline-flex; align-items: center; gap: 12px; padding: 8px 20px;
-        border-radius: 50px; background-color: #e0f2fe; border: 2px solid #38bdf8; margin: 10px 0;
-    }
-    .animal-selected-emoji { font-size: 2rem; }
-    .animal-selected-name { color: #0369a1; font-weight: 700; font-size: 1.1rem; }
-    .user-header {
-        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
-        color: white; padding: 12px 26px; border-radius: 50px; display: inline-block; font-weight: 700;
-    }
-    .card-progression { background-color: #ffffff; border-radius: 20px; padding: 20px; border: 2px solid #38bdf8; margin-bottom: 20px; }
-    .card-actuelle { background-color: #ffffff; border-radius: 20px; padding: 25px; border-left: 8px solid #10b981; margin-bottom: 20px; }
-    .card-avenir { background-color: #fffbeb; border-radius: 20px; padding: 20px; border-left: 8px solid #f59e0b; margin-bottom: 15px; }
-    
-    .question-card {
-        background: white; border-radius: 24px; padding: 30px;
-        border: 2px solid #99f6e4; box-shadow: 0 10px 25px rgba(15, 118, 110, 0.08); margin-bottom: 20px;
-    }
-    .question-badge {
-        background: #ccfbf1; color: #0f766e; padding: 6px 16px;
-        border-radius: 30px; font-weight: 700; font-size: 0.9rem; display: inline-block; margin-bottom: 15px;
-    }
-    .question-title { color: #0f766e; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
-
-    .result-card-ok {
-        background: #f0fdf4; border-radius: 16px; padding: 18px;
-        border: 2px solid #86efac; margin-bottom: 15px;
-    }
-    .result-card-err {
-        background: #fef2f2; border-radius: 16px; padding: 18px;
-        border: 2px solid #fca5a5; margin-bottom: 15px;
-    }
-
-    .vignette-semaine {
-        background: #ffffff; border-radius: 24px; padding: 25px;
-        border: 2px solid #cbd5e1; box-shadow: 0 8px 25px rgba(148, 163, 184, 0.1); margin-bottom: 30px;
-    }
-
     .memo-box-tc { background: #f0f9ff; border-radius: 16px; padding: 20px; border-left: 6px solid #0284c7; }
     .memo-box-ide { background: #f0fdf4; border-radius: 16px; padding: 20px; border-left: 6px solid #16a34a; }
     .memo-box-as { background: #fffbeb; border-radius: 16px; padding: 20px; border-left: 6px solid #d97706; }
     .memo-box-med { background: #f5f3ff; border-radius: 16px; padding: 20px; border-left: 6px solid #7c3aed; }
     .memo-box-arm { background: #faf5ff; border-radius: 16px; padding: 20px; border-left: 6px solid #c026d3; }
-    .memo-box-acc { background: #f0fdfa; border-radius: 16px; padding: 20px; border-left: 6px solid #0d9488; }
+    .memo-box-acc { background: #f0fdfa; border-radius: 16px; padding: 20px; border-left: 0d9488 solid #0d9488; }
     .memo-box-branc { background: #fdf2f8; border-radius: 16px; padding: 20px; border-left: 6px solid #db2777; }
     .memo-box-ash { background: #f1f5f9; border-radius: 16px; padding: 20px; border-left: 6px solid #475569; }
     .memo-box-cadre { background: #fff7ed; border-radius: 16px; padding: 20px; border-left: 6px solid #ea580c; }
-
     .memo-title-text { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: #1e293b; }
 
     .stTabs [data-baseweb="tab-list"] { gap: 10px; justify-content: flex-start; }
@@ -237,7 +69,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 4. GESTION DE LA SESSION & AUTHENTIFICATION (ONGLETS + 15 ANIMAUX)
+# 3. CONNEXION GOOGLE SHEETS & DICTIONNAIRE ANIMAUX
 # ------------------------------------------------------------------------------
 ANIMAL_TO_EMOJI = {
     "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
@@ -246,44 +78,92 @@ ANIMAL_TO_EMOJI = {
     "Koala": "🐨", "Licorne": "🦄"
 }
 
+@st.cache_resource
+def get_gspread_client():
+    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+    credentials = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
+    return gspread.authorize(credentials)
+
+def get_sheet():
+    client = get_gspread_client()
+    return client.open_by_url(st.secrets["spreadsheet_url"])
+
+def charger_utilisateurs():
+    try:
+        sheet = get_sheet().worksheet("Utilisateurs")
+        records = sheet.get_all_records()
+        # On retourne un dictionnaire {pseudo: {mdp, animal}} ou similaire
+        utilisateurs = {}
+        for r in records:
+            p = str(r.get("Pseudo", "")).strip()
+            if p:
+                utilisateurs[p] = {
+                    "mdp": str(r.get("Mot_De_Passe", "")),
+                    "animal": str(r.get("Animal_Favori", r.get("Animal", "🦊")))
+                }
+        return utilisateurs
+    except Exception:
+        return {}
+
+def ajouter_utilisateur(pseudo, mdp, animal):
+    try:
+        sheet = get_sheet().worksheet("Utilisateurs")
+        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+        sheet.append_row([date_str, str(pseudo), str(mdp), str(animal)])
+        return True
+    except Exception as e:
+        st.error(f"Erreur d'enregistrement Google Sheets : {e}")
+        return False
+
+# ------------------------------------------------------------------------------
+# 4. ÉCRAN D'ACCUEIL / CONNEXION AVEC MENU DÉROULANT & ANIMAUX
+# ------------------------------------------------------------------------------
 if "user_pseudo" not in st.session_state:
     params = st.query_params
     if "pseudo" in params:
         st.session_state.user_pseudo = params["pseudo"]
 
 if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
-    st.markdown("<h2 style='text-align: center; color: #0f766e;'>🧠 Pause Révision HAS 2027 - Urgences Mulhouse</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b;'>Veuillez vous identifier pour accéder au parcours de révision.</p>", unsafe_allow_html=True)
+    # Bannière d'en-tête de connexion (avec les logos / titres)
+    st.markdown("""
+        <div class="auth-card-header">
+            <h2 style='color: #0f766e; margin-bottom: 5px;'>🧠 Révisions Équipe HAS 2027</h2>
+            <p style='color: #64748b; font-size: 0.95rem; margin: 0;'>Urgences - CH de Mulhouse</p>
+        </div>
+    """, unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        tab_connexion, tab_inscription = st.tabs(["🔑 Connexion", "✨ Première visite (Créer un compte)"])
+        tab_connexion, tab_inscription = st.tabs(["🔑 Connexion (Pseudo existant)", "✨ Première visite"])
+        
         utilisateurs_inscrits = charger_utilisateurs()
+        pseudos_disponibles = list(utilisateurs_inscrits.keys())
 
         with tab_connexion:
-            st.markdown("### Bon retour !")
-            pseudo_connexion = st.text_input("Votre Pseudo :", key="input_connexion_pseudo")
-            mdp_connexion = st.text_input("Votre Mot de passe / Code secret :", type="password", key="input_connexion_mdp")
-            
-            if st.button("Se connecter", type="primary", use_container_width=True):
-                p_clean = pseudo_connexion.strip()
-                if p_clean in utilisateurs_inscrits:
-                    mdp_attendu = utilisateurs_inscrits[p_clean]
-                    if not mdp_attendu or mdp_attendu == mdp_connexion.strip():
-                        st.session_state.user_pseudo = p_clean
-                        st.query_params["pseudo"] = p_clean
-                        st.rerun()
+            st.markdown("### Retrouvez votre profil")
+            if pseudos_disponibles:
+                choix_pseudo = st.selectbox("Sélectionnez votre pseudo dans la liste :", options=["-- Choisir --"] + pseudos_disponibles)
+                mdp_connexion = st.text_input("Code secret / Mot de passe (si configuré) :", type="password")
+                
+                if st.button("Se connecter", type="primary", use_container_width=True):
+                    if choix_pseudo == "-- Choisir --":
+                        st.warning("Veuillez sélectionner votre pseudo.")
                     else:
-                        st.error("Mot de passe incorrect.")
-                elif p_clean and p_clean not in utilisateurs_inscrits:
-                    st.error("Ce pseudo n'existe pas. Veuillez utiliser l'onglet 'Première visite'.")
-                else:
-                    st.warning("Veuillez entrer un pseudo.")
+                        infos_user = utilisateurs_inscrits[choix_pseudo]
+                        mdp_attendu = infos_user["mdp"]
+                        if not mdp_attendu or mdp_attendu == mdp_connexion.strip():
+                            st.session_state.user_pseudo = choix_pseudo
+                            st.query_params["pseudo"] = choix_pseudo
+                            st.rerun()
+                        else:
+                            st.error("Mot de passe incorrect.")
+            else:
+                st.info("Aucun utilisateur enregistré pour le moment. Créez un compte via l'autre onglet !")
 
         with tab_inscription:
-            st.markdown("### Création de compte")
-            nouveau_pseudo = st.text_input("Choisissez votre Pseudo :", key="input_insc_pseudo")
-            nouveau_mdp = st.text_input("Choisissez un mot de passe (optionnel) :", type="password", key="input_insc_mdp")
+            st.markdown("### Rejoindre l'équipe")
+            nouveau_pseudo = st.text_input("Votre Pseudo (Prénom / Nom) :")
+            nouveau_mdp = st.text_input("Code secret (optionnel) :", type="password")
             
             animal_choisi = st.selectbox(
                 "Choisissez votre animal fétiche :", 
@@ -291,17 +171,17 @@ if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
                 format_func=lambda x: f"{ANIMAL_TO_EMOJI[x]} {x}"
             )
             
-            if st.button("Créer mon compte & Commencer", type="primary", use_container_width=True):
+            if st.button("Créer mon profil & Commencer", type="primary", use_container_width=True):
                 np_clean = nouveau_pseudo.strip()
                 if not np_clean:
                     st.warning("Veuillez entrer un pseudo valide.")
                 elif np_clean in utilisateurs_inscrits:
-                    st.error("Ce pseudo est déjà pris. Connectez-vous via l'onglet 'Connexion'.")
+                    st.error("Ce pseudo existe déjà. Connectez-vous via l'onglet de gauche !")
                 else:
                     if ajouter_utilisateur(np_clean, nouveau_mdp.strip(), animal_choisi):
                         st.session_state.user_pseudo = np_clean
                         st.query_params["pseudo"] = np_clean
-                        st.success("Compte créé avec succès ! Chargement...")
+                        st.success("Profil créé avec succès ! Chargement...")
                         st.rerun()
 
     st.stop()
