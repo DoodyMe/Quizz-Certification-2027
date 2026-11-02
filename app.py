@@ -636,7 +636,7 @@ SESSIONS = [
                         "Une réévaluation déclenchée par l'appel spontané du patient ou de son accompagnant en cas de besoin.",
                         "Un contrôle visuel global de la salle d'attente réalisé par l'IDE toutes les heures."
                     ],
-                    "rep": "Une réévaluation clinique formalisée selon une périodicité stricte adaptée au niveau de criticité initial, avec traçabilité de tout changement d'état."
+                    "rep": "Une réévaluation clinique selon une périodicité stricte adaptée au niveau de criticité initial."
                 },
                 {
                     "q": "7. [Module IDE] En mode dégradé informatique (panne totale de l'EPR), quelle règle de double contrôle s'applique pour l'administration des médicaments à haut risque (MHR) ?",
