@@ -1416,7 +1416,7 @@ with tab_actuel:
                 role_soignant = st.selectbox(
                     "Sélectionnez votre fonction pour personnaliser votre parcours :",
                     options=metiers_tries_alphabetique,
-                    key="select_role_soignant"
+                    key=f"select_role_soignant_{session_active['id']}"  # 👈 Clé unique liée à la semaine active
                 )
 
                 if role_soignant != "-- Choisir ma fonction --":
