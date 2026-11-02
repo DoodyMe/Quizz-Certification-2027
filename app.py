@@ -613,9 +613,9 @@ SESSIONS = [
                 "options": [
                     "Se barricader immédiatement dans le bureau le plus proche sans chercher à fuir",
                     "Fuir en zone ouverte en emportant impératif le matériel informatique et les dossiers",
-                    "Fuir, à défaut se cacher et se confiner en silence, puis alerter les forces de l'ordre dès que l'accès est possible"
+                    "Fuir, à défaut se cacher et se confiner en silence, puis alerter les forces de l'ordre dès que l'accès est possible."
                 ],
-                "rep": "S'échapper (fuir) si l'itinéraire est sûr, à défaut se cacher et se confiner en silence, puis alerter les forces de l'ordre dès que l'accès est possible"
+                "rep": "Fuir, à défaut se cacher et se confiner en silence, puis alerter les forces de l'ordre dès que l'accès est possible."
             },
             {
                 "q": "5. [Tronc Commun] En situation d'afflux massif de victimes (plan AMAVI) avec saturation de la capacité d'identification administrative, quel système d'identitovigilance de crise est activé ?",
@@ -728,41 +728,41 @@ SESSIONS = [
                     "options": [
                         "L'absence de réclamation du patient après quatre heures d'attente dans les couloirs.",
                         "La formalisation d'une évaluation médicale de sécurité, la validation des critères de stabilité et la transmission des consignes écrites au médecin traitant.",
-                        "L'accord tacite de l'interne de garde sans validation par un médecin sénior."
+                        "L'accord tacite du médecin, qui sera tracé plus tard."
                     ],
                     "rep": "La formalisation d'une évaluation médicale de sécurité, la validation des critères de stabilité et la transmission des consignes écrites au médecin traitant."
                 },
                 {
                     "q": "7. [Module Médecin] Lors d'un afflux massif de victimes (AMV), sur quoi se fonde la doctrine de triage médico-chirurgical (PMA / Accueil des urgences) ?",
                     "options": [
-                        "L'ordre d'arrivée chronologique des patients sur le site des urgences, sans distinction de pathologie.",
+                        "L'ordre d'arrivée chronologique des patients sur le site des urgences.",
                         "La hiérarchisation rapide de la criticité (urgences absolues U1 vs relatives U2/U3) pour optimiser l'allocation immédiate des ressources vitales.",
-                        "La réalisation systématique d'un bilan radiologique complet pour tous les impliqués avant toute orientation."
+                        "La réalisation systématique d'un examen clinique médical complet avant l'orientation."
                     ],
                     "rep": "La hiérarchisation rapide de la criticité (urgences absolues U1 vs relatives U2/U3) pour optimiser l'allocation immédiate des ressources vitales."
                 },
                 {
                     "q": "8. [Module Médecin] En mode dégradé informatique, quelles mentions obligatoires doivent impérativement figurer sur une prescription médicale d'urgence rédigée sur papier ?",
                     "options": [
-                        "Le tampon de l'hôpital et les initiales du médecin sans autre formalité.",
-                        "La lisibilité de l'écriture, l'identification nominative du prescripteur (nom/qualité), sa signature manuscrite, la date et l'horodatage précis.",
+                        "Le tampon de l'hôpital, la signature et les initiales du médecin.",
+                        "L'identification nominative du prescripteur, sa signature manuscrite, la date et l'horodatage de manière lisible.",
                         "La transcription ultérieure par le secrétariat sans contre-signature du médecin prescripteur."
                     ],
-                    "rep": "La lisibilité de l'écriture, l'identification nominative du prescripteur (nom/qualité), sa signature manuscrite, la date et l'horodatage précis."
+                    "rep": "L'identification nominative du prescripteur, sa signature manuscrite, la date et l'horodatage de manière lisible."
                 },
                 {
                     "q": "9. [Module Médecin] En contexte de tension extrême aux urgences, quelle règle encadre la prise de décision collégiale de limitation ou d'arrêt de traitement (LAT) ?",
                     "options": [
-                        "La décision unilatérale du médecin sénior de garde pour ne pas engorger le service de réanimation.",
-                        "Le respect intangible de la procédure collégiale, la consultation des directives anticipées ou de la personne de confiance, et la traçabilité formelle de la discussion.",
-                        "Le report systématique de la discussion au-delà de la fin de la vague épidémique ou de la crise."
+                        "La décision du médecin s'occupant du patient suffit.",
+                        "Malgré la situation, il faut respecter la procédure collégiale, la consultation des directives anticipées ou de la personne de confiance, et la traçabilité formelle de la discussion.",
+                        "Le report de la discussion au-delà de la fin de la vague épidémique ou de la crise est possible."
                     ],
-                    "rep": "Le respect intangible de la procédure collégiale, la consultation des directives anticipées ou de la personne de confiance, et la traçabilité formelle de la discussion."
+                    "rep": "Malgré la situation, il faut respecter la procédure collégiale, la consultation des directives anticipées ou de la personne de confiance, et la traçabilité formelle de la discussion."
                 },
                 {
                     "q": "10. [Module Médecin] Quelle est l'attente majeure de la HAS concernant l'organisation du retour d'expérience (REX) après une séquence de crise SSE ?",
                     "options": [
-                        "La constitution d'un rapport de synthèse anonyme classé sans suite dans les archives de l'hôpital.",
+                        "La constitution d'un rapport de synthèse anonyme classé immédiatement dans les archives de l'hôpital.",
                         "La mise en place d'une analyse systémique non punitive (CREX) des dysfonctionnements pour transformer les retours de terrain en plans d'actions correctives.",
                         "La recherche individuelle d'un responsable à sanctionner en cas de dépassement des délais de prise en charge."
                     ],
