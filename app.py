@@ -1303,7 +1303,26 @@ with sub_tab_fiches:
                         metier_slug=slug_metier,
                         nom_affichage=metier_choisi_cle
                     )
+# --- TAB 4 : SEMAINES À VENIR ---
+with tab_avenir:
+    st.markdown("<h3 style='color:#0f766e;'>⌛ Prochaines Semaines de Révision</h3>", unsafe_allow_html=True)
+    st.markdown("Découvre le calendrier des prochaines thématiques de révision pour la certification HAS 2027.")
+    st.markdown("<br>", unsafe_allow_html=True)
 
+    sessions_futures = [s for s in SESSIONS if obtenir_statut_session(s) == "A venir"]
+    
+    if not sessions_futures:
+        st.info("🎯 Tu es actuellement à jour sur toutes les sessions publiées ! Les prochaines semaines de révision seront affichées ici dès leur programmation officielle.")
+    else:
+        for s in sessions_futures:
+            str_debut = s['date_debut'].strftime('%d/%m/%Y') if hasattr(s['date_debut'], 'strftime') else s['date_debut']
+            str_fin = s['date_fin'].strftime('%d/%m/%Y') if hasattr(s['date_fin'], 'strftime') else s['date_fin']
+            
+            st.markdown(
+                f"<div class='card-avenir'><h4 style='color:#b45309;'>🔒 {s['titre']}</h4><p style='margin:0;'>📅 Ouverture prévue du <strong>{str_debut} au {str_fin}</strong></p></div>",
+                unsafe_allow_html=True
+            )
+            
 # --- TAB 5 : PODIUMS PAR MÉTIER & GÉNÉRAL ---
 with tab_podium:
     st.markdown("<h3 style='color:#0f766e;'>🏆 Podiums & Classements de l'Équipe</h3>", unsafe_allow_html=True)
