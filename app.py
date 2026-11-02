@@ -16,7 +16,7 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. CONNEXION GOOGLE SHEETS VIA GSPREAD
+# 2. CONNEXION GOOGLE SHEETS VIA GSPREAD & CACHING
 # ------------------------------------------------------------------------------
 @st.cache_resource
 def get_gspread_client():
@@ -38,21 +38,22 @@ def charger_utilisateurs():
     try:
         sheet = get_sheet().worksheet("Utilisateurs")
         records = sheet.get_all_records()
-        return {str(r["Pseudo"]): str(r["Mot_De_Passe"]) for r in records if "Pseudo" in r and r["Pseudo"]}
+        return {str(r["Pseudo"]): str(r.get("Mot_De_Passe", "")) for r in records if "Pseudo" in r and r["Pseudo"]}
     except Exception:
         return {}
 
-def ajouter_utilisateur(pseudo, mdp):
+def ajouter_utilisateur(pseudo, mdp, animal=""):
     try:
         sheet = get_sheet().worksheet("Utilisateurs")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([date_str, str(pseudo), str(mdp)])
+        sheet.append_row([date_str, str(pseudo), str(mdp), str(animal)])
         return True
     except Exception as e:
         st.error(f"Erreur d'enregistrement Google Sheets : {e}")
         return False
 
-def charger_notes_utilisateur(pseudo):
+@st.cache_data(ttl=60)
+def charger_notes_utilisateur_cached(pseudo):
     try:
         sheet = get_sheet().worksheet("Reponses")
         records = sheet.get_all_records()
@@ -60,11 +61,14 @@ def charger_notes_utilisateur(pseudo):
     except Exception:
         return []
 
-def enregistrer_reponse(pseudo, semaine_id, score, total):
+def charger_notes_utilisateur(pseudo):
+    return charger_notes_utilisateur_cached(pseudo)
+
+def enregistrer_reponse(pseudo, semaine_id, score, total, role=""):
     try:
         sheet = get_sheet().worksheet("Reponses")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total)])
+        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total), str(role)])
         return True
     except Exception as e:
         st.error(f"Erreur de sauvegarde : {e}")
@@ -99,13 +103,106 @@ def charger_top10_semaine(semaine_id):
     except Exception:
         return []
 
+def calculer_scores_podium():
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        records = sheet.get_all_records()
+        tentatives_uniques = {}
+        
+        for r in records:
+            pseudo = str(r.get("Pseudo"))
+            semaine_id = str(r.get("Semaine_ID"))
+            try:
+                score = int(r.get("Score", 0))
+            except ValueError:
+                score = 0
+                
+            if pseudo and semaine_id:
+                if pseudo not in tentatives_uniques:
+                    tentatives_uniques[pseudo] = {}
+                if semaine_id not in tentatives_uniques[pseudo]:
+                    tentatives_uniques[pseudo][semaine_id] = score
+                    
+        classement = []
+        for pseudo, semaines_dict in tentatives_uniques.items():
+            total_points = sum(semaines_dict.values())
+            nb_quiz = len(semaines_dict)
+            classement.append({
+                "Pseudo": pseudo,
+                "Total_Points": total_points,
+                "Quiz_Completes": nb_quiz
+            })
+            
+        return sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
+    except Exception:
+        return []
+
+def calculer_scores_podium_par_metier():
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        records = sheet.get_all_records()
+        scores_par_metier = {}
+        
+        for r in records:
+            pseudo = str(r.get("Pseudo"))
+            semaine_id = str(r.get("Semaine_ID"))
+            metier = str(r.get("Role", r.get("Metier", "Autre"))).strip()
+            if not metier or metier == "":
+                metier = "Général / Non renseigné"
+                
+            try:
+                score = int(r.get("Score", 0))
+            except ValueError:
+                score = 0
+
+            if pseudo and semaine_id:
+                if metier not in scores_par_metier:
+                    scores_par_metier[metier] = {}
+                if pseudo not in scores_par_metier[metier]:
+                    scores_par_metier[metier][pseudo] = {}
+                if semaine_id not in scores_par_metier[metier][pseudo]:
+                    scores_par_metier[metier][pseudo][semaine_id] = score
+
+        podiums_metiers = {}
+        for metier, users_dict in scores_par_metier.items():
+            classement = []
+            for pseudo, semaines_dict in users_dict.items():
+                classement.append({
+                    "Pseudo": pseudo,
+                    "Total_Points": sum(semaines_dict.values()),
+                    "Quiz_Completes": len(semaines_dict)
+                })
+            podiums_metiers[metier] = sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
+            
+        return podiums_metiers
+    except Exception:
+        return {}
+
+def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
+    chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
+    if os.path.exists(chemin_pdf):
+        with open(chemin_pdf, "rb") as f:
+            pdf_bytes = f.read()
+            
+        st.download_button(
+            label=f"📥 Télécharger la Fiche Mémo ({nom_affichage}) - PDF",
+            data=pdf_bytes,
+            file_name=f"HAS_2027_Semaine_{semaine_id}_{metier_slug}.pdf",
+            mime="application/pdf",
+            key=f"dl_pdf_{semaine_id}_{metier_slug}"
+        )
+        st.markdown("<br>", unsafe_allow_html=True)
+        pdf_viewer(input=pdf_bytes, width=500)
+    else:
+        st.info(f"💡 Le fichier PDF officiel pour **{nom_affichage}** sera bientôt disponible (chemin cherché : `{chemin_pdf}`).")
+
 # ------------------------------------------------------------------------------
-# 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & LOGO)
+# 3. STYLE CSS (PASTEL HOSPITALIER & DESIGN UNIVERSEL MAC/MOBILE)
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
     .stApp {
-      plateformes */
+        background: linear-gradient(135deg, #e6fffa 0%, #f0f9ff 50%, #f5f3ff 100%);
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
@@ -115,7 +212,13 @@ st.markdown("""
         border-radius: 20px;
         border: 3px solid #99f6e4;
         box-shadow: 0 6px 20px rgba(15, 118, 110, 0.12);
-        max-width: 130px;
+        max-width: 110px;
+    }
+
+    @media screen and (max-width: 768px) {
+        .main-title { font-size: 1.1rem !important; }
+        .subtitle { font-size: 0.85rem !important; }
+        .service-logo img { max-width: 60px !important; }
     }
 
     .auth-card-header {
@@ -148,6 +251,20 @@ st.markdown("""
     }
     .question-title { color: #0f766e; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
 
+    .result-card-ok { background: #f0fdf4; border-radius: 16px; padding: 18px; border: 2px solid #86efac; margin-bottom: 15px; }
+    .result-card-err { background: #fef2f2; border-radius: 16px; padding: 18px; border: 2px solid #fca5a5; margin-bottom: 15px; }
+
+    .memo-box-tc { background: #f0f9ff; border-radius: 16px; padding: 20px; border-left: 6px solid #0284c7; }
+    .memo-box-ide { background: #f0fdf4; border-radius: 16px; padding: 20px; border-left: 6px solid #16a34a; }
+    .memo-box-as { background: #fffbeb; border-radius: 16px; padding: 20px; border-left: 6px solid #d97706; }
+    .memo-box-med { background: #f5f3ff; border-radius: 16px; padding: 20px; border-left: 6px solid #7c3aed; }
+    .memo-box-arm { background: #faf5ff; border-radius: 16px; padding: 20px; border-left: 6px solid #c026d3; }
+    .memo-box-acc { background: #f0fdfa; border-radius: 16px; padding: 20px; border-left: 6px solid #0d9488; }
+    .memo-box-branc { background: #fdf2f8; border-radius: 16px; padding: 20px; border-left: 6px solid #db2777; }
+    .memo-box-ash { background: #f1f5f9; border-radius: 16px; padding: 20px; border-left: 6px solid #475569; }
+    .memo-box-cadre { background: #fff7ed; border-radius: 16px; padding: 20px; border-left: 6px solid #ea580c; }
+    .memo-title-text { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: #1e293b; }
+
     .stTabs [data-baseweb="tab-list"] { gap: 12px; justify-content: center; }
     .stTabs [data-baseweb="tab"] {
         background-color: #ffffff; border-radius: 30px; padding: 10px 24px; font-weight: 700; color: #0f766e; border: 1px solid #ccfbf1;
@@ -159,85 +276,49 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 4. ÉCRAN D'ACCUEIL / CONNEXION AVEC MENU DÉROULANT & ANIMAUX
+# 4. DONNÉES ET ÉTATS DE SESSION (AVEC SEMAINES 0, 1 ET 2 INTÉGRALES)
 # ------------------------------------------------------------------------------
+ANIMAL_TO_EMOJI = {
+    "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
+    "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
+    "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔",
+    "Koala": "🐨", "Licorne": "🦄"
+}
+
+ANIMAUX = list(ANIMAL_TO_EMOJI.keys())
+ADJECTIFS = ["Astucieux", "Timide", "Ambitieux", "Survolté", "Combatif", "Emotif", "Espiègle", "Gourmand", "Malin", "Optimiste"]
+
 if "user_pseudo" not in st.session_state:
-    params = st.query_params
-    if "pseudo" in params:
-        st.session_state.user_pseudo = params["pseudo"]
+    st.session_state.user_pseudo = None
 
-if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
-    # Bannière d'en-tête de connexion (avec les logos / titres)
-    st.markdown("""
-        <div class="auth-card-header">
-            <h2 style='color: #0f766e; margin-bottom: 5px;'>🧠 Révisions Équipe HAS 2027</h2>
-            <p style='color: #64748b; font-size: 0.95rem; margin: 0;'>Urgences - CH de Mulhouse</p>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        tab_connexion, tab_inscription = st.tabs(["🔑 Connexion (Pseudo existant)", "✨ Première visite"])
-        
-        utilisateurs_inscrits = charger_utilisateurs()
-        pseudos_disponibles = list(utilisateurs_inscrits.keys())
+if "animal_selectionne" not in st.session_state:
+    st.session_state.animal_selectionne = None
 
-        with tab_connexion:
-            st.markdown("### Retrouvez votre profil")
-            if pseudos_disponibles:
-                choix_pseudo = st.selectbox("Sélectionnez votre pseudo dans la liste :", options=["-- Choisir --"] + pseudos_disponibles)
-                mdp_connexion = st.text_input("Code secret / Mot de passe (si configuré) :", type="password")
-                
-                if st.button("Se connecter", type="primary", use_container_width=True):
-                    if choix_pseudo == "-- Choisir --":
-                        st.warning("Veuillez sélectionner votre pseudo.")
-                    else:
-                        infos_user = utilisateurs_inscrits[choix_pseudo]
-                        mdp_attendu = infos_user["mdp"]
-                        if not mdp_attendu or mdp_attendu == mdp_connexion.strip():
-                            st.session_state.user_pseudo = choix_pseudo
-                            st.query_params["pseudo"] = choix_pseudo
-                            st.rerun()
-                        else:
-                            st.error("Mot de passe incorrect.")
-            else:
-                st.info("Aucun utilisateur enregistré pour le moment. Créez un compte via l'autre onglet !")
+if "login_animal_selectionne" not in st.session_state:
+    st.session_state.login_animal_selectionne = None
 
-        with tab_inscription:
-            st.markdown("### Rejoindre l'équipe")
-            nouveau_pseudo = st.text_input("Votre Pseudo (Prénom / Nom) :")
-            nouveau_mdp = st.text_input("Code secret (optionnel) :", type="password")
-            
-            animal_choisi = st.selectbox(
-                "Choisissez votre animal fétiche :", 
-                options=list(ANIMAL_TO_EMOJI.keys()),
-                format_func=lambda x: f"{ANIMAL_TO_EMOJI[x]} {x}"
-            )
-            
-            if st.button("Créer mon profil & Commencer", type="primary", use_container_width=True):
-                np_clean = nouveau_pseudo.strip()
-                if not np_clean:
-                    st.warning("Veuillez entrer un pseudo valide.")
-                elif np_clean in utilisateurs_inscrits:
-                    st.error("Ce pseudo existe déjà. Connectez-vous via l'onglet de gauche !")
-                else:
-                    if ajouter_utilisateur(np_clean, nouveau_mdp.strip(), animal_choisi):
-                        st.session_state.user_pseudo = np_clean
-                        st.query_params["pseudo"] = np_clean
-                        st.success("Profil créé avec succès ! Chargement...")
-                        st.rerun()
+if "current_q_index" not in st.session_state:
+    st.session_state.current_q_index = 0
 
-    st.stop()
-else:
-    st.query_params["pseudo"] = st.session_state.user_pseudo
+if "user_quiz_answers" not in st.session_state:
+    st.session_state.user_quiz_answers = {}
 
-# --- SESSIONS DE QUIZ & FICHES MÉMO HAS 2027 ---
+if "quiz_paused" not in st.session_state:
+    st.session_state.quiz_paused = False
+
+def fixer_animal(nom_animal):
+    st.session_state.animal_selectionne = nom_animal
+
+def fixer_animal_login(nom_animal):
+    st.session_state.login_animal_selectionne = nom_animal
+
+# --- SESSIONS DE QUIZ INTÉGRALES ---
 SESSIONS = [
     {
         "id": 0,
         "titre": "Semaine 0 - Session de Démonstration & Test",
         "date_debut": datetime.date(2026, 1, 1),
-        "date_fin": datetime.date(2026, 10, 26),
+        "date_fin": datetime.date(2026, 10, 25),
         "tronc_commun": [
             {
                 "q": "🔎 [Démo Tronc Commun] Quel est l'objectif principal de cette plateforme de révision automatisée ?",
@@ -300,73 +381,9 @@ SESSIONS = [
                 "class": "memo-box-tc",
                 "slug": "tronc_commun",
                 "points": [
-                    "**Identitovigilance** : Contrôle obligatoire des 3 items (Nom de naissance, Prénom, Date de naissance) sur le bracelet d'identification à chaque étape de soins.",
-                    "**Bientraitance** : Posture de respect, préservation systématique de l'intimité (fermeture des box) et évaluation prioritaire de la douleur.",
-                    "**Culture de Sécurité** : Déclaration systématique et non punitive des Événements Indésirables (EI) sur le logiciel institutionnel pour l'analyse d'équipe."
-                ]
-            },
-            "IDE": {
-                "class": "memo-box-ide",
-                "slug": "ide",
-                "points": [
-                    "**Traçabilité Douleur** : Inscription obligatoire de l'échelle initiale ET de la réévaluation post-antalgique avec délai d'efficacité sur le Dossier Patient Informatisé.",
-                    "**Sécurité de l'Administration** : Vérification concordante du bracelet d'identification avant toute injection ou pose de voie veineuse."
-                ]
-            },
-            "AS": {
-                "class": "memo-box-as",
-                "slug": "as",
-                "points": [
-                    "**Évaluation de la Douleur** : Utilisation privilégiée de l'échelle comportementale ALGOPLUS pour les sujets âgés non communicants ou confus.",
-                    "**Prévention** : Recherche systématique des causes réversibles d'inconfort ou d'agitation (globe vésical, fécalome, douleur non verbalisée)."
-                ]
-            },
-            "Médecin": {
-                "class": "memo-box-med",
-                "slug": "medecin",
-                "points": [
-                    "**Décisions de LAT** : Traçabilité obligatoire de la procédure collégiale, de la recherche des directives anticipées et de la consultation de la personne de confiance.",
-                    "**Comptes-rendus de passage** : Rédaction et transmission au médecin traitant ou remise au patient garantie sous 24 heures."
-                ]
-            },
-            "ARM": {
-                "class": "memo-box-arm",
-                "slug": "arm",
-                "points": [
-                    "**Identitovigilance SAMU** : Recueil rigoureux du nom de naissance, prénom et date de naissance avec recherche d'antériorité pour éviter les doublons.",
-                    "**Confidentialité** : Strict respect du secret professionnel lors de la réception des appels de tiers."
-                ]
-            },
-            "Accueil & Admission": {
-                "class": "memo-box-acc",
-                "slug": "accueil",
-                "points": [
-                    "**Vigilance Salle d'Attente** : Alerte immédiate de l'IAO en cas de signalement de douleur aiguë, malaise ou dégradation clinique d'un usager.",
-                    "**Confidentialité au Guichet** : Maintien des distances de sécurité et discrétion lors du recueil des données nominatives."
-                ]
-            },
-            "Brancardier": {
-                "class": "memo-box-branc",
-                "slug": "brancardier",
-                "points": [
-                    "**Transferts Sécurisés** : Vérification active du bracelet d'identification avant tout déplacement vers un plateau technique (Scanner, Radio).",
-                    "**Pudeur et Sécurité** : Relevage systématique des ridelles et recouvrement du patient par un drap de protection."
-                ]
-            },
-            "ASH": {
-                "class": "memo-box-ash",
-                "slug": "ash",
-                "points": [
-                    "**Bio-nettoyage** : Application rigoureuse des procédures de désinfection des surfaces et mobilier au produit détergent-désinfectant homologué entre deux patients.",
-                    "**Hygiène des Mains** : Friction hydro-alcoolique obligatoire avant d'entrer et en sortant de chaque box."
-                ]
-            },
-            "Cadre de Santé": {
-                "class": "memo-box-cadre",
-                "slug": "cadre",
-                "points": [
-                    "**Management de la Qualité** : Pilotage bienveillant des indicateurs de préparation HAS et promotion de la culture positive de l'erreur (CREX / REX).",
-                    "**Accompagnement** : Soutien des équipes dans la mise en œuvre au quotidien des procédures de bientraitance."
+                    "**Identitovigilance** : Contrôle obligatoire des 3 items sur le bracelet d'identification.",
+                    "**Bientraitance** : Respect, intimité (box fermés) et évaluation prioritaire de la douleur.",
+                    "**Culture de Sécurité** : Déclaration systématique et non punitive des EI."
                 ]
             }
         }
@@ -558,7 +575,7 @@ SESSIONS = [
             }
         }
     },
-    {
+     {
         "id": 2,
         "titre": "Semaine 2 - Situations Sanitaires Exceptionnelles (SSE) & Mode Dégradé",
         "date_debut": datetime.date(2026, 11, 2),
@@ -603,11 +620,11 @@ SESSIONS = [
             {
                 "q": "5. [Tronc Commun] En situation d'afflux massif de victimes (plan AMAVI) avec saturation de la capacité d'identification administrative, quel système d'identitovigilance de crise est activé ?",
                 "options": [
-                    "L'attribution immédiate d'un avatar (Animal + couuleur) pré-imprimés",
+                    "L'attribution immédiate d'un avatar (Animal + couleur) pré-imprimés",
                     "L'utilisation du numéro de sécurité sociale provisoire à 9 chiffres",
                     "L'inscription au feutre indélébile du prénom d'usage sur l'avant-bras du patient"
                 ],
-                "rep": "L'attribution immédiate d'un avatar (Animal + couuleur) pré-imprimés"
+                "rep": "L'attribution immédiate d'un avatar (Animal + couleur) pré-imprimés"
             }
         ],
         "metiers": {
@@ -751,7 +768,7 @@ def obtenir_statut_session(session):
         return "Passee"
 
 # ------------------------------------------------------------------------------
-# 6. BANNIÈRE EN-TÊTE AVEC VOS 2 LOGOS (logo & logo2)
+# 5. BANNIÈRE EN-TÊTE AVEC VOS LOGOS DUAL (logo & logo2)
 # ------------------------------------------------------------------------------
 col_logo_gauche, col_titre, col_logo_droite = st.columns([1, 4, 1])
 
@@ -784,18 +801,18 @@ with col_logo_droite:
 st.divider()
 
 # ------------------------------------------------------------------------------
-# 7. ÉCRAN D'AUTHENTIFICATION (VIGNETTES ANIMALES & FILTRAGE PAR ANIMAL)
+# 6. ÉCRAN D'AUTHENTIFICATION (VIGNETTES ANIMALES & FILTRAGE STRICT)
 # ------------------------------------------------------------------------------
 if "user_pseudo" not in st.session_state:
     params = st.query_params
     if "pseudo" in params:
         st.session_state.user_pseudo = params["pseudo"]
 
-if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
+if not st.session_state.user_pseudo:
     tab_login, tab_register = st.tabs(["🔑 Se connecter", "✨ Créer un compte (1ère visite)"])
     comptes_existants = charger_utilisateurs()
 
-    # --- ONGLET 1 : CONNEXION PAR SÉLECTION D'AVATAR & FILTRAGE DES PSEUDOS ---
+    # --- ONGLET 1 : CONNEXION PAR VIGNETTE ANIMAL + FILTRAGE PSEUDOS ---
     with tab_login:
         st.markdown("<div class='auth-card-header'><h3 style='color:#0f766e; margin:0;'>Connexion rapide à votre espace</h3><p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Sélectionnez votre animal pour retrouver votre profil</p></div>", unsafe_allow_html=True)
         
@@ -828,14 +845,13 @@ if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
                     unsafe_allow_html=True
                 )
 
-                # Filtrage strict des pseudos correspondant uniquement à l'animal sélectionné
                 pseudos_animal = [p for p in comptes_existants.keys() if p.startswith(animal_actif)]
 
                 if not pseudos_animal:
-                    st.warning(f"Aucun compte enregistré pour l'animal {animal_actif}. Créez-en un dans l'onglet à côté !")
+                    st.warning(f"Aucun compte enregistré pour l'animal {animal_actif}. Créez-en un dans l'onglet 'Première visite' !")
                 else:
                     pseudo_choisi = st.selectbox("Étape 2 : Choisissez votre Pseudo dans la liste :", options=pseudos_animal)
-                    mdp_saisi = st.text_input("Étape 3 : Mot de passe :", type="password", key="login_mdp")
+                    mdp_saisi = st.text_input("Étape 3 : Code secret / Mot de passe :", type="password", key="login_mdp")
 
                     if st.button("🚀 Me connecter", type="primary", use_container_width=True):
                         if mdp_saisi:
@@ -849,7 +865,7 @@ if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
                         else:
                             st.warning("Veuillez saisir votre mot de passe.")
 
-    # --- ONGLET 2 : CRÉATION DE COMPTE (VIGNETTES ANIMALES) ---
+    # --- ONGLET 2 : CRÉATION DE COMPTE (VIGNETTES ANIMALES + ADJECTIF) ---
     with tab_register:
         st.markdown("""
             <div class='auth-card-header'>
@@ -903,386 +919,414 @@ if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
                         if len(nouveau_mdp) < 3:
                             st.error("Veuillez saisir un mot de passe d'au moins 3 caractères.")
                         else:
-                            if ajouter_utilisateur(pseudo_cree, nouveau_mdp):
+                            if ajouter_utilisateur(pseudo_cree, nouveau_mdp, animal_choisi):
                                 st.session_state.user_pseudo = pseudo_cree
                                 st.query_params["pseudo"] = pseudo_cree
                                 st.success(f"Compte créé avec succès ! Bienvenue {pseudo_cree}.")
                                 st.rerun()
-                                st.stop()
-                        else:
-                                st.query_params["pseudo"] = st.session_state.user_pseudo
 
-# ------------------------------------------------------------------------------
-# 8. TABLEAU DE BORD CONNECTÉ
-# ------------------------------------------------------------------------------
+    st.stop()
 else:
-    col_head1, col_head2 = st.columns([4, 1])
-    with col_head1:
-        st.markdown(f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
-    with col_head2:
-        if st.button("🔒 Déconnexion"):
-            st.session_state.user_pseudo = None
-            st.session_state.animal_selectionne = None
-            st.session_state.login_animal_selectionne = None
-            st.session_state.current_q_index = 0
-            st.session_state.user_quiz_answers = {}
-            st.session_state.quiz_paused = False
-            st.session_state.pop("questions_courantes", None)
-            st.rerun()
+    st.query_params["pseudo"] = st.session_state.user_pseudo
 
-    st.markdown("<h2 style='color:#0f766e; margin-top:15px;'>🗃️ Tableau de bord des Révisions</h2>", unsafe_allow_html=True)
+# ------------------------------------------------------------------------------
+# 7. TABLEAU DE BORD CONNECTÉ
+# ------------------------------------------------------------------------------
+col_head1, col_head2 = st.columns([4, 1])
+with col_head1:
+    st.markdown(f"<div class='user-header'>🧠 Profil actif : {st.session_state.user_pseudo}</div>", unsafe_allow_html=True)
+with col_head2:
+    if st.button("🔒 Déconnexion"):
+        st.session_state.user_pseudo = None
+        st.session_state.animal_selectionne = None
+        st.session_state.login_animal_selectionne = None
+        st.session_state.current_q_index = 0
+        st.session_state.user_quiz_answers = {}
+        st.session_state.quiz_paused = False
+        st.session_state.pop("questions_courantes", None)
+        st.rerun()
 
-    tab_actuel, tab_progression, tab_historique, tab_avenir, tab_podium = st.tabs([
-        "🤔❓ Semaine Actuelle", 
-        "🥳 Ma Progression", 
-        "🧐 Archives & Fiches Mémos", 
-        "⌛ Semaines À Venir",
-        "🏆 Podium"
-    ])
+st.markdown("<h2 style='color:#0f766e; margin-top:15px;'>🗃️ Tableau de bord des Révisions</h2>", unsafe_allow_html=True)
 
-  # --- TAB 1 : QUIZ INTERACTIF SÉCURISÉ & GESTION DU DÉJÀ-FAIT ---
-    with tab_actuel:
-        # On s'assure d'avoir les notes à jour
-        charger_notes_utilisateur_cached.clear()
-        mes_notes_utilisateur = charger_notes_utilisateur(st.session_state.user_pseudo)
-        semaines_validees = [str(item.get("Semaine_ID")) for item in mes_notes_utilisateur]
+tab_actuel, tab_progression, tab_historique, tab_avenir, tab_podium = st.tabs([
+    "🤔❓ Semaine Actuelle", 
+    "🥳 Ma Progression", 
+    "🧐 Archives & Fiches Mémos", 
+    "⌛ Semaines À Venir",
+    "🏆 Podium"
+])
 
-        # La session active affichée est TOUJOURS celle qui a le statut "Actuelle" dans le calendrier
-        session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), SESSIONS[0])
+# --- TAB 1 : QUIZ INTERACTIF ---
+with tab_actuel:
+    charger_notes_utilisateur_cached.clear()
+    mes_notes_utilisateur = charger_notes_utilisateur(st.session_state.user_pseudo)
+    semaines_validees = [str(item.get("Semaine_ID")) for item in mes_notes_utilisateur]
 
-        if not session_active:
-            st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui.")
+    session_active = next((s for s in SESSIONS if obtenir_statut_session(s) == "Actuelle"), SESSIONS[0])
+
+    if not session_active:
+        st.info("🔒 Aucune session de quiz n'est ouverte aujourd'hui.")
+    else:
+        st.markdown(
+            f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>⚡ Session de révision interactive</p></div>",
+            unsafe_allow_html=True
+        )
+
+        deja_fait = str(session_active["id"]) in semaines_validees
+
+        if deja_fait and not st.session_state.get(f"force_recommencer_{session_active['id']}", False):
+            st.success("🎉 Vous avez déjà validé le quiz de cette session !")
+            
+            derniere_note = next((item for item in mes_notes_utilisateur if str(item.get("Semaine_ID")) == str(session_active["id"])), None)
+            if derniere_note:
+                st.metric("Votre score enregistré", f"{derniere_note.get('Score')} / {derniere_note.get('Total_Questions')}")
+
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button("🔄 Recommencer le quiz pour le plaisir", type="primary", use_container_width=True):
+                st.session_state[f"force_recommencer_{session_active['id']}"] = True
+                st.session_state.current_q_index = 0
+                st.session_state.user_quiz_answers = {}
+                st.session_state.pop("questions_courantes", None)
+                st.rerun()
+
         else:
-            st.markdown(
-                f"<div class='card-actuelle'><h3 style='color:#0f766e;'>📝 {session_active['titre']}</h3><p style='color:#64748b; font-size:0.9rem;'>⚡ Session de révision interactive</p></div>",
-                unsafe_allow_html=True
-            )
-
-            # Vérification si l'utilisateur a déjà validé cette session
-            deja_fait = str(session_active["id"]) in semaines_validees
-
-            # S'il a déjà validé et qu'il ne force pas le recommencement
-            if deja_fait and not st.session_state.get(f"force_recommencer_{session_active['id']}", False):
-                st.success("🎉 Vous avez déjà validé le quiz de cette session !")
-                
-                derniere_note = next((item for item in mes_notes_utilisateur if str(item.get("Semaine_ID")) == str(session_active["id"])), None)
-                if derniere_note:
-                    st.metric("Votre score enregistré", f"{derniere_note.get('Score')} / {derniere_note.get('Total_Questions')}")
-
-                st.markdown("<br>", unsafe_allow_html=True)
-                if st.button("🔄 Recommencer le quiz pour le plaisir", type="primary", use_container_width=True):
-                    st.session_state[f"force_recommencer_{session_active['id']}"] = True
-                    st.session_state.current_q_index = 0
-                    st.session_state.user_quiz_answers = {}
-                    st.session_state.pop("questions_courantes", None)
-                    st.rerun()
-
+            if st.session_state.quiz_paused:
+                st.warning(f"⏸️ **Quiz en pause !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
+                c_rep, c_raz = st.columns([1, 1])
+                with c_rep:
+                    if st.button("▶️ Reprendre", type="primary", use_container_width=True):
+                        st.session_state.quiz_paused = False
+                        st.rerun()
+                with c_raz:
+                    if st.button("🔄 Recommencer", type="secondary", use_container_width=True):
+                        st.session_state.current_q_index = 0
+                        st.session_state.user_quiz_answers = {}
+                        st.session_state.quiz_paused = False
+                        st.session_state.pop("questions_courantes", None)
+                        st.session_state.pop(f"force_recommencer_{session_active['id']}", None)
+                        st.rerun()
             else:
-                # Logique normale du quiz (choix du métier puis questions)
-                if st.session_state.quiz_paused:
-                    st.warning(f"⏸️ **Quiz en pause !** Vous étiez à la question {st.session_state.current_q_index + 1}.")
-                    c_rep, c_raz = st.columns([1, 1])
-                    with c_rep:
-                        if st.button("▶️ Reprendre", type="primary", use_container_width=True):
-                            st.session_state.quiz_paused = False
-                            st.rerun()
-                    with c_raz:
-                        if st.button("🔄 Recommencer", type="secondary", use_container_width=True):
+                metiers_tries_alphabetique = [
+                    "-- Choisir ma fonction --",
+                    "ARM (Assistant/e de Régulation Médicale)",
+                    "AS (Aide-Soignant/e)",
+                    "ASH (Agent de Service Hospitalier)",
+                    "Brancardier",
+                    "Cadre de Santé / Encadrement",
+                    "Hôte / Hôtesse d'accueil & Admission",
+                    "IDE (Infirmier/ère)",
+                    "Médecin"
+                ]
+
+                role_soignant = st.selectbox(
+                    "Sélectionnez votre fonction pour personnaliser votre parcours :",
+                    options=metiers_tries_alphabetique,
+                    key="select_role_soignant"
+                )
+
+                if role_soignant != "-- Choisir ma fonction --":
+                    if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant:
+                        st.session_state.role_actif = role_soignant
+                        q_liste = list(session_active.get("tronc_commun", []))
+                        
+                        if "IDE" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("IDE", []))
+                        elif "AS (" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("AS", []))
+                        elif "Médecin" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Médecin", []))
+                        elif "ARM" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("ARM", []))
+                        elif "accueil" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Accueil", []))
+                        elif "Brancardier" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Brancardier", []))
+                        elif "ASH" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("ASH", []))
+                        elif "Cadre" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Cadre", []))
+                            
+                        st.session_state.questions_courantes = q_liste
+                        st.session_state.current_q_index = 0
+                        st.session_state.user_quiz_answers = {}
+
+                    questions_quiz = st.session_state.questions_courantes
+                    total_q = len(questions_quiz)
+                    current_idx = st.session_state.current_q_index
+
+                    if current_idx < total_q:
+                        q_data = questions_quiz[current_idx]
+                        
+                        col_prog, col_pause = st.columns([4, 1])
+                        with col_prog:
+                            st.progress((current_idx + 1) / total_q)
+                            st.caption(f"Question {current_idx + 1} sur {total_q}")
+                        with col_pause:
+                            if st.button("⏸️ Pause", key=f"pause_btn_{current_idx}"):
+                                st.session_state.quiz_paused = True
+                                st.rerun()
+
+                        st.markdown(f"""
+                            <div class="question-card">
+                                <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
+                                <div class="question-title">{q_data['q']}</div>
+                            </div>
+                        """, unsafe_allow_html=True)
+
+                        existing_ans = st.session_state.user_quiz_answers.get(current_idx, None)
+                        def_index = q_data["options"].index(existing_ans) if existing_ans in q_data["options"] else 0
+                        
+                        choix = st.radio(
+                            "Sélectionnez votre réponse :", 
+                            q_data["options"], 
+                            index=def_index if existing_ans else None,
+                            key=f"radio_q_{session_active['id']}_{current_idx}"
+                        )
+
+                        st.markdown("<br>", unsafe_allow_html=True)
+                        col_prev, col_next = st.columns([1, 1])
+
+                        with col_prev:
+                            if current_idx > 0:
+                                if st.button("⬅️ Précédent", key=f"prev_{current_idx}", use_container_width=True):
+                                    if choix:
+                                        st.session_state.user_quiz_answers[current_idx] = choix
+                                    st.session_state.current_q_index -= 1
+                                    st.rerun()
+
+                        with col_next:
+                            btn_label = "Suivant ➡️" if current_idx < total_q - 1 else "🏁 Terminer & Valider"
+                            if st.button(btn_label, key=f"next_{current_idx}", type="primary", use_container_width=True):
+                                if not choix and not existing_ans:
+                                    st.warning("Veuillez sélectionner une réponse !")
+                                else:
+                                    st.session_state.user_quiz_answers[current_idx] = choix if choix else q_data["options"][0]
+                                    st.session_state.current_q_index += 1
+                                    st.rerun()
+
+                    else:
+                        st.balloons()
+                        st.markdown("### 🎉 Quiz Terminé avec succès !")
+                        
+                        score_obtenu = sum(
+                            1 for idx, q in enumerate(questions_quiz) 
+                            if st.session_state.user_quiz_answers.get(idx) == q["rep"]
+                        )
+
+                        st.metric("Votre score final", f"{score_obtenu} / {total_q}")
+
+                        if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
+                            st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés.")
+                            charger_notes_utilisateur_cached.clear()
+
+                        st.divider()
+                        st.markdown("### 📖 Bilan des Réponses")
+                        
+                        for idx, q in enumerate(questions_quiz):
+                            rep_soignant = st.session_state.user_quiz_answers.get(idx, "Non répondu")
+                            est_correct = (rep_soignant == q["rep"])
+                            
+                            card_class = "result-card-ok" if est_correct else "result-card-err"
+                            icon_status = "✅ Correct" if est_correct else "❌ Erreur"
+                            
+                            st.markdown(f"""
+                                <div class="{card_class}">
+                                    <div style="font-weight:700; color:#1e293b; margin-bottom:6px;">
+                                        Question {idx+1} : {q['q']}
+                                    </div>
+                                    <div style="font-size:0.95rem; margin-bottom:4px;">
+                                        <strong>Votre réponse :</strong> {rep_soignant} <span style="font-weight:700;">({icon_status})</span>
+                                    </div>
+                                    {f'<div style="font-size:0.95rem; color:#15803d; font-weight:700;"><strong>Bonne réponse :</strong> {q["rep"]}</div>' if not est_correct else ''}
+                                </div>
+                            """, unsafe_allow_html=True)
+
+                        st.markdown("<br>", unsafe_allow_html=True)
+                        if st.button("🔄 Recommencer", key="restart_quiz_btn", type="primary"):
                             st.session_state.current_q_index = 0
                             st.session_state.user_quiz_answers = {}
                             st.session_state.quiz_paused = False
                             st.session_state.pop("questions_courantes", None)
                             st.session_state.pop(f"force_recommencer_{session_active['id']}", None)
                             st.rerun()
-                else:
-                    metiers_tries_alphabetique = [
-                        "-- Choisir ma fonction --",
-                        "ARM (Assistant/e de Régulation Médicale)",
-                        "AS (Aide-Soignant/e)",
-                        "ASH (Agent de Service Hospitalier)",
-                        "Brancardier",
-                        "Cadre de Santé / Encadrement",
-                        "Hôte / Hôtesse d'accueil & Admission",
-                        "IDE (Infirmier/ère)",
-                        "Médecin"
-                    ]
-
-                    role_soignant = st.selectbox(
-                        "Sélectionnez votre fonction pour personnaliser votre parcours :",
-                        options=metiers_tries_alphabetique,
-                        key="select_role_soignant"
-                    )
-
-                    if role_soignant != "-- Choisir ma fonction --":
-                        if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant:
-                            st.session_state.role_actif = role_soignant
-                            q_liste = list(session_active.get("tronc_commun", []))
                             
-                            if "IDE" in role_soignant:
-                                q_liste.extend(session_active["metiers"].get("IDE", []))
-                            elif "AS (" in role_soignant:
-                                q_liste.extend(session_active["metiers"].get("AS", []))
-                            elif "Médecin" in role_soignant:
-                                q_liste.extend(session_active["metiers"].get("Médecin", []))
-                            elif "ARM" in role_soignant:
-                                q_liste.extend(session_active["metiers"].get("ARM", []))
-                            elif "accueil" in role_soignant:
-                                q_liste.extend(session_active["metiers"].get("Accueil", []))
-                            elif "Brancardier" in role_soignant:
-                                q_liste.extend(session_active["metiers"].get("Brancardier", []))
-                            elif "ASH" in role_soignant:
-                                q_liste.extend(session_active["metiers"].get("ASH", []))
-                            elif "Cadre" in role_soignant:
-                                q_liste.extend(session_active["metiers"].get("Cadre", []))
-                                
-                            st.session_state.questions_courantes = q_liste
-                            st.session_state.current_q_index = 0
-                            st.session_state.user_quiz_answers = {}
+# --- TAB 2 : MA PROGRESSION ---
+with tab_progression:
+    st.markdown("<div class='card-progression'>", unsafe_allow_html=True)
+    st.markdown(f"### 📈 Progression de **{st.session_state.user_pseudo}**")
+    
+    mes_notes = charger_notes_utilisateur(st.session_state.user_pseudo)
+    
+    if not mes_notes:
+        st.info("Tu n'as pas encore répondu à un quiz. Participe à la semaine actuelle pour voir apparaître tes statistiques !")
+    else:
+        total_points = sum(int(item["Score"]) for item in mes_notes if "Score" in item)
+        total_possible = sum(int(item["Total_Questions"]) for item in mes_notes if "Total_Questions" in item)
+        pourcentage = int((total_points / total_possible) * 100) if total_possible > 0 else 0
 
-                        questions_quiz = st.session_state.questions_courantes
-                        total_q = len(questions_quiz)
-                        current_idx = st.session_state.current_q_index
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Quiz complétés", len(mes_notes))
+        c2.metric("Total des points", f"{total_points} / {total_possible}")
+        c3.metric("Taux de réussite", f"{pourcentage} %")
 
-                        if current_idx < total_q:
-                            q_data = questions_quiz[current_idx]
-                            
-                            col_prog, col_pause = st.columns([4, 1])
-                            with col_prog:
-                                st.progress((current_idx + 1) / total_q)
-                                st.caption(f"Question {current_idx + 1} sur {total_q}")
-                            with col_pause:
-                                if st.button("⏸️ Pause", key=f"pause_btn_{current_idx}"):
-                                    st.session_state.quiz_paused = True
-                                    st.rerun()
+        st.divider()
+        st.markdown("#### 📜 Historique détaillé de vos notes :")
+        for item in mes_notes:
+            st.write(f"• **Semaine {item.get('Semaine_ID')}** (le {item.get('Horodateur')}) : **{item.get('Score')}/{item.get('Total_Questions')}**")
 
-                            st.markdown(f"""
-                                <div class="question-card">
-                                    <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
-                                    <div class="question-title">{q_data['q']}</div>
-                                </div>
-                            """, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-                            existing_ans = st.session_state.user_quiz_answers.get(current_idx, None)
-                            def_index = q_data["options"].index(existing_ans) if existing_ans in q_data["options"] else 0
-                            
-                            choix = st.radio(
-                                "Sélectionnez votre réponse :", 
-                                q_data["options"], 
-                                index=def_index if existing_ans else None,
-                                key=f"radio_q_{session_active['id']}_{current_idx}"
-                            )
-
-                            st.markdown("<br>", unsafe_allow_html=True)
-                            col_prev, col_next = st.columns([1, 1])
-
-                            with col_prev:
-                                if current_idx > 0:
-                                    if st.button("⬅️ Précédent", key=f"prev_{current_idx}", use_container_width=True):
-                                        if choix:
-                                            st.session_state.user_quiz_answers[current_idx] = choix
-                                        st.session_state.current_q_index -= 1
-                                        st.rerun()
-
-                            with col_next:
-                                btn_label = "Suivant ➡️" if current_idx < total_q - 1 else "🏁 Terminer & Valider"
-                                if st.button(btn_label, key=f"next_{current_idx}", type="primary", use_container_width=True):
-                                    if not choix and not existing_ans:
-                                        st.warning("Veuillez sélectionner une réponse !")
-                                    else:
-                                        st.session_state.user_quiz_answers[current_idx] = choix if choix else q_data["options"][0]
-                                        st.session_state.current_q_index += 1
-                                        st.rerun()
-
-                        else:
-                            st.balloons()
-                            st.markdown("### 🎉 Quiz Terminé avec succès !")
-                            
-                            score_obtenu = sum(
-                                1 for idx, q in enumerate(questions_quiz) 
-                                if st.session_state.user_quiz_answers.get(idx) == q["rep"]
-                            )
-
-                            st.metric("Votre score final", f"{score_obtenu} / {total_q}")
-
-                            # Enregistrement avec le rôle métier (qui va alimenter la colonne F)
-                            if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
-                                st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont été enregistrés.")
-                                charger_notes_utilisateur_cached.clear()
-
-                            st.divider()
-                            st.markdown("### 📖 Bilan des Réponses")
-                            
-                            for idx, q in enumerate(questions_quiz):
-                                rep_soignant = st.session_state.user_quiz_answers.get(idx, "Non répondu")
-                                est_correct = (rep_soignant == q["rep"])
-                                
-                                card_class = "result-card-ok" if est_correct else "result-card-err"
-                                icon_status = "✅ Correct" if est_correct else "❌ Erreur"
-                                
-                                st.markdown(f"""
-                                    <div class="{card_class}">
-                                        <div style="font-weight:700; color:#1e293b; margin-bottom:6px;">
-                                            Question {idx+1} : {q['q']}
-                                        </div>
-                                        <div style="font-size:0.95rem; margin-bottom:4px;">
-                                            <strong>Votre réponse :</strong> {rep_soignant} <span style="font-weight:700;">({icon_status})</span>
-                                        </div>
-                                        {f'<div style="font-size:0.95rem; color:#15803d; font-weight:700;"><strong>Bonne réponse :</strong> {q["rep"]}</div>' if not est_correct else ''}
-                                    </div>
-                                """, unsafe_allow_html=True)
-
-                            st.markdown("<br>", unsafe_allow_html=True)
-                            if st.button("🔄 Recommencer", key="restart_quiz_btn", type="primary"):
-                                st.session_state.current_q_index = 0
-                                st.session_state.user_quiz_answers = {}
-                                st.session_state.quiz_paused = False
-                                st.session_state.pop("questions_courantes", None)
-                                st.session_state.pop(f"force_recommencer_{session_active['id']}", None)
-                                st.rerun()
-                                
-    # --- TAB 2 : MA PROGRESSION ---
-    with tab_progression:
-        st.markdown("<div class='card-progression'>", unsafe_allow_html=True)
-        st.markdown(f"### 📈 Progression de **{st.session_state.user_pseudo}**")
+# --- TAB 3 : ARCHIVES & FICHES MÉMOS ---
+with tab_historique:
+    st.header("📜 Archives, Synthèses & Fiches Mémos")
+    st.markdown("Retrouvez ici l'historique cumulé des synthèses ainsi que la bibliothèque des fiches mémos officielles.")
+    
+    sub_tab_synthese, sub_tab_fiches = st.tabs(["📚 Synthèse (Cumulée)", "📑 Fiches Mémos par Semaine"])
+    
+    sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) in ["Passee", "Actuelle"] or s["id"] == 0]
+    
+    with sub_tab_synthese:
+        st.subheader("Rappels et Synthèses par Semaine (Cumulatif)")
+        st.markdown("Au fil des clôtures de semaines, les points clés s'ajoutent ici pour constituer votre référentiel de révision.")
         
-        mes_notes = charger_notes_utilisateur(st.session_state.user_pseudo)
-        
-        if not mes_notes:
-            st.info("Tu n'as pas encore répondu à un quiz. Participe à la semaine actuelle pour voir apparaître tes statistiques !")
+        if not sessions_passees:
+            st.info("Aucune synthèse disponible pour le moment.")
         else:
-            total_points = sum(int(item["Score"]) for item in mes_notes if "Score" in item)
-            total_possible = sum(int(item["Total_Questions"]) for item in mes_notes if "Total_Questions" in item)
-            pourcentage = int((total_points / total_possible) * 100) if total_possible > 0 else 0
-
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Quiz complétés", len(mes_notes))
-            c2.metric("Total des points", f"{total_points} / {total_possible}")
-            c3.metric("Taux de réussite", f"{pourcentage} %")
-
-            st.divider()
-            st.markdown("#### 📜 Historique détaillé de vos notes :")
-            for item in mes_notes:
-                st.write(f"• **Semaine {item.get('Semaine_ID')}** (le {item.get('Horodateur')}) : **{item.get('Score')}/{item.get('Total_Questions')}**")
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # --- TAB 3 : ARCHIVES & FICHES MÉMOS (2 SOUS-ONGLETS) ---
-    with tab_historique:
-        st.header("📜 Archives, Synthèses & Fiches Mémos")
-        st.markdown("Retrouvez ici l'historique cumulé des synthèses ainsi que la bibliothèque des fiches mémos officielles.")
-        
-        sub_tab_synthese, sub_tab_fiches = st.tabs(["📚 Synthèse (Cumulée)", "📑 Fiches Mémos par Semaine"])
-        
-        # On inclut "Actuelle" en plus de "Passee" et de la Semaine 0
-        sessions_passees = [s for s in SESSIONS if obtenir_statut_session(s) in ["Passee", "Actuelle"] or s["id"] == 0]
-        
-        with sub_tab_synthese:
-            st.subheader("Rappels et Synthèses par Semaine (Cumulatif)")
-            st.markdown("Au fil des clôtures de semaines, les points clés s'ajoutent ici pour constituer votre référentiel de révision.")
-            
-            if not sessions_passees:
-                st.info("Aucune synthèse disponible pour le moment.")
-            else:
-                for s in sessions_passees:
-                    str_debut = s['date_debut'].strftime('%d/%m/%Y') if hasattr(s['date_debut'], 'strftime') else s['date_debut']
-                    str_fin = s['date_fin'].strftime('%d/%m/%Y') if hasattr(s['date_fin'], 'strftime') else s['date_fin']
-                    
-                    with st.expander(f"📌 {s['titre']} (Du {str_debut} au {str_fin})", expanded=(s["id"] == max([x["id"] for x in sessions_passees]))):
-                        if "fiches_reflexes" in s:
-                            fiches = s["fiches_reflexes"]
-                            onglets_metiers = list(fiches.keys())
-                            tabs_m = st.tabs(onglets_metiers)
+            for s in sessions_passees:
+                str_debut = s['date_debut'].strftime('%d/%m/%Y') if hasattr(s['date_debut'], 'strftime') else s['date_debut']
+                str_fin = s['date_fin'].strftime('%d/%m/%Y') if hasattr(s['date_fin'], 'strftime') else s['date_fin']
+                
+                with st.expander(f"📌 {s['titre']} (Du {str_debut} au {str_fin})", expanded=(s["id"] == max([x["id"] for x in sessions_passees]))):
+                    if "fiches_reflexes" in s:
+                        fiches = s["fiches_reflexes"]
+                        onglets_metiers = list(fiches.keys())
+                        tabs_m = st.tabs(onglets_metiers)
+                        
+                        for idx_m, nom_m in enumerate(onglets_metiers):
+                            fiche_info = fiches[nom_m]
+                            css_class = fiche_info.get("class", "memo-box-tc")
+                            points_list = fiche_info.get("points", [])
                             
-                            for idx_m, nom_m in enumerate(onglets_metiers):
-                                fiche_info = fiches[nom_m]
-                                css_class = fiche_info.get("class", "memo-box-tc")
-                                points_list = fiche_info.get("points", [])
-                                
-                                with tabs_m[idx_m]:
-                                    st.markdown(f"<div class='{css_class}'><div class='memo-title-text'>Synthèse HAS — {nom_m}</div>", unsafe_allow_html=True)
-                                    for pt in points_list:
-                                        st.markdown(f"• {pt}")
-                                    st.markdown("</div>", unsafe_allow_html=True)
+                            with tabs_m[idx_m]:
+                                st.markdown(f"<div class='{css_class}'><div class='memo-title-text'>Synthèse HAS — {nom_m}</div>", unsafe_allow_html=True)
+                                for pt in points_list:
+                                    st.markdown(f"• {pt}")
+                                st.markdown("</div>", unsafe_allow_html=True)
 
-        with sub_tab_fiches:
-            st.subheader("Consultation des Fiches Mémos PDF")
-            st.markdown("Sélectionnez la semaine et le profil métier pour consulter directement le PDF (à 50% de largeur) ou le télécharger.")
-            
-            if not sessions_passees:
-                st.info("Aucune fiche PDF disponible pour le moment.")
-            else:
-                col_s, col_m = st.columns(2)
-                with col_s:
-                    semaine_choisie = st.selectbox(
-                        "Choisissez la semaine :",
-                        options=sessions_passees,
-                        format_func=lambda x: x["titre"],
-                        key="select_semaine_fiche"
-                    )
-                with col_m:
-                    fiches_dispo = semaine_choisie.get("fiches_reflexes", {})
-                    liste_metiers_fiches = list(fiches_dispo.keys())
-                    
-                    metier_choisi_cle = st.selectbox(
-                        "Choisissez le profil métier :",
-                        options=liste_metiers_fiches,
-                        key="select_metier_fiche"
-                    )
-                
-                st.markdown("---")
-                
-                if metier_choisi_cle in fiches_dispo:
-                    slug_metier = fiches_dispo[metier_choisi_cle].get("slug", "tronc_commun")
-                    
-                    afficher_et_telecharger_pdf(
-                        semaine_id=semaine_choisie["id"],
-                        metier_slug=slug_metier,
-                        nom_affichage=metier_choisi_cle
-                    )
-
-    # --- TAB 4 : SEMAINES À VENIR ---
-    with tab_avenir:
-        sessions_futures = [s for s in SESSIONS if obtenir_statut_session(s) == "A venir"]
-        if not sessions_futures:
-            st.info("Aucune session future n'est programmée pour l'instant.")
+    with sub_tab_fiches:
+        st.subheader("Consultation des Fiches Mémos PDF")
+        st.markdown("Sélectionnez la semaine et le profil métier pour consulter directement le PDF (à 50% de largeur) ou le télécharger.")
+        
+        if not sessions_passees:
+            st.info("Aucune fiche PDF disponible pour le moment.")
         else:
-            for s in sessions_futures:
-                str_debut = s['date_debut'].strftime('%d/%m/%Y')
-                str_fin = s['date_fin'].strftime('%d/%m/%Y')
+            col_s, col_m = st.columns(2)
+            with col_s:
+                semaine_choisie = st.selectbox(
+                    "Choisissez la semaine :",
+                    options=sessions_passees,
+                    format_func=lambda x: x["titre"],
+                    key="select_semaine_fiche"
+                )
+            with col_m:
+                fiches_dispo = semaine_choisie.get("fiches_reflexes", {})
+                liste_metiers_fiches = list(fiches_dispo.keys())
                 
-                st.markdown(
-                    f"<div class='card-avenir'><h4 style='color:#b45309;'>🔒 {s['titre']}</h4><p style='margin:0;'>📅 Ouverture prévue du <strong>{str_debut} au {str_fin}</strong></p></div>",
-                    unsafe_allow_html=True
+                metier_choisi_cle = st.selectbox(
+                    "Choisissez le profil métier :",
+                    options=liste_metiers_fiches,
+                    key="select_metier_fiche"
+                )
+            
+            st.markdown("---")
+            
+            if metier_choisi_cle in fiches_dispo:
+                slug_metier = fiches_dispo[metier_choisi_cle].get("slug", "tronc_commun")
+                
+                afficher_et_telecharger_pdf(
+                    semaine_id=semaine_choisie["id"],
+                    metier_slug=slug_metier,
+                    nom_affichage=metier_choisi_cle
                 )
 
- # --- TAB 5 : PODIUM / TOP 10 PAR MÉTIER & GÉNÉRAL ---
-    with tab_podium:
-        st.markdown("<h3 style='color:#0f766e;'>🏆 Podiums & Classements de l'Équipe</h3>", unsafe_allow_html=True)
-        st.markdown("*(Classements cumulatifs basés uniquement sur le score de la **première participation** de chaque semaine)*")
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        podiums_data = calculer_scores_podium_par_metier()
-
-        if not podiums_data:
-            st.info("Aucun score enregistré pour l'instant. Soyez le premier à valider un quiz !")
-        else:
-            # On récupère tous les métiers présents dans les données, plus un onglet "Général"
-            metiers_disponibles = sorted(list(podiums_data.keys()))
+# --- TAB 4 : SEMAINES À VENIR ---
+with tab_avenir:
+    sessions_futures = [s for s in SESSIONS if obtenir_statut_session(s) == "A venir"]
+    if not sessions_futures:
+        st.info("Aucune session future n'est programmée pour l'instant.")
+    else:
+        for s in sessions_futures:
+            str_debut = s['date_debut'].strftime('%d/%m/%Y')
+            str_fin = s['date_fin'].strftime('%d/%m/%Y')
             
-            # On crée des sous-onglets dynamiques : un onglet par métier
-            tabs_podiums = st.tabs(["🌟 Général"] + [f"🩺 {m}" for m in metiers_disponibles])
+            st.markdown(
+                f"<div class='card-avenir'><h4 style='color:#b45309;'>🔒 {s['titre']}</h4><p style='margin:0;'>📅 Ouverture prévue du <strong>{str_debut} au {str_fin}</strong></p></div>",
+                unsafe_allow_html=True
+            )
+
+# --- TAB 5 : PODIUMS PAR MÉTIER & GÉNÉRAL ---
+with tab_podium:
+    st.markdown("<h3 style='color:#0f766e;'>🏆 Podiums & Classements de l'Équipe</h3>", unsafe_allow_html=True)
+    st.markdown("*(Classements cumulatifs basés uniquement sur le score de la **première participation** de chaque semaine)*")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    podiums_data = calculer_scores_podium_par_metier()
+
+    if not podiums_data:
+        st.info("Aucun score enregistré pour l'instant. Soyez le premier à valider un quiz !")
+    else:
+        metiers_disponibles = sorted(list(podiums_data.keys()))
+        tabs_podiums = st.tabs(["🌟 Général"] + [f"🩺 {m}" for m in metiers_disponibles])
+        
+        # 1. Sous-onglet Général
+        with tabs_podiums[0]:
+            st.markdown("#### 🌟 Top 10 Général de l'Équipe")
+            st.markdown("<br>", unsafe_allow_html=True)
             
-            # 1. Sous-onglet Général (tous les métiers confondus)
-            with tabs_podiums[0]:
-                st.markdown("#### 🌟 Top 10 Général de l'Équipe")
+            classement_general = calculer_scores_podium()
+            if not classement_general:
+                st.info("Aucun score général pour le moment.")
+            else:
+                for idx, user_data in enumerate(classement_general[:10]):
+                    rang = idx + 1
+                    if rang == 1:
+                        medaille = "🥇"
+                        card_bg = "background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); border: 2px solid #eab308;"
+                    elif rang == 2:
+                        medaille = "🥈"
+                        card_bg = "background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 2px solid #94a3b8;"
+                    elif rang == 3:
+                        medaille = "🥉"
+                        card_bg = "background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 2px solid #f97316;"
+                    else:
+                        medaille = f"#{rang}"
+                        card_bg = "background: #ffffff; border: 1px solid #cbd5e1;"
+
+                    st.markdown(f"""
+                        <div style="{card_bg} border-radius: 16px; padding: 15px 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span style="font-size: 1.5rem; font-weight: 800; min-width: 40px; text-align: center;">{medaille}</span>
+                                <span style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">{user_data['Pseudo']}</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="font-size: 1.1rem; font-weight: 800; color: #0f766e;">{user_data['Total_Points']} pts</span>
+                                <span style="display: block; font-size: 0.8rem; color: #64748b;">({user_data['Quiz_Completes']} quiz validés)</span>
+                            </div>
+                        </div>
+                    """, unsafe_allow_html=True)
+
+        # 2. Sous-onglets par Métier
+        for idx_m, metier in enumerate(metiers_disponibles):
+            with tabs_podiums[idx_m + 1]:
+                st.markdown(f"#### 🎯 Podium — {metier}")
                 st.markdown("<br>", unsafe_allow_html=True)
                 
-                # Calcul du général global
-                classement_general = calculer_scores_podium()
-                if not classement_general:
-                    st.info("Aucun score général pour le moment.")
+                classement_metier = podiums_data.get(metier, [])
+                
+                if not classement_metier:
+                    st.info("Aucun participant dans cette catégorie pour le moment.")
                 else:
-                    for idx, user_data in enumerate(classement_general[:10]):
+                    for idx, user_data in enumerate(classement_metier[:10]):
                         rang = idx + 1
                         if rang == 1:
                             medaille = "🥇"
@@ -1309,42 +1353,3 @@ else:
                                 </div>
                             </div>
                         """, unsafe_allow_html=True)
-
-            # 2. Sous-onglets par Métier
-            for idx_m, metier in enumerate(metiers_disponibles):
-                with tabs_podiums[idx_m + 1]:
-                    st.markdown(f"#### 🎯 Podium — {metier}")
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    
-                    classement_metier = podiums_data.get(metier, [])
-                    
-                    if not classement_metier:
-                        st.info("Aucun participant dans cette catégorie pour le moment.")
-                    else:
-                        for idx, user_data in enumerate(classement_metier[:10]):
-                            rang = idx + 1
-                            if rang == 1:
-                                medaille = "🥇"
-                                card_bg = "background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); border: 2px solid #eab308;"
-                            elif rang == 2:
-                                medaille = "🥈"
-                                card_bg = "background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 2px solid #94a3b8;"
-                            elif rang == 3:
-                                medaille = "🥉"
-                                card_bg = "background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 2px solid #f97316;"
-                            else:
-                                medaille = f"#{rang}"
-                                card_bg = "background: #ffffff; border: 1px solid #cbd5e1;"
-
-                            st.markdown(f"""
-                                <div style="{card_bg} border-radius: 16px; padding: 15px 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                        <span style="font-size: 1.5rem; font-weight: 800; min-width: 40px; text-align: center;">{medaille}</span>
-                                        <span style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">{user_data['Pseudo']}</span>
-                                    </div>
-                                    <div style="text-align: right;">
-                                        <span style="font-size: 1.1rem; font-weight: 800; color: #0f766e;">{user_data['Total_Points']} pts</span>
-                                        <span style="display: block; font-size: 0.8rem; color: #64748b;">({user_data['Quiz_Completes']} quiz validés)</span>
-                                    </div>
-                                </div>
-                            """, unsafe_allow_html=True)
