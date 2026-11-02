@@ -908,10 +908,9 @@ if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
                                 st.query_params["pseudo"] = pseudo_cree
                                 st.success(f"Compte créé avec succès ! Bienvenue {pseudo_cree}.")
                                 st.rerun()
-
-    st.stop()
-else:
-    st.query_params["pseudo"] = st.session_state.user_pseudo
+                                st.stop()
+                        else:
+                                st.query_params["pseudo"] = st.session_state.user_pseudo
 
 # ------------------------------------------------------------------------------
 # 8. TABLEAU DE BORD CONNECTÉ
