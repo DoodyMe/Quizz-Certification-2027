@@ -16,30 +16,108 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. STYLE CSS & LOGOS BANNIÈRE
+# 2. CONNEXION GOOGLE SHEETS VIA GSPREAD
+# ------------------------------------------------------------------------------
+@st.cache_resource
+def get_gspread_client():
+    scope = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+    credentials = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scope
+    )
+    return gspread.authorize(credentials)
+
+def get_sheet():
+    client = get_gspread_client()
+    return client.open_by_url(st.secrets["spreadsheet_url"])
+
+def charger_utilisateurs():
+    try:
+        sheet = get_sheet().worksheet("Utilisateurs")
+        records = sheet.get_all_records()
+        return {str(r["Pseudo"]): str(r["Mot_De_Passe"]) for r in records if "Pseudo" in r and r["Pseudo"]}
+    except Exception:
+        return {}
+
+def ajouter_utilisateur(pseudo, mdp):
+    try:
+        sheet = get_sheet().worksheet("Utilisateurs")
+        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+        sheet.append_row([date_str, str(pseudo), str(mdp)])
+        return True
+    except Exception as e:
+        st.error(f"Erreur d'enregistrement Google Sheets : {e}")
+        return False
+
+def charger_notes_utilisateur(pseudo):
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        records = sheet.get_all_records()
+        return [r for r in records if str(r.get("Pseudo")) == str(pseudo)]
+    except Exception:
+        return []
+
+def enregistrer_reponse(pseudo, semaine_id, score, total):
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total)])
+        return True
+    except Exception as e:
+        st.error(f"Erreur de sauvegarde : {e}")
+        return False
+
+def charger_top10_semaine(semaine_id):
+    try:
+        sheet = get_sheet().worksheet("Reponses")
+        records = sheet.get_all_records()
+        reponses_semaine = [r for r in records if str(r.get("Semaine_ID")) == str(semaine_id)]
+        
+        meilleurs_scores = {}
+        for r in reponses_semaine:
+            pseudo = str(r.get("Pseudo"))
+            score = int(r.get("Score", 0))
+            total = int(r.get("Total_Questions", 10))
+            
+            if pseudo not in meilleurs_scores or score > meilleurs_scores[pseudo]["score"]:
+                meilleurs_scores[pseudo] = {"score": score, "total": total}
+        
+        classement = sorted(meilleurs_scores.items(), key=lambda x: x[1]["score"], reverse=True)
+        top10 = []
+        medailles = ["🥇 1er", "🥈 2ème", "🥉 3ème"]
+        for idx, (pseudo, stats) in enumerate(classement[:10]):
+            rang = medailles[idx] if idx < 3 else f"{idx+1}ème"
+            top10.append({
+                "rang": rang,
+                "pseudo": pseudo,
+                "score": f"{stats['score']}/{stats['total']}"
+            })
+        return top10
+    except Exception:
+        return []
+
+# ------------------------------------------------------------------------------
+# 3. STYLE CSS (DESIGN PASTEL HOSPITALIER & LOGO)
 # ------------------------------------------------------------------------------
 st.markdown("""
 <style>
     .stApp {
-        background: linear-gradient(135deg, #e6fffa 0%, #f0f9ff 50%, #f5f3ff 100%);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      plateformes */
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-    /* Ajustement responsive de la bannière pour les téléphones */
-    @media screen and (max-width: 768px) {
-        .main-title {
-            font-size: 1.2rem !important; /* Réduit la taille du titre sur mobile */
-        }
-        .subtitle {
-            font-size: 0.85rem !important; /* Réduit la taille du sous-titre */
-        }
-        .header-table p {
-            font-size: 0.75rem !important; /* Réduit le texte descriptif */
-        }
-        .header-table img {
-            max-width: 60px !important; /* Réduit un peu la taille des logos sur mobile */
-        }
-    }
+    .main-title { color: #0f766e; font-weight: 800; margin-bottom: 0rem; }
+    .subtitle { color: #0369a1; font-weight: 600; margin-top: 0.2rem; }
     
+    .service-logo img {
+        border-radius: 20px;
+        border: 3px solid #99f6e4;
+        box-shadow: 0 6px 20px rgba(15, 118, 110, 0.12);
+        max-width: 130px;
+    }
+
     .auth-card-header {
         background: white; border-radius: 20px; padding: 20px;
         border: 2px solid #99f6e4; max-width: 600px; margin: 0 auto 15px auto;
@@ -57,6 +135,7 @@ st.markdown("""
     }
     .card-progression { background-color: #ffffff; border-radius: 20px; padding: 20px; border: 2px solid #38bdf8; margin-bottom: 20px; }
     .card-actuelle { background-color: #ffffff; border-radius: 20px; padding: 25px; border-left: 8px solid #10b981; margin-bottom: 20px; }
+    .card-passee { background-color: #f8fafc; border-radius: 20px; padding: 20px; border-left: 8px solid #6366f1; margin-bottom: 15px; }
     .card-avenir { background-color: #fffbeb; border-radius: 20px; padding: 20px; border-left: 8px solid #f59e0b; margin-bottom: 15px; }
     
     .question-card {
@@ -69,88 +148,15 @@ st.markdown("""
     }
     .question-title { color: #0f766e; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
 
-    .result-card-ok {
-        background: #f0fdf4; border-radius: 16px; padding: 18px;
-        border: 2px solid #86efac; margin-bottom: 15px;
-    }
-    .result-card-err {
-        background: #fef2f2; border-radius: 16px; padding: 18px;
-        border: 2px solid #fca5a5; margin-bottom: 15px;
-    }
-
-    .vignette-semaine {
-        background: #ffffff; border-radius: 24px; padding: 25px;
-        border: 2px solid #cbd5e1; box-shadow: 0 8px 25px rgba(148, 163, 184, 0.1); margin-bottom: 30px;
-    }
-
-    .memo-box-tc { background: #f0f9ff; border-radius: 16px; padding: 20px; border-left: 6px solid #0284c7; }
-    .memo-box-ide { background: #f0fdf4; border-radius: 16px; padding: 20px; border-left: 6px solid #16a34a; }
-    .memo-box-as { background: #fffbeb; border-radius: 16px; padding: 20px; border-left: 6px solid #d97706; }
-    .memo-box-med { background: #f5f3ff; border-radius: 16px; padding: 20px; border-left: 6px solid #7c3aed; }
-    .memo-box-arm { background: #faf5ff; border-radius: 16px; padding: 20px; border-left: 6px solid #c026d3; }
-    .memo-box-acc { background: #f0fdfa; border-radius: 16px; padding: 20px; border-left: 6px solid #0d9488; }
-    .memo-box-branc { background: #fdf2f8; border-radius: 16px; padding: 20px; border-left: 6px solid #db2777; }
-    .memo-box-ash { background: #f1f5f9; border-radius: 16px; padding: 20px; border-left: 6px solid #475569; }
-    .memo-box-cadre { background: #fff7ed; border-radius: 16px; padding: 20px; border-left: 6px solid #ea580c; }
-
-    .memo-title-text { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: #1e293b; }
-
-    .stTabs [data-baseweb="tab-list"] { gap: 10px; justify-content: flex-start; }
+    .stTabs [data-baseweb="tab-list"] { gap: 12px; justify-content: center; }
     .stTabs [data-baseweb="tab"] {
-        background-color: #ffffff; border-radius: 20px; padding: 8px 18px; font-weight: 700; color: #334155; border: 1px solid #cbd5e1;
+        background-color: #ffffff; border-radius: 30px; padding: 10px 24px; font-weight: 700; color: #0f766e; border: 1px solid #ccfbf1;
     }
     .stTabs [aria-selected="true"] {
-        background: #0f766e !important; color: white !important; border: none !important;
+        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important; color: white !important; border: none !important;
     }
 </style>
 """, unsafe_allow_html=True)
-
-# ------------------------------------------------------------------------------
-# 3. CONNEXION GOOGLE SHEETS & DICTIONNAIRE ANIMAUX
-# ------------------------------------------------------------------------------
-ANIMAL_TO_EMOJI = {
-    "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
-    "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
-    "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔",
-    "Koala": "🐨", "Licorne": "🦄"
-}
-
-@st.cache_resource
-def get_gspread_client():
-    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    credentials = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
-    return gspread.authorize(credentials)
-
-def get_sheet():
-    client = get_gspread_client()
-    return client.open_by_url(st.secrets["spreadsheet_url"])
-
-def charger_utilisateurs():
-    try:
-        sheet = get_sheet().worksheet("Utilisateurs")
-        records = sheet.get_all_records()
-        # On retourne un dictionnaire {pseudo: {mdp, animal}} ou similaire
-        utilisateurs = {}
-        for r in records:
-            p = str(r.get("Pseudo", "")).strip()
-            if p:
-                utilisateurs[p] = {
-                    "mdp": str(r.get("Mot_De_Passe", "")),
-                    "animal": str(r.get("Animal_Favori", r.get("Animal", "🦊")))
-                }
-        return utilisateurs
-    except Exception:
-        return {}
-
-def ajouter_utilisateur(pseudo, mdp, animal):
-    try:
-        sheet = get_sheet().worksheet("Utilisateurs")
-        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([date_str, str(pseudo), str(mdp), str(animal)])
-        return True
-    except Exception as e:
-        st.error(f"Erreur d'enregistrement Google Sheets : {e}")
-        return False
 
 # ------------------------------------------------------------------------------
 # 4. ÉCRAN D'ACCUEIL / CONNEXION AVEC MENU DÉROULANT & ANIMAUX
