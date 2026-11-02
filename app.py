@@ -1012,7 +1012,7 @@ SESSIONS = [
                 "points": [
                     "**Plan Blanc & Gouvernance** : Activation conjointe direction / commandement médical de crise (DMC) et libération programmée de l'aval.",
                     "**Modes Dégradés & Traçabilité** : Utilisation obligatoire des dossiers papier normalisés de crise avec double signature et horodatage strict en cas de panne informatique.",
-                    "**Sécurité Active (Intrusion)** : Maîtrise des consignes de sauvegarde (Fuir - Se cacher - Alerter)."
+                    "**Sécurité Active (Intrusion)** : Maîtrise des consignes de sauvegarde (Fuir - Se cacher - Alerter).",
                     "**Plan Blanc & Cellule de Crise** : Déclenchement officiel par la Direction / ARS. Ouverture des lits d'aval et des zones tampons.",
                     "**Tri & Afflux Massif (NOVI)** : Utilisation des méthodes de tri standardisées (START / fiches de tri).",
                     "**Mode Dégradé & Informatique** : Recours immédiat aux dossiers papiers de crise nominatifs et traçabilité chronologique rigoureuse.",
@@ -1024,7 +1024,7 @@ SESSIONS = [
                 "slug": "ide",
                 "points": [
                     "**Tri Pré-hospitalier/Intra-hospitalier** : Application rigoureuse des échelles de criticité pour l'identification immédiate des urgences absolues (U1).",
-                    "**Traçabilité de Crise** : Maintien d'un enregistrement minimal mais infaillible des soins critiques administrés sous triptyque de crise."
+                    "**Traçabilité de Crise** : Maintien d'un enregistrement minimal mais infaillible des soins critiques administrés sous triptyque de crise.",
                      sen"**Tri IAO de Crise** : Identification immédiate des urgences absolues (UA) en zone d'accueil renforcée.",
                     "**Sécurité des Soins en Mode Dégradé** : Double lecture des prescriptions et traçabilité papier nominative et horodatée."
                 ]
@@ -1034,7 +1034,7 @@ SESSIONS = [
                 "slug": "as",
                 "points": [
                     "**Logistique Opérationnelle** : Mobilisation instantanée des chariots de crise et des stocks de brancardage normé.",
-                    "**Sécurisation des Flux** : Participation active à l'aménagement des zones tampons et de la ZRV."
+                    "**Sécurisation des Flux** : Participation active à l'aménagement des zones tampons et de la ZRV.",
                     "**Logistique de Crise** : Renfort immédiat pour l'installation des zones d'extension et l'acheminement du matériel lourd.",
                     "**Identitovigilance SSE** : Utilisation des bracelets et numéros de crise provisoires pour les victimes anonymes."
                 ]
@@ -1044,7 +1044,7 @@ SESSIONS = [
                 "slug": "medecin",
                 "points": [
                     "**Régulation & Coordination Interne** : Supervision médicale du tri, arbitrage des priorités d'examens et pilotage des sorties directes vers l'aval.",
-                    "**Validation des Prescriptions de Crise** : Traçabilité formalisée des décisions d'urgence sous contrainte de plateau technique dégradé."
+                    "**Validation des Prescriptions de Crise** : Traçabilité formalisée des décisions d'urgence sous contrainte de plateau technique dégradé.",
                     "**Commandement Médical & Triage** : Rôle du médecin chef de triage et coordination étroite avec le SAMU-Centre 15.",
                     "**Traçabilité Allégée de Crise** : Conservation des informations cliniques essentielles sur support papier de crise."
                 ]
@@ -1054,7 +1054,7 @@ SESSIONS = [
                 "slug": "arm",
                 "points": [
                     "**Qualification de l'EIMV** : Recueil normé du triptyque d'alerte (Cinétique, Nombre d'impliqués, Gravité potentielle) pour le médecin régulateur.",
-                    "**Sécurisation des Réseaux** : Utilisation exclusive des canaux de communication dédiés en situation critique."
+                    "**Sécurisation des Réseaux** : Utilisation exclusive des canaux de communication dédiés en situation critique.",
                     "**Régulation en Flux Tendu** : Priorisation des appels d'urgence vitale et main courante papier de secours.",
                     "**Orientation des Familles** : Redirection systématique vers la cellule d'information du public (CIP)."
                 ]
@@ -1064,7 +1064,7 @@ SESSIONS = [
                 "slug": "accueil",
                 "points": [
                     "**Filtrage & Protection des Données** : Application stricte des consignes de non-divulgation des identités et orientation des familles vers la CIP.",
-                    "**Sécurité des Accès** : Verrouillage physique des entrées de l'unité sous tension."
+                    "**Sécurité des Accès** : Verrouillage physique des entrées de l'unité sous tension.",
                     "**Filtrage & Admissions Rapides** : Bascule sur le circuit papier d'urgence et gestion rigoureuse des flux de proches.",
                     "**Sécurité & Médias** : Refus d'accès aux journalistes et orientation vers le point d'accueil familles (PAF)."
                 ]
@@ -1074,7 +1074,7 @@ SESSIONS = [
                 "slug": "brancardier",
                 "points": [
                     "**Respect des Circulations** : Application stricte des plans de flux unidirectionnels et sectorisés (propres/contaminés).",
-                    "**Coordination** : Liaison permanente avec le poste de commandement logistique de crise."
+                    "**Coordination** : Liaison permanente avec le poste de commandement logistique de crise.",
                     "**Fluidité & Évacuations** : Priorisation des transferts urgents (imagerie, bloc) et application des consignes d'évacuation PMR.",
                     "**Vérification Matériel** : Disponibilité permanente des brancards, chaises d'évacuation et obus d'oxygène."
                 ]
@@ -1084,7 +1084,7 @@ SESSIONS = [
                 "slug": "ash",
                 "points": [
                     "**Bio-nettoyage de Crise** : Application des protocoles spécifiques de désinfection renforcée en zone contaminée.",
-                    "**EPI & Filières** : Port obligatoire des équipements adaptés et gestion sécurisée des flux de déchets spécifiques."
+                    "**EPI & Filières** : Port obligatoire des équipements adaptés et gestion sécurisée des flux de déchets spécifiques.",
                     "**Bio-nettoyage en Rotation Rapide** : Désinfection active et continue des box de soins en flux tendu.",
                     "**Gestion des Déchets de Crise** : Multiplication des collecteurs DASRI au plus près des zones de soins."
                 ]
@@ -1094,7 +1094,7 @@ SESSIONS = [
                 "slug": "cadre",
                 "points": [
                     "**Pilotage & Reporting** : Remontée en temps réel des indicateurs de tension (saturation, lits d'aval, absentéisme/renforts).",
-                    "**Soutien Managérial** : Organisation des rotations d'équipes et accompagnement opérationnel sous tension."
+                    "**Soutien Managérial** : Organisation des rotations d'équipes et accompagnement opérationnel sous tension.",
                     "**Management Opérationnel & Rappel** : Activation du plan de rappel, soutien psychologique et gestion des temps de pause.",
                     "**REX Post-Crise** : Organisation obligatoire du retour d'expérience à chaud et rédaction du plan d'actions correctives."
                 ]
