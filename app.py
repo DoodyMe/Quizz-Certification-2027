@@ -24,38 +24,75 @@ st.markdown("""
         background: linear-gradient(135deg, #e6fffa 0%, #f0f9ff 50%, #f5f3ff 100%);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
-    .header-table {
-        width: 100%;
-        border-collapse: collapse;
-        border: none;
-        table-layout: fixed;
-    }
-    .header-table td {
-        border: none;
-        vertical-align: middle;
-        word-wrap: break-word;
-    }
-
+    /* Ajustement responsive de la bannière pour les téléphones */
     @media screen and (max-width: 768px) {
-        .main-title { font-size: 1.1rem !important; white-space: nowrap; }
-        .subtitle { font-size: 0.8rem !important; }
+        .main-title {
+            font-size: 1.2rem !important; /* Réduit la taille du titre sur mobile */
+        }
+        .subtitle {
+            font-size: 0.85rem !important; /* Réduit la taille du sous-titre */
+        }
+        .header-table p {
+            font-size: 0.75rem !important; /* Réduit le texte descriptif */
+        }
+        .header-table img {
+            max-width: 60px !important; /* Réduit un peu la taille des logos sur mobile */
+        }
     }
     
     .auth-card-header {
-        background: white; border-radius: 20px; padding: 25px;
+        background: white; border-radius: 20px; padding: 20px;
         border: 2px solid #99f6e4; max-width: 600px; margin: 0 auto 15px auto;
         text-align: center; box-shadow: 0 4px 15px rgba(15, 118, 110, 0.08);
     }
+    .animal-selected-badge {
+        display: inline-flex; align-items: center; gap: 12px; padding: 8px 20px;
+        border-radius: 50px; background-color: #e0f2fe; border: 2px solid #38bdf8; margin: 10px 0;
+    }
+    .animal-selected-emoji { font-size: 2rem; }
+    .animal-selected-name { color: #0369a1; font-weight: 700; font-size: 1.1rem; }
+    .user-header {
+        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+        color: white; padding: 12px 26px; border-radius: 50px; display: inline-block; font-weight: 700;
+    }
+    .card-progression { background-color: #ffffff; border-radius: 20px; padding: 20px; border: 2px solid #38bdf8; margin-bottom: 20px; }
+    .card-actuelle { background-color: #ffffff; border-radius: 20px; padding: 25px; border-left: 8px solid #10b981; margin-bottom: 20px; }
+    .card-avenir { background-color: #fffbeb; border-radius: 20px; padding: 20px; border-left: 8px solid #f59e0b; margin-bottom: 15px; }
+    
+    .question-card {
+        background: white; border-radius: 24px; padding: 30px;
+        border: 2px solid #99f6e4; box-shadow: 0 10px 25px rgba(15, 118, 110, 0.08); margin-bottom: 20px;
+    }
+    .question-badge {
+        background: #ccfbf1; color: #0f766e; padding: 6px 16px;
+        border-radius: 30px; font-weight: 700; font-size: 0.9rem; display: inline-block; margin-bottom: 15px;
+    }
+    .question-title { color: #0f766e; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
+
+    .result-card-ok {
+        background: #f0fdf4; border-radius: 16px; padding: 18px;
+        border: 2px solid #86efac; margin-bottom: 15px;
+    }
+    .result-card-err {
+        background: #fef2f2; border-radius: 16px; padding: 18px;
+        border: 2px solid #fca5a5; margin-bottom: 15px;
+    }
+
+    .vignette-semaine {
+        background: #ffffff; border-radius: 24px; padding: 25px;
+        border: 2px solid #cbd5e1; box-shadow: 0 8px 25px rgba(148, 163, 184, 0.1); margin-bottom: 30px;
+    }
+
     .memo-box-tc { background: #f0f9ff; border-radius: 16px; padding: 20px; border-left: 6px solid #0284c7; }
     .memo-box-ide { background: #f0fdf4; border-radius: 16px; padding: 20px; border-left: 6px solid #16a34a; }
     .memo-box-as { background: #fffbeb; border-radius: 16px; padding: 20px; border-left: 6px solid #d97706; }
     .memo-box-med { background: #f5f3ff; border-radius: 16px; padding: 20px; border-left: 6px solid #7c3aed; }
     .memo-box-arm { background: #faf5ff; border-radius: 16px; padding: 20px; border-left: 6px solid #c026d3; }
-    .memo-box-acc { background: #f0fdfa; border-radius: 16px; padding: 20px; border-left: 0d9488 solid #0d9488; }
+    .memo-box-acc { background: #f0fdfa; border-radius: 16px; padding: 20px; border-left: 6px solid #0d9488; }
     .memo-box-branc { background: #fdf2f8; border-radius: 16px; padding: 20px; border-left: 6px solid #db2777; }
     .memo-box-ash { background: #f1f5f9; border-radius: 16px; padding: 20px; border-left: 6px solid #475569; }
     .memo-box-cadre { background: #fff7ed; border-radius: 16px; padding: 20px; border-left: 6px solid #ea580c; }
+
     .memo-title-text { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: #1e293b; }
 
     .stTabs [data-baseweb="tab-list"] { gap: 10px; justify-content: flex-start; }
