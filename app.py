@@ -751,50 +751,51 @@ def obtenir_statut_session(session):
         return "Passee"
 
 # ------------------------------------------------------------------------------
-# 6. BANNIÈRE EN-TÊTE UNIVERSELLE (CENTRÉE, 2 LOGOS, COMPATIBLE SAFARI/MAC)
+# 6. BANNIÈRE EN-TÊTE AVEC VOS 2 LOGOS (logo & logo2)
 # ------------------------------------------------------------------------------
-logo_gauche_html = ""
-logo_droite_html = ""
+col_logo_gauche, col_titre, col_logo_droite = st.columns([1, 4, 1])
 
-# Chargement du logo de gauche
-try:
-    with open("logo.jpg", "rb") as f:
-        encoded_img_g = base64.b64encode(f.read()).decode()
-    logo_gauche_html = f"<img src='data:image/jpeg;base64,{encoded_img_g}' style='max-width:110px; display:block; margin:0 auto;'>"
-except Exception:
-    pass
+# --- LOGO 1 (À GAUCHE) ---
+with col_logo_gauche:
+    try:
+        st.markdown("<div class='service-logo' style='text-align: center;'>", unsafe_allow_html=True)
+        fichier_logo1 = "logo.jpg" if os.path.exists("logo.jpg") else "logo.png"
+        st.image(fichier_logo1, width=110)
+        st.markdown("</div>", unsafe_allow_html=True)
+    except Exception:
+        st.caption("⚠️ Logo gauche introuvable")
 
-# Chargement du logo de droite
-try:
-    with open("logo2.jpg", "rb") as f:
-        encoded_img_d = base64.b64encode(f.read()).decode()
-    logo_droite_html = f"<img src='data:image/jpeg;base64,{encoded_img_d}' style='max-width:110px; display:block; margin:0 auto;'>"
-except Exception:
-    pass
+# --- TITRE CENTRAL ---
+with col_titre:
+    st.markdown("<h1 class='main-title' style='text-align: center;'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 class='subtitle' style='text-align: center;'>Service des Urgences & SAMU — Mulhouse</h3>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#64748b; margin-bottom:0; text-align: center;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>", unsafe_allow_html=True)
 
-st.markdown(f"""
-    <table class='header-table' style='border: none;'>
-        <tr style='border: none;'>
-            <td style='width: 15%; text-align: left; border: none;'>{logo_gauche_html}</td>
-            <td style='width: 70%; text-align: center; border: none;'>
-                <h1 class='main-title' style='margin: 0; font-size: 1.8rem;'>🧠 Pause Révision HAS 2027</h1>
-                <h3 class='subtitle' style='margin: 5px 0;'>Service des Urgences & SAMU — Mulhouse</h3>
-                <p style='color:#64748b; margin: 0; font-size: 0.95rem;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>
-            </td>
-            <td style='width: 15%; text-align: right; border: none;'>{logo_droite_html}</td>
-        </tr>
-    </table>
-""", unsafe_allow_html=True)
+# --- LOGO 2 (À DROITE) ---
+with col_logo_droite:
+    try:
+        st.markdown("<div class='service-logo' style='text-align: center;'>", unsafe_allow_html=True)
+        fichier_logo2 = "logo2.png" if os.path.exists("logo2.png") else "logo2.jpg"
+        st.image(fichier_logo2, width=110)
+        st.markdown("</div>", unsafe_allow_html=True)
+    except Exception:
+        st.caption("⚠️ Logo droit (logo2) introuvable")
 
 st.divider()
 
 # ------------------------------------------------------------------------------
-# 7. ÉCRAN D'AUTHENTIFICATION
+# 7. ÉCRAN D'AUTHENTIFICATION (VIGNETTES ANIMALES & FILTRAGE PAR ANIMAL)
 # ------------------------------------------------------------------------------
-if not st.session_state.user_pseudo:
+if "user_pseudo" not in st.session_state:
+    params = st.query_params
+    if "pseudo" in params:
+        st.session_state.user_pseudo = params["pseudo"]
+
+if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
     tab_login, tab_register = st.tabs(["🔑 Se connecter", "✨ Créer un compte (1ère visite)"])
     comptes_existants = charger_utilisateurs()
 
+    # --- ONGLET 1 : CONNEXION PAR SÉLECTION D'AVATAR & FILTRAGE DES PSEUDOS ---
     with tab_login:
         st.markdown("<div class='auth-card-header'><h3 style='color:#0f766e; margin:0;'>Connexion rapide à votre espace</h3><p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Sélectionnez votre animal pour retrouver votre profil</p></div>", unsafe_allow_html=True)
         
@@ -827,12 +828,13 @@ if not st.session_state.user_pseudo:
                     unsafe_allow_html=True
                 )
 
+                # Filtrage strict des pseudos correspondant uniquement à l'animal sélectionné
                 pseudos_animal = [p for p in comptes_existants.keys() if p.startswith(animal_actif)]
 
                 if not pseudos_animal:
                     st.warning(f"Aucun compte enregistré pour l'animal {animal_actif}. Créez-en un dans l'onglet à côté !")
                 else:
-                    pseudo_choisi = st.selectbox("Étape 2 : Choisissez votre Pseudo exact :", options=pseudos_animal)
+                    pseudo_choisi = st.selectbox("Étape 2 : Choisissez votre Pseudo dans la liste :", options=pseudos_animal)
                     mdp_saisi = st.text_input("Étape 3 : Mot de passe :", type="password", key="login_mdp")
 
                     if st.button("🚀 Me connecter", type="primary", use_container_width=True):
@@ -840,17 +842,19 @@ if not st.session_state.user_pseudo:
                             mdp_attendu = comptes_existants.get(pseudo_choisi)
                             if str(mdp_saisi) == str(mdp_attendu):
                                 st.session_state.user_pseudo = pseudo_choisi
+                                st.query_params["pseudo"] = pseudo_choisi
                                 st.rerun()
                             else:
                                 st.error("Mot de passe incorrect !")
                         else:
                             st.warning("Veuillez saisir votre mot de passe.")
 
+    # --- ONGLET 2 : CRÉATION DE COMPTE (VIGNETTES ANIMALES) ---
     with tab_register:
         st.markdown("""
             <div class='auth-card-header'>
                 <h3 style='color:#0f766e; margin:0;'>😷 Créez votre Avatar & Mot de passe</h3>
-                <p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Ce pseudo et ce mot de passe te suivront tout au long des révisions.</p>
+                <p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Ce pseudo et ce mot de passe vous suivront tout au long des révisions.</p>
             </div>
         """, unsafe_allow_html=True)
 
@@ -901,8 +905,13 @@ if not st.session_state.user_pseudo:
                         else:
                             if ajouter_utilisateur(pseudo_cree, nouveau_mdp):
                                 st.session_state.user_pseudo = pseudo_cree
+                                st.query_params["pseudo"] = pseudo_cree
                                 st.success(f"Compte créé avec succès ! Bienvenue {pseudo_cree}.")
                                 st.rerun()
+
+    st.stop()
+else:
+    st.query_params["pseudo"] = st.session_state.user_pseudo
 
 # ------------------------------------------------------------------------------
 # 8. TABLEAU DE BORD CONNECTÉ
