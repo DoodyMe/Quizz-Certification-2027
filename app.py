@@ -9,111 +9,14 @@ from streamlit_pdf_viewer import pdf_viewer
 # ------------------------------------------------------------------------------
 # 1. CONFIGURATION DE LA PAGE
 # ------------------------------------------------------------------------------
-import datetime
-import os
-import base64
-import streamlit as st
-import gspread
-from google.oauth2.service_account import Credentials
-from streamlit_pdf_viewer import pdf_viewer
-
-# ------------------------------------------------------------------------------
-# 1. CONFIGURATION DE LA PAGE & ÉCRAN DE CONNEXION / INSCRIPTION
-# ------------------------------------------------------------------------------
 st.set_page_config(
     page_title="Révisions Équipe HAS 2027 - Urgences Mulhouse",
     page_icon="🧠",
     layout="wide"
 )
 
-ANIMAL_TO_EMOJI = {
-    "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
-    "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
-    "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔", "Koala" : "🐨", "Licorne" : "🦄"
-}
-
-# Gestion de la persistance du pseudo via l'URL
-if "user_pseudo" not in st.session_state:
-    params = st.query_params
-    if "pseudo" in params:
-        st.session_state.user_pseudo = params["pseudo"]
-
-# Si pas connecté, on affiche l'écran d'accueil avec les onglets et les animaux d'origine
-if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
-    st.markdown("<h2 style='text-align: center; color: #0f766e;'>🧠 Pause Révision HAS 2027 - Urgences Mulhouse</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b;'>Veuillez vous identifier pour accéder au parcours de révision.</p>", unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        tab_connexion, tab_inscription = st.tabs(["🔑 Connexion", "✨ Première visite (Créer un compte)"])
-        
-        # Connexion temporaire pour récupérer la liste des utilisateurs inscrits
-        try:
-            scope_temp = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-            creds_temp = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope_temp)
-            client_temp = gspread.authorize(creds_temp)
-            sheet_temp = client_temp.open_by_url(st.secrets["spreadsheet_url"]).worksheet("Utilisateurs")
-            records_temp = sheet_temp.get_all_records()
-            utilisateurs_inscrits = {str(r["Pseudo"]): str(r.get("Mot_De_Passe", "")) for r in records_temp if "Pseudo" in r and r["Pseudo"]}
-        except Exception:
-            utilisateurs_inscrits = {}
-
-        with tab_connexion:
-            st.markdown("### Bon retour !")
-            pseudo_connexion = st.text_input("Votre Pseudo :", key="input_connexion_pseudo")
-            mdp_connexion = st.text_input("Votre Mot de passe / Code secret :", type="password", key="input_connexion_mdp")
-            
-            if st.button("Se connecter", type="primary", use_container_width=True):
-                if pseudo_connexion.strip() in utilisateurs_inscrits:
-                    mdp_attendu = utilisateurs_inscrits[pseudo_connexion.strip()]
-                    if not mdp_attendu or mdp_attendu == mdp_connexion.strip():
-                        st.session_state.user_pseudo = pseudo_connexion.strip()
-                        st.query_params["pseudo"] = pseudo_connexion.strip()
-                        st.rerun()
-                    else:
-                        st.error("Mot de passe incorrect.")
-                elif pseudo_connexion.strip() and pseudo_connexion.strip() not in utilisateurs_inscrits:
-                    st.error("Ce pseudo n'existe pas. Veuillez utiliser l'onglet 'Première visite'.")
-                else:
-                    st.warning("Veuillez entrer un pseudo.")
-
-        with tab_inscription:
-            st.markdown("### Création de compte")
-            nouveau_pseudo = st.text_input("Choisissez votre Pseudo :", key="input_insc_pseudo")
-            nouveau_mdp = st.text_input("Choisissez un mot de passe (optionnel) :", type="password", key="input_insc_mdp")
-            
-            # Sélection de l'animal fétiche avec tes émojis d'origine
-            animal_choisi = st.selectbox(
-                "Choisissez votre animal fétiche :", 
-                options=list(ANIMAL_TO_EMOJI.keys()),
-                format_func=lambda x: f"{ANIMAL_TO_EMOJI[x]} {x}"
-            )
-            
-            if st.button("Créer mon compte & Commencer", type="primary", use_container_width=True):
-                if not nouveau_pseudo.strip():
-                    st.warning("Veuillez entrer un pseudo valide.")
-                elif nouveau_pseudo.strip() in utilisateurs_inscrits:
-                    st.error("Ce pseudo est déjà pris. Connectez-vous via l'autre onglet !")
-                else:
-                    try:
-                        sheet_u = client_temp.open_by_url(st.secrets["spreadsheet_url"]).worksheet("Utilisateurs")
-                        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-                        # On enregistre en incluant l'animal choisi si ton tableau le gère
-                        sheet_u.append_row([date_str, nouveau_pseudo.strip(), nouveau_mdp.strip(), animal_choisi])
-                        st.session_state.user_pseudo = nouveau_pseudo.strip()
-                        st.query_params["pseudo"] = nouveau_pseudo.strip()
-                        st.success("Compte créé avec succès ! Chargement...")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Erreur lors de l'enregistrement : {e}")
-
-    st.stop() # Stoppe l'exécution du reste tant que l'utilisateur n'est pas connecté
-else:
-    # S'il est connecté, on s'assure que l'URL garde bien son pseudo en mémoire
-    st.query_params["pseudo"] = st.session_state.user_pseudo
-
 # ------------------------------------------------------------------------------
-# 2. CONNEXION GOOGLE SHEETS VIA GSPREAD (AVEC CACHE OPTIMISÉ)
+# 2. CONNEXION GOOGLE SHEETS VIA GSPREAD
 # ------------------------------------------------------------------------------
 @st.cache_resource
 def get_gspread_client():
@@ -131,38 +34,25 @@ def get_sheet():
     client = get_gspread_client()
     return client.open_by_url(st.secrets["spreadsheet_url"])
 
-# On met en cache pour 60 secondes pour éviter de mitrailler Google Sheets en cas de clics répétés
-@st.cache_data(ttl=60)
 def charger_utilisateurs():
     try:
         sheet = get_sheet().worksheet("Utilisateurs")
         records = sheet.get_all_records()
-        return {str(r["Pseudo"]): str(r["Mot_De_Passe"]) for r in records if "Pseudo" in r and r["Pseudo"]}
+        return {str(r["Pseudo"]): str(r.get("Mot_De_Passe", "")) for r in records if "Pseudo" in r and r["Pseudo"]}
     except Exception:
         return {}
 
-def ajouter_utilisateur(pseudo, mdp):
+def ajouter_utilisateur(pseudo, mdp, animal=""):
     try:
         sheet = get_sheet().worksheet("Utilisateurs")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([date_str, str(pseudo), str(mdp)])
-        # On nettoie le cache des utilisateurs pour forcer la relecture au prochain besoin
-        charger_utilisateurs.clear()
+        sheet.append_row([date_str, str(pseudo), str(mdp), str(animal)])
         return True
     except Exception as e:
         st.error(f"Erreur d'enregistrement Google Sheets : {e}")
         return False
 
-# ------------------------------------------------------------------------------
-# FONCTIONS DE GESTION DES NOTES ET DES PODIUMS
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
-# FONCTIONS DE GESTION DES NOTES ET DES PODIUMS
-# ------------------------------------------------------------------------------
-
-@st.cache_data(ttl=30)
-def charger_notes_utilisateur_cached(pseudo):
+def charger_notes_utilisateur(pseudo):
     try:
         sheet = get_sheet().worksheet("Reponses")
         records = sheet.get_all_records()
@@ -170,36 +60,27 @@ def charger_notes_utilisateur_cached(pseudo):
     except Exception:
         return []
 
-def charger_notes_utilisateur(pseudo):
-    return charger_notes_utilisateur_cached(pseudo)
-
-def enregistrer_reponse(pseudo, semaine_id, score, total, role=""):
+def enregistrer_reponse(pseudo, semaine_id, score, total):
     try:
         sheet = get_sheet().worksheet("Reponses")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        metier_str = str(role) if role else "Non renseigné"
-        
-        # Enregistrement dans les colonnes : Horodateur | Pseudo | Semaine_ID | Score | Total | Metier
-        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total), metier_str])
-        
-        # On vide le cache des notes pour rafraîchir l'affichage instantanément
-        charger_notes_utilisateur_cached.clear()
-        
+        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total)])
         return True
     except Exception as e:
         st.error(f"Erreur de sauvegarde : {e}")
         return False
 
-@st.cache_data(ttl=60)
 def calculer_scores_podium():
     """
-    Calcule le score total cumulé de chaque utilisateur (Top Général).
+    Calcule le score total cumulé de chaque utilisateur en ne gardant 
+    que la PREMIÈRE tentative validée pour chaque Semaine_ID.
     """
     try:
         sheet = get_sheet().worksheet("Reponses")
         records = sheet.get_all_records()
         
         tentatives_uniques = {}
+        
         for r in records:
             pseudo = str(r.get("Pseudo"))
             semaine_id = str(r.get("Semaine_ID"))
@@ -224,58 +105,11 @@ def calculer_scores_podium():
                 "Quiz_Completes": nb_quiz
             })
             
-        return sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
+        classement = sorted(classement, key=lambda x: x["Total_Points"], reverse=True)
+        return classement
     except Exception:
         return []
 
-@st.cache_data(ttl=60)
-def calculer_scores_podium_par_metier():
-    """
-    Calcule le score total cumulé de chaque utilisateur classé par corps de métier.
-    """
-    try:
-        sheet = get_sheet().worksheet("Reponses")
-        records = sheet.get_all_records()
-        
-        podiums_metiers = {}
-        for r in records:
-            pseudo = str(r.get("Pseudo"))
-            semaine_id = str(r.get("Semaine_ID"))
-            metier = str(r.get("Metier", r.get("métier", r.get("Role", "Non renseigné"))))
-            if not metier or metier.strip() == "" or metier == "None":
-                metier = "Non renseigné"
-                
-            try:
-                score = int(r.get("Score", 0))
-            except ValueError:
-                score = 0
-                
-            if pseudo and semaine_id:
-                if metier not in podiums_metiers:
-                    podiums_metiers[metier] = {}
-                if pseudo not in podiums_metiers[metier]:
-                    podiums_metiers[metier][pseudo] = {}
-                
-                if semaine_id not in podiums_metiers[metier][pseudo]:
-                    podiums_metiers[metier][pseudo][semaine_id] = score
-                    
-        classement_par_metier = {}
-        for metier, users in podiums_metiers.items():
-            liste_users = []
-            for pseudo, semaines_dict in users.items():
-                total_points = sum(semaines_dict.values())
-                nb_quiz = len(semaines_dict)
-                liste_users.append({
-                    "Pseudo": pseudo,
-                    "Total_Points": total_points,
-                    "Quiz_Completes": nb_quiz
-                })
-            classement_par_metier[metier] = sorted(liste_users, key=lambda x: x["Total_Points"], reverse=True)
-            
-        return classement_par_metier
-    except Exception:
-        return {}
-        
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
     
@@ -307,7 +141,7 @@ st.markdown("""
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
-    /* Correction robuste de la bannière sur mobile */
+    /* Correction robuste pour éviter que le texte du titre ne parte en vrac sur mobile */
     .header-table {
         width: 100%;
         border-collapse: collapse;
@@ -320,10 +154,11 @@ st.markdown("""
         word-wrap: break-word;
     }
 
+    /* Ajustement responsive de la bannière pour les téléphones */
     @media screen and (max-width: 768px) {
         .main-title {
             font-size: 1.1rem !important; 
-            white-space: nowrap;
+            white-space: nowrap; /* Force le titre principal sur une seule ligne si possible */
         }
         .subtitle {
             font-size: 0.8rem !important; 
@@ -341,15 +176,12 @@ st.markdown("""
         border: 2px solid #99f6e4; max-width: 600px; margin: 0 auto 15px auto;
         text-align: center; box-shadow: 0 4px 15px rgba(15, 118, 110, 0.08);
     }
-
-    /* Badge animal parfaitement lisible avec texte sombre forcé */
     .animal-selected-badge {
-        display: inline-flex; align-items: center; gap: 12px; padding: 10px 22px;
-        border-radius: 50px; background-color: #e0f2fe !important; border: 2px solid #38bdf8 !important; margin: 10px 0;
+        display: inline-flex; align-items: center; gap: 12px; padding: 8px 20px;
+        border-radius: 50px; background-color: #e0f2fe; border: 2px solid #38bdf8; margin: 10px 0;
     }
     .animal-selected-emoji { font-size: 2rem; }
-    .animal-selected-name { color: #0369a1 !important; font-weight: 800; font-size: 1.15rem; }
-
+    .animal-selected-name { color: #0369a1; font-weight: 700; font-size: 1.1rem; }
     .user-header {
         background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
         color: white; padding: 12px 26px; border-radius: 50px; display: inline-block; font-weight: 700;
@@ -366,7 +198,7 @@ st.markdown("""
         background: #ccfbf1; color: #0f766e; padding: 6px 16px;
         border-radius: 30px; font-weight: 700; font-size: 0.9rem; display: inline-block; margin-bottom: 15px;
     }
-    .question-title { color: #0f766e !important; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
+    .question-title { color: #0f766e; font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; line-height: 1.5; }
 
     .result-card-ok {
         background: #f0fdf4; border-radius: 16px; padding: 18px;
@@ -375,6 +207,11 @@ st.markdown("""
     .result-card-err {
         background: #fef2f2; border-radius: 16px; padding: 18px;
         border: 2px solid #fca5a5; margin-bottom: 15px;
+    }
+
+    .vignette-semaine {
+        background: #ffffff; border-radius: 24px; padding: 25px;
+        border: 2px solid #cbd5e1; box-shadow: 0 8px 25px rgba(148, 163, 184, 0.1); margin-bottom: 30px;
     }
 
     .memo-box-tc { background: #f0f9ff; border-radius: 16px; padding: 20px; border-left: 6px solid #0284c7; }
@@ -387,12 +224,11 @@ st.markdown("""
     .memo-box-ash { background: #f1f5f9; border-radius: 16px; padding: 20px; border-left: 6px solid #475569; }
     .memo-box-cadre { background: #fff7ed; border-radius: 16px; padding: 20px; border-left: 6px solid #ea580c; }
 
-    .memo-title-text { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: #1e293b !important; }
+    .memo-title-text { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: #1e293b; }
 
-    /* Style des onglets principaux et secondaires avec contrastes forcés */
     .stTabs [data-baseweb="tab-list"] { gap: 10px; justify-content: flex-start; }
     .stTabs [data-baseweb="tab"] {
-        background-color: #ffffff !important; border-radius: 20px; padding: 8px 18px; font-weight: 700; color: #334155 !important; border: 1px solid #cbd5e1 !important;
+        background-color: #ffffff; border-radius: 20px; padding: 8px 18px; font-weight: 700; color: #334155; border: 1px solid #cbd5e1;
     }
     .stTabs [aria-selected="true"] {
         background: #0f766e !important; color: white !important; border: none !important;
@@ -401,40 +237,76 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 4. DONNÉES & VARIABLES DE SESSION
+# 4. GESTION DE LA SESSION & AUTHENTIFICATION (ONGLETS + 15 ANIMAUX)
 # ------------------------------------------------------------------------------
 ANIMAL_TO_EMOJI = {
     "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
     "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
-    "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔", "Koala" : "🐨", "Licorne" : "🦄"
+    "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔"
+    "Koala" : "🐨", "Licorne" : "🦄"
 }
 
-ANIMAUX = list(ANIMAL_TO_EMOJI.keys())
-ADJECTIFS = ["Astucieux", "Timide", "Ambitieux", "Survolté", "Combatif", "Emotif", "Espiègle", "Gourmand", "Malin", "Optimiste", "Tête en l'air"]
-
 if "user_pseudo" not in st.session_state:
-    st.session_state.user_pseudo = None
+    params = st.query_params
+    if "pseudo" in params:
+        st.session_state.user_pseudo = params["pseudo"]
 
-if "animal_selectionne" not in st.session_state:
-    st.session_state.animal_selectionne = None
+if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
+    st.markdown("<h2 style='text-align: center; color: #0f766e;'>🧠 Pause Révision HAS 2027 - Urgences Mulhouse</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #64748b;'>Veuillez vous identifier pour accéder au parcours de révision.</p>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        tab_connexion, tab_inscription = st.tabs(["🔑 Connexion", "✨ Première visite (Créer un compte)"])
+        utilisateurs_inscrits = charger_utilisateurs()
 
-if "login_animal_selectionne" not in st.session_state:
-    st.session_state.login_animal_selectionne = None
+        with tab_connexion:
+            st.markdown("### Bon retour !")
+            pseudo_connexion = st.text_input("Votre Pseudo :", key="input_connexion_pseudo")
+            mdp_connexion = st.text_input("Votre Mot de passe / Code secret :", type="password", key="input_connexion_mdp")
+            
+            if st.button("Se connecter", type="primary", use_container_width=True):
+                p_clean = pseudo_connexion.strip()
+                if p_clean in utilisateurs_inscrits:
+                    mdp_attendu = utilisateurs_inscrits[p_clean]
+                    if not mdp_attendu or mdp_attendu == mdp_connexion.strip():
+                        st.session_state.user_pseudo = p_clean
+                        st.query_params["pseudo"] = p_clean
+                        st.rerun()
+                    else:
+                        st.error("Mot de passe incorrect.")
+                elif p_clean and p_clean not in utilisateurs_inscrits:
+                    st.error("Ce pseudo n'existe pas. Veuillez utiliser l'onglet 'Première visite'.")
+                else:
+                    st.warning("Veuillez entrer un pseudo.")
 
-if "current_q_index" not in st.session_state:
-    st.session_state.current_q_index = 0
+        with tab_inscription:
+            st.markdown("### Création de compte")
+            nouveau_pseudo = st.text_input("Choisissez votre Pseudo :", key="input_insc_pseudo")
+            nouveau_mdp = st.text_input("Choisissez un mot de passe (optionnel) :", type="password", key="input_insc_mdp")
+            
+            animal_choisi = st.selectbox(
+                "Choisissez votre animal fétiche :", 
+                options=list(ANIMAL_TO_EMOJI.keys()),
+                format_func=lambda x: f"{ANIMAL_TO_EMOJI[x]} {x}"
+            )
+            
+            if st.button("Créer mon compte & Commencer", type="primary", use_container_width=True):
+                np_clean = nouveau_pseudo.strip()
+                if not np_clean:
+                    st.warning("Veuillez entrer un pseudo valide.")
+                elif np_clean in utilisateurs_inscrits:
+                    st.error("Ce pseudo est déjà pris. Connectez-vous via l'onglet 'Connexion'.")
+                else:
+                    if ajouter_utilisateur(np_clean, nouveau_mdp.strip(), animal_choisi):
+                        st.session_state.user_pseudo = np_clean
+                        st.query_params["pseudo"] = np_clean
+                        st.success("Compte créé avec succès ! Chargement...")
+                        st.rerun()
 
-if "user_quiz_answers" not in st.session_state:
-    st.session_state.user_quiz_answers = {}
-
-if "quiz_paused" not in st.session_state:
-    st.session_state.quiz_paused = False
-
-def fixer_animal(nom_animal):
-    st.session_state.animal_selectionne = nom_animal
-
-def fixer_animal_login(nom_animal):
-    st.session_state.login_animal_selectionne = nom_animal
+    st.stop()
+else:
+    st.query_params["pseudo"] = st.session_state.user_pseudo
 
 # --- SESSIONS DE QUIZ & FICHES MÉMO HAS 2027 ---
 SESSIONS = [
@@ -808,11 +680,11 @@ SESSIONS = [
             {
                 "q": "5. [Tronc Commun] En situation d'afflux massif de victimes (plan AMAVI) avec saturation de la capacité d'identification administrative, quel système d'identitovigilance de crise est activé ?",
                 "options": [
-                    "L'attribution immédiate d'un triptyque provisoire (ex: Numéro séquentiel unique, genre, et lettre de secteur de tri) couplé à un bracelet à code-barres de crise",
+                    "L'attribution immédiate d'un avatar (Animal + couuleur) pré-imprimés",
                     "L'utilisation du numéro de sécurité sociale provisoire à 9 chiffres",
                     "L'inscription au feutre indélébile du prénom d'usage sur l'avant-bras du patient"
                 ],
-                "rep": "L'attribution immédiate d'un triptyque provisoire (ex: Numéro séquentiel unique, genre, et lettre de secteur de tri) couplé à un bracelet à code-barres de crise"
+                "rep": "L'attribution immédiate d'un avatar (Animal + couuleur) pré-imprimés"
             }
         ],
         "metiers": {
