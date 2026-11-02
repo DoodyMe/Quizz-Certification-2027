@@ -9,32 +9,105 @@ from streamlit_pdf_viewer import pdf_viewer
 # ------------------------------------------------------------------------------
 # 1. CONFIGURATION DE LA PAGE
 # ------------------------------------------------------------------------------
+import datetime
+import os
+import base64
+import streamlit as st
+import gspread
+from google.oauth2.service_account import Credentials
+from streamlit_pdf_viewer import pdf_viewer
+
+# ------------------------------------------------------------------------------
+# 1. CONFIGURATION DE LA PAGE & ÉCRAN DE CONNEXION / INSCRIPTION
+# ------------------------------------------------------------------------------
 st.set_page_config(
     page_title="Révisions Équipe HAS 2027 - Urgences Mulhouse",
     page_icon="🧠",
     layout="wide"
 )
 
+ANIMAL_TO_EMOJI = {
+    "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
+    "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
+    "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔", "Koala" : "🐨", "Licorne" : "🦄"
+}
+
+# Gestion de la persistance du pseudo via l'URL
 if "user_pseudo" not in st.session_state:
-    # On regarde si un pseudo est présent dans l'URL (ex: ?pseudo=MonPseudo)
     params = st.query_params
     if "pseudo" in params:
         st.session_state.user_pseudo = params["pseudo"]
 
-# Si toujours pas de pseudo, on affiche l'écran de connexion
+# Si pas connecté, on affiche l'écran d'accueil avec les onglets et les animaux d'origine
 if "user_pseudo" not in st.session_state or not st.session_state.user_pseudo:
-    st.markdown("<h2 style='text-align: center; color: #0f766e;'>🧠 Pause Révision HAS 2027</h2>", unsafe_allow_html=True)
-    # ... ton formulaire de saisie de pseudo ...
-    pseudo_saisi = st.text_input("Entrez votre pseudo pour accéder au quiz :")
-    if st.button("Se connecter", type="primary"):
-        if pseudo_saisi.strip():
-            st.session_state.user_pseudo = pseudo_saisi.strip()
-            # On stocke dans l'URL pour survivre aux actualisations (F5)
-            st.query_params["pseudo"] = pseudo_saisi.strip()
-            st.rerun()
-        else:
-            st.warning("Veuillez entrer un pseudo valide.")
-    st.stop() # Stoppe l'exécution du reste tant qu'on n'est pas connecté
+    st.markdown("<h2 style='text-align: center; color: #0f766e;'>🧠 Pause Révision HAS 2027 - Urgences Mulhouse</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #64748b;'>Veuillez vous identifier pour accéder au parcours de révision.</p>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        tab_connexion, tab_inscription = st.tabs(["🔑 Connexion", "✨ Première visite (Créer un compte)"])
+        
+        # Connexion temporaire pour récupérer la liste des utilisateurs inscrits
+        try:
+            scope_temp = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+            creds_temp = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope_temp)
+            client_temp = gspread.authorize(creds_temp)
+            sheet_temp = client_temp.open_by_url(st.secrets["spreadsheet_url"]).worksheet("Utilisateurs")
+            records_temp = sheet_temp.get_all_records()
+            utilisateurs_inscrits = {str(r["Pseudo"]): str(r.get("Mot_De_Passe", "")) for r in records_temp if "Pseudo" in r and r["Pseudo"]}
+        except Exception:
+            utilisateurs_inscrits = {}
+
+        with tab_connexion:
+            st.markdown("### Bon retour !")
+            pseudo_connexion = st.text_input("Votre Pseudo :", key="input_connexion_pseudo")
+            mdp_connexion = st.text_input("Votre Mot de passe / Code secret :", type="password", key="input_connexion_mdp")
+            
+            if st.button("Se connecter", type="primary", use_container_width=True):
+                if pseudo_connexion.strip() in utilisateurs_inscrits:
+                    mdp_attendu = utilisateurs_inscrits[pseudo_connexion.strip()]
+                    if not mdp_attendu or mdp_attendu == mdp_connexion.strip():
+                        st.session_state.user_pseudo = pseudo_connexion.strip()
+                        st.query_params["pseudo"] = pseudo_connexion.strip()
+                        st.rerun()
+                    else:
+                        st.error("Mot de passe incorrect.")
+                elif pseudo_connexion.strip() and pseudo_connexion.strip() not in utilisateurs_inscrits:
+                    st.error("Ce pseudo n'existe pas. Veuillez utiliser l'onglet 'Première visite'.")
+                else:
+                    st.warning("Veuillez entrer un pseudo.")
+
+        with tab_inscription:
+            st.markdown("### Création de compte")
+            nouveau_pseudo = st.text_input("Choisissez votre Pseudo :", key="input_insc_pseudo")
+            nouveau_mdp = st.text_input("Choisissez un mot de passe (optionnel) :", type="password", key="input_insc_mdp")
+            
+            # Sélection de l'animal fétiche avec tes émojis d'origine
+            animal_choisi = st.selectbox(
+                "Choisissez votre animal fétiche :", 
+                options=list(ANIMAL_TO_EMOJI.keys()),
+                format_func=lambda x: f"{ANIMAL_TO_EMOJI[x]} {x}"
+            )
+            
+            if st.button("Créer mon compte & Commencer", type="primary", use_container_width=True):
+                if not nouveau_pseudo.strip():
+                    st.warning("Veuillez entrer un pseudo valide.")
+                elif nouveau_pseudo.strip() in utilisateurs_inscrits:
+                    st.error("Ce pseudo est déjà pris. Connectez-vous via l'autre onglet !")
+                else:
+                    try:
+                        sheet_u = client_temp.open_by_url(st.secrets["spreadsheet_url"]).worksheet("Utilisateurs")
+                        date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+                        # On enregistre en incluant l'animal choisi si ton tableau le gère
+                        sheet_u.append_row([date_str, nouveau_pseudo.strip(), nouveau_mdp.strip(), animal_choisi])
+                        st.session_state.user_pseudo = nouveau_pseudo.strip()
+                        st.query_params["pseudo"] = nouveau_pseudo.strip()
+                        st.success("Compte créé avec succès ! Chargement...")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Erreur lors de l'enregistrement : {e}")
+
+    st.stop() # Stoppe l'exécution du reste tant que l'utilisateur n'est pas connecté
 else:
     # S'il est connecté, on s'assure que l'URL garde bien son pseudo en mémoire
     st.query_params["pseudo"] = st.session_state.user_pseudo
@@ -333,7 +406,7 @@ st.markdown("""
 ANIMAL_TO_EMOJI = {
     "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
     "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
-    "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔"
+    "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔", "Koala" : "🐨", "Licorne" : "🦄"
 }
 
 ANIMAUX = list(ANIMAL_TO_EMOJI.keys())
