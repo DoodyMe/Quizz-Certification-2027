@@ -1212,31 +1212,47 @@ with tab_historique:
     
     with sub_tab_synthese:
         st.subheader("Rappels et Synthèses par Semaine (Cumulatif)")
-        st.markdown("Au fil des clôtures de semaines, les points clés s'ajoutent ici pour constituer votre référentiel de révision.")
+        st.markdown("Au fil des clôtures de semaines, les points clés s'ajoutent ici pour constituer votre référentiel de révision. *(Note : La synthèse de la semaine en cours se débloque une fois le quiz validé !)*")
         
         if not sessions_passees:
             st.info("Aucune synthèse disponible pour le moment.")
         else:
+            # Récupération des semaines déjà validées par l'utilisateur
+            mes_notes_actuelles = charger_notes_utilisateur(st.session_state.user_pseudo)
+            semaines_validees_ids = [str(item.get("Semaine_ID")) for item in mes_notes_actuelles]
+
             for s in sessions_passees:
                 str_debut = s['date_debut'].strftime('%d/%m/%Y') if hasattr(s['date_debut'], 'strftime') else s['date_debut']
                 str_fin = s['date_fin'].strftime('%d/%m/%Y') if hasattr(s['date_fin'], 'strftime') else s['date_fin']
                 
-                with st.expander(f"📌 {s['titre']} (Du {str_debut} au {str_fin})", expanded=(s["id"] == max([x["id"] for x in sessions_passees]))):
-                    if "fiches_reflexes" in s:
-                        fiches = s["fiches_reflexes"]
-                        onglets_metiers = list(fiches.keys())
-                        tabs_m = st.tabs(onglets_metiers)
-                        
-                        for idx_m, nom_m in enumerate(onglets_metiers):
-                            fiche_info = fiches[nom_m]
-                            css_class = fiche_info.get("class", "memo-box-tc")
-                            points_list = fiche_info.get("points", [])
-                            
-                            with tabs_m[idx_m]:
-                                st.markdown(f"<div class='{css_class}'><div class='memo-title-text'>Synthèse HAS — {nom_m}</div>", unsafe_allow_html=True)
-                                for pt in points_list:
-                                    st.markdown(f"• {pt}")
-                                st.markdown("</div>", unsafe_allow_html=True)
+                statut = obtenir_statut_session(s)
+                est_valide = str(s["id"]) in semaines_validees_ids
+                
+                # Si c'est la semaine actuelle et qu'elle n'est pas encore validée (et pas la démo semaine 0)
+                if statut == "Actuelle" and not est_valide and s["id"] != 0:
+                    with st.expander(f"🔒 {s['titre']} (Verrouillé - Quiz en cours)"):
+                        st.warning("⚠️ Cette synthèse se débloquera automatiquement ici dès que tu auras validé le quiz de cette semaine dans l'onglet 'Semaine Actuelle' !")
+                else:
+                    with st.expander(f"📌 {s['titre']} (Du {str_debut} au {str_fin})", expanded=(s["id"] == max([x["id"] for x in sessions_passees if obtenir_statut_session(x) == "Passee" or str(x["id"]) in semaines_validees_ids], default=0))):
+                        if "fiches_reflexes" in s:
+                            fiches = s["fiches_reflexes"]
+                            if fiches:
+                                onglets_metiers = list(fiches.keys())
+                                tabs_m = st.tabs(onglets_metiers)
+                                
+                                for idx_m, nom_m in enumerate(onglets_metiers):
+                                    fiche_info = fiches[nom_m]
+                                    css_class = fiche_info.get("class", "memo-box-tc")
+                                    points_list = fiche_info.get("points", [])
+                                    
+                                    with tabs_m[idx_m]:
+                                        st.markdown(f"<div class='{css_class}'><div class='memo-title-text'>Synthèse HAS — {nom_m}</div>", unsafe_allow_html=True)
+                                        for pt in points_list:
+                                            st.markdown(f"• {pt}")
+                                        st.markdown("</div>", unsafe_allow_html=True)
+                            else:
+                                st.info("Aucune synthèse spécifique pour cette session.")
+                                
 
 with sub_tab_fiches:
         st.subheader("Consultation des Fiches Mémos PDF")
