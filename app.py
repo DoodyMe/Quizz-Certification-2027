@@ -243,7 +243,7 @@ ANIMAL_TO_EMOJI = {
     "Lapin": "🐇", "Ours": "🐻", "Cochon": "🐷", "Elephant": "🐘", "Hamster": "🐹",
     "Panda": "🐼", "Kangourou": "🦘", "Dauphin": "🐬", "Faucon": "🦅", "Ecureuil": "🐿️",
     "Lynx": "🐆", "Lémurien": "🐒", "Canard": "🦆", "Loup": "🐺", "Hérisson": "🦔"
-    "Koala" : "🐨", "Licorne" : "🦄"
+    "Koala": "🐨", "Licorne": "🦄"
 }
 
 if "user_pseudo" not in st.session_state:
