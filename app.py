@@ -1159,7 +1159,7 @@ with col_titre:
     st.markdown("<h1 class='main-title' style='text-align: center;'>🧠 Pause Révision HAS 2027</h1>", unsafe_allow_html=True)
     st.markdown("<h3 class='subtitle' style='text-align: center;'>Service des Urgences & SAMU — Mulhouse</h3>", unsafe_allow_html=True)
     st.markdown("<p style='color:#64748b; margin-bottom:0; text-align: center;'>Plateforme ludo-pédagogique d'équipe pour la préparation à la certification</p>", unsafe_allow_html=True)
-      st.markdown("<p style='color:#64748b; margin-bottom:0; text-align: center;'> ⚠️ ATTENTION : mettez l'affichage en "Light" en haut à droite, sinon le texte sera blanc... sur blanc</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#64748b; margin-bottom:0; text-align: center;'> ⚠️ ATTENTION : mettez l'affichage en "Light" en haut à droite, sinon le texte sera blanc... sur blanc</p>", unsafe_allow_html=True)
 
 # --- LOGO 2 (À DROITE) ---
 with col_logo_droite:
