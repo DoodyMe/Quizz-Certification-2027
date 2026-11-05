@@ -1609,12 +1609,11 @@ SESSIONS = [
                     "**Gouvernance et Audits Flash** : Planification et réalisation d'audits réguliers portant sur la péremption du chariot d'urgence, la traçabilité des stupéfiants et la conformité des dossiers de soins de crise.",
                     "**Management Non-Punitif** : Animation des retours d'expérience (CREX) suite à un incident médicamenteux pour transformer l'erreur humaine en opportunité d'amélioration organisationnelle durable."
                     "**Management de la Sécurité** : Contrôle hebdomadaire des chariots d'urgence, gestion non punitive des EIGS et animation des audits flash HAS."
-                ]
+               ]
             }
         }
     },
-
-semaine_4 = {
+        {
     "id": 4,
     "titre": "Semaine 4 - Parcours patient, Fluidité & Sujets vulnérables",
     "date_debut": datetime.date(2026, 11, 16),
