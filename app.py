@@ -1613,7 +1613,6 @@ SESSIONS = [
             }
         }
     },
-import datetime
 
 semaine_4 = {
     "id": 4,
