@@ -1613,7 +1613,7 @@ SESSIONS = [
             }
         }
     },
-        {
+semaine_4 = {
     "id": 4,
     "titre": "Semaine 4 - Parcours patient, Fluidité & Sujets vulnérables",
     "date_debut": datetime.date(2026, 11, 16),
