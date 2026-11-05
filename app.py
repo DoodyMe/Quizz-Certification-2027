@@ -1187,7 +1187,7 @@ if not st.session_state.user_pseudo:
 
     # --- ONGLET 1 : CONNEXION PAR VIGNETTE ANIMAL + FILTRAGE PSEUDOS ---
     with tab_login:
-        st.markdown("<div class='auth-card-header'><h3 style='color:#0f766e; margin:0;'>Connexion rapide à votre espace</h3><p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Sélectionnez votre animal pour retrouver votre profil</p></div>", unsafe_allow_html=True)
+        st.markdown("<div class='auth-card-header'><h3 style='color:#0f766e; margin:0;'>Connexion rapide à votre espace</h3><p style='color:#64748b; font-size:0.9rem; margin-top:5px;'>Sélectionnez votre animal pour retrouver votre profil créé lors de la première visite</p></div>", unsafe_allow_html=True)
         
         st.markdown("<h4 style='text-align:center; color:#0f766e;'>Étape 1 : Cliquez sur votre Animal</h4>", unsafe_allow_html=True)
         cols_login = st.columns(5)
