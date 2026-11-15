@@ -1717,7 +1717,7 @@ SESSIONS = [
                     "enonce": "Face à une suspicion d'erreur de dosage médicamenteux chez un patient fragile transféré d'une autre structure, quelle est l'action IDE immédiate ?",
                     "options": [
                         "Corriger la dose dans le DPI, puisque ça n'a pas eu de conséquence.",
-                        "Attendre la fin du poste pour voir si des effets secondaires apparaissent."v
+                        "Attendre la fin du poste pour voir si des effets secondaires apparaissent.",
                         "Suspendre l'administration, alerter immédiatement le médecin de la zone et déclarer l'événement indésirable (FEI)."
                     ],
                     "bonne_reponse": 3
