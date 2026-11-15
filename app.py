@@ -1902,7 +1902,7 @@ SESSIONS = [
                 },
                 {
                     "id": "ACC3",
-                    "enonce": "Comment l'agent d'accueil gère-t-il les effets personnels et objets de valeur d'un patient inconscient, ramenés plus tard par les pompiers car ils avaient été "oubliés sur place" ?",
+                    "enonce": "Comment l'agent d'accueil gère-t-il les effets personnels et objets de valeur d'un patient inconscient, ramenés plus tard par les pompiers car ils avaient été 'oubliés sur place' ?",
                     "options": [
                         "Appliquer la procédure de dépôt (inventaire contradictoire avec un soignant/agent, traçabilité et mise en coffre ou remise sécurisée).",
                         "Les laisser dans un sac plastique sur le comptoir.",
