@@ -1209,7 +1209,7 @@ SESSIONS = [
                         "Un risque de fausse route par fausse coïncidence entre la déglutition d'un grand volume d'eau et la prise simultanée des comprimés en position non strictement assise.",
                         "Une dilution excessive des médicaments dans l'estomac rendant le traitement inefficace."
                     ],
-                    "rep": "Un risque de fausse route par fausse coïncidence entre la déglutition d'un grand volume d'eau et la prise simultanée des comprimés en position non strictly assise."
+                    "rep": "Un risque de fausse route par fausse coïncidence entre la déglutition d'un grand volume d'eau et la prise simultanée des comprimés en position non strictement assise."
                 },
                 {
                     "q": "7. [Module AS] L'IDE demande à l'AS de déplacer un sachet nominatif de médicaments d'un box à un autre car elle est occupée en urgence sur un autre patient. Que doit faire l'AS selon les exigences de sécurité HAS ?",
@@ -1236,7 +1236,7 @@ SESSIONS = [
                         "Alerter l'IDE ou le médecin avant toute administration de ce complément qui pourrait interférer avec l'équilibre de l'hémostase ou la prescription.",
                         "Jeter directement le produit en expliquant au patient le fait que cela risque d'interférer avec son traitement."
                     ],
-                    "rep": "Alerte l'IDE ou le médecin avant toute administration de ce complément qui pourrait interférer avec l'équilibre de l'hémostase ou la prescription."
+                    "rep": "Alerter l'IDE ou le médecin avant toute administration de ce complément qui pourrait interférer avec l'équilibre de l'hémostase ou la prescription."
                 },
                 {
                     "q": "10. [Module AS] Un patient agité sous traitement sédatif refuse de s'hydrater toute la journée. L'AS se dit qu'il boira quand il aura soif. Quelle est la bonne pratique HAS ?",
@@ -1623,11 +1623,11 @@ SESSIONS = [
                 "id": "TC1",
                 "enonce": "Lors de l'admission d'une personne âgée vulnérable en situation de perte d'autonomie majeure ou de dénutrition, quel est le premier réflexe exigé par les critères HAS de repérage des vulnérabilités aux urgences ?",
                 "options": [
-                    "Reporter l'évaluation gérontologique à la sortie des urgences en estimant que seule la somatique aiguë compte.",
-                    "Formaliser dès l'admission le repérage des risques (escarres, chutes, dénutrition, troubles cognitifs) et l'initier dans le dossier patient informatisé (DPI).",
-                    "Demander un transfert direct en USLD sans passer par l'évaluation médicale de la zone de soins."
+                    "Reporter l'évaluation gérontologique à la sortie des urgences : pour l'instant, la somatique aiguë compte.",
+                    "Demander un transfert direct en USLD.",
+                    "Formaliser dès l'admission le repérage des risques (escarres, chutes, dénutrition, troubles cognitifs) et l'initier dans le dossier patient informatisé (DPI)."
                 ],
-                "bonne_reponse": 2
+                "bonne_reponse": 3
             },
             {
                 "id": "TC2",
@@ -1643,9 +1643,9 @@ SESSIONS = [
                 "id": "TC3",
                 "enonce": "Face à un patient vulnérable présentant des signes d'alerte évoquant une maltraitance (lésions atypiques, discours discordant de l'entourage), quelle est la procédure HAS à enclencher ?",
                 "options": [
-                    "Demander des explications violentes à l'accompagnant au comptoir d'accueil.",
+                    "Demander des explications à l'accompagnant.",
                     "Tracer les constatations factuelles dans le DPI, alerter le médecin sénior de zone et déclencher la filière de signalement (fiche FEI / assistance sociale / cadre).",
-                    "Transférer immédiatement le patient dans un autre établissement sans faire de déclaration."
+                    "Hospitaliser obligatoirement le patient afin que le service se charge de la mise en place de protection pour la personne vulnérable."
                 ],
                 "bonne_reponse": 2
             },
@@ -1653,32 +1653,32 @@ SESSIONS = [
                 "id": "TC4",
                 "enonce": "Qu'implique la conciliation médicamenteuse d'admission pour une personne âgée polypathologique transférée d'EHPAD ?",
                 "options": [
+                    "Réaliser le bilan comparatif entre l'ordonnance de l'EHPAD et les prescriptions d'urgence pour prévenir la iatrogénie et tracer les arrêts/poursuites.",
                     "Stopper tous les traitements habituels par précaution pendant 24 heures.",
-                    "Réaliser le bilan comparatif entre l'ordonnance de l'EHPAD et les prescriptions d'urgence pour prévenir l'iatrogénie et tracer les arrêts/poursuites.",
-                    "Reconduire à l'aveugle l'ordonnance d'entrée sans réévaluer la fonction rénale ni l'état aigu."
+                    "Reconduire l'ordonnance d'entrée sans réévaluer la fonction rénale ni l'état aigu."
                 ],
-                "bonne_reponse": 2
+                "bonne_reponse": 1
             },
             {
                 "id": "TC5",
                 "enonce": "Comment la HAS préconise-t-elle d'évaluer la douleur chez un patient vulnérable non communicant (troubles cognitifs sévères, coma, aphasie) ?",
                 "options": [
                     "Conclure à l'absence de douleur si le patient ne verbalise aucune plainte.",
+                    "Administrer d'emblée une dose maximale de morphine sans observation préalable.",
                     "Utiliser une échelle d'hétéro-évaluation comportementale validée (ex: Algoplus/Doloplus) et tracer la réévaluation après antalgie.",
-                    "Administrer d'emblée une dose maximale de morphine sans observation préalable."
                 ],
-                "bonne_reponse": 2
+                "bonne_reponse": 3
             }
         ],
         "metiers": {
             "IDE": [
                 {
                     "id": "IDE1",
-                    "enonce": "Dans votre zone de 6 box, un patient vulnérable et désorienté présente un risque élevé de chute et d'ambulation. Quelle est la conduite appropriée ?",
+                    "enonce": "Dans votre zone de box au circuit Long, un patient vulnérable et désorienté présente un risque élevé de chute et de déambulation. Quelle est la conduite appropriée ?",
                     "options": [
                         "Verrouiller la porte du box à clé de l'extérieur pour poursuivre vos soins dans les autres box.",
                         "Adapter l'environnement (barrières, sonnette à portée, rapprochement du poste si possible), tracer le risque et coordonner la surveillance avec l'AS de la zone.",
-                        "Attacher le patient aux quatre membres sans prescription médicale préalable."
+                        "Attacher le patient aux quatre membres puis aller avoir le médecin pour le signaler et avoir la prescription."
                     ],
                     "bonne_reponse": 2
                 },
@@ -1686,49 +1686,49 @@ SESSIONS = [
                     "id": "IDE2",
                     "enonce": "Vous devez administrer un traitement IV à haut risque chez un patient vulnérable sous tutelle. Le tuteur est joignable mais pas sur place. Que devez-vous vérifier ?",
                     "options": [
-                        "Attendre le déplacement physique du tuteur avant d'injecter, quelle que soit l'urgence thérapeutique.",
                         "Vérifier la prescription médicale validée dans le DPI, l'identité du patient (identitovigilance) et tracer l'administration en informant la personne de confiance/tuteur selon le degré d'urgence.",
+                        "Attendre le déplacement physique du tuteur avant d'injecter, quelle que soit l'urgence thérapeutique.",
                         "Faire signer un accord à l'ambulancier qui a transporté le patient."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 },
                 {
                     "id": "IDE3",
                     "enonce": "Un patient très âgé en brancard de couloir attend un lit d'aval depuis 8 heures dans votre zone. Quelle surveillance IDE est indispensable pour la certification ?",
                     "options": [
-                        "Aucune traçabilité spécifique n'est demandée tant que le patient ne repasse pas en box.",
-                        "Assurer et tracer les réévaluations régulières : état cutané (prévention escarres), hydratation/miction, constantes et tolérance de l'attente.",
-                        "Passer le dossier en 'archivé' pour faire baisser le temps de passage théorique."
+                        "Seuls les paramètres vitaux matin/midi/soir doivent être tracés, ainsi que les repas donnés.",
+                        "Etat cutané (prévention escarres), hydratation/miction, paramètres vitaux, douleur et tolérance de l'attente.",
+                        "Passer s'assurer que le patient va bien et lui demander s'il a besoin de quelques chose suffit."
                     ],
                     "bonne_reponse": 2
                 },
                 {
                     "id": "IDE4",
-                    "enonce": "Lors de la relève inter-équipe dans votre zone de 6 box, quelle information est prioritaire pour un patient vulnérable ?",
+                    "enonce": "Lors de la relève inter-équipe dans votre zone en Long, quelle information est prioritaire pour un patient vulnérable ?",
                     "options": [
-                        "L'avis personnel de la famille sur les horaires de repas de l'hôpital.",
-                        "La transmission ciblée précisant l'autonomie, les risques identifiés (fausse route, fuite, escarre), les réévaluations médicamenteuses et le statut du lit d'aval.",
-                        "La couleur des vêtements du patient déposés dans le vestiaire."
+                        "Pas plus d'informations que les autres : la place de son brancard, son histoire et les médicaments donnés.",
+                        "La couleur des vêtements du patient, au cas où il s'enfuit.",
+                        "La transmission ciblée précisant l'autonomie, les risques identifiés (fausse route, fuite, escarre), les réévaluations médicamenteuses et le statut du lit d'aval."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 3
                 },
                 {
                     "id": "IDE5",
                     "enonce": "Face à une suspicion d'erreur de dosage médicamenteux chez un patient fragile transféré d'une autre structure, quelle est l'action IDE immédiate ?",
                     "options": [
-                        "Corriger la dose en secret dans le DPI sans en parler à l'équipe.",
-                        "Suspendre l'administration, alerter immédiatement le médecin de la zone et déclarer l'événement indésirable (FEI).",
-                        "Attendre la fin du poste pour voir si des effets secondaires apparaissent."
+                        "Corriger la dose dans le DPI, puisque ça n'a pas eu de conséquence.",
+                        "Attendre la fin du poste pour voir si des effets secondaires apparaissent."v
+                        "Suspendre l'administration, alerter immédiatement le médecin de la zone et déclarer l'événement indésirable (FEI)."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 3
                 }
             ],
             "Medecin": [
                 {
                     "id": "MED1",
-                    "enonce": "En tant que médecin référent de vos 2 zones (12 box au total), vous devez prescrire une contention physique pour un patient dément en agitation sévère mettant en danger ses soins vitaux. Quelle règle appliquez-vous ?",
+                    "enonce": "En tant que médecin référent de vos 2 zones du Long, vous devez prescrire une contention physique pour un patient dément en agitation sévère mettant en danger ses soins vitaux. Quelle règle appliquez-vous ?",
                     "options": [
-                        "Donner une consigne orale à l'équipe et réévaluer le lendemain.",
+                        "Donner une consigne orale à l'équipe et leur demander de réévaluer dans quelques heures.",
                         "Rédiger une prescription médicale écrite, datée, limitée dans le temps, motivée au regard de la balance bénéfice/risque et assortie d'une surveillance tracée.",
                         "Demander à l'équipe d'accueil d'appeler la police pour gérer l'agitation."
                     ],
@@ -1738,41 +1738,41 @@ SESSIONS = [
                     "id": "MED2",
                     "enonce": "Lors de la sortie ou du transfert d'un patient fragile aux antécédents complexes, quel document médical garantit la continuité de la prise en charge selon la HAS ?",
                     "options": [
-                        "Une simple consigne orale donnée au brancardier lors du départ.",
                         "La lettre de liaison de sortie (ou résumé d'urgence) validée et transmise le jour même, incluant le traitement d'entrée/sortie et les consignes de suivi.",
+                        "Une simple consigne orale donnée au brancardier lors du départ.",
                         "Un mot manuscrit succinct sur un morceau de papier déposé dans la poche du patient."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 },
                 {
                     "id": "MED3",
                     "enonce": "Comment adapter la prescription médicamenteuse chez un sujet très âgé en insuffisance rénale aiguë admis dans l'une de vos zones ?",
                     "options": [
-                        "Maintenir les posologies habituelles du VIDAL adulte sans réévaluation.",
-                        "Consulter la fonction rénale (DFG/clairance), réévaluer les rapports bénéfice/risque des molécules néphrotoxiques et expliciter l'adaptation posologique dans le DPI.",
-                        "Déléguer le choix des molécules à l'externe de garde sans repasser derrière."
+                        "Se fier seulement au DFG pour qualifier l'IRA et arrêter les traitements néphrotoxiques.",
+                        "Consulter la créatinine habituelle pour valider la réelle présence d'une IRA, réévaluer les rapports bénéfice/risque des molécules néphrotoxiques et expliciter l'adaptation posologique dans le DPI.",
+                        "Maintenir les posologies habituelles du VIDAL."
                     ],
                     "bonne_reponse": 2
                 },
                 {
                     "id": "MED4",
-                    "enonce": "En situation d'engorgement majeur des 2 zones avec attente prolongée de lits d'aval, quel est le rôle du médecin sénior de zone ?",
+                    "enonce": "En situation d'engorgement majeur des 2 zones du Long avec attente prolongée de lits d'aval, quel est le rôle du médecin sénior de zone ?",
                     "options": [
-                        "Stopper toutes les consultations et quitter le service.",
-                        "Effectuer des réévaluations cliniques régulières des patients en attente, réajuster les prescriptions et signaler le niveau d'encadrement à la régulation/cadre.",
-                        "Valider des sorties prématurées sans examen clinique pour vider les box."
+                        "Effectuer des réévaluations cliniques régulières des patients en attente, réajuster les prescriptions et signaler le niveau d'engorgement à la régulation/cadre (le protocole HET du service est tout en bas du meuble où sont les prescriptions bio/EFS etc).",
+                        "Fermer et quitter le service. Y'en a marre à la fin.",
+                        "Valider des sorties et transferts prématurés pour vider les box."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 },
                 {
                     "id": "MED5",
                     "enonce": "Prise en charge d'un patient vulnérable sans personne de confiance identifiée nécessitant une décision médicale lourde non urgente. Quelle est la démarche réglementaire ?",
                     "options": [
                         "Décider seul dans son coin sans en parler à quiconque.",
-                        "Rechercher l'existence de directives anticipées, solliciter les aidants/tuteur et formaliser une procédure collégiale tracée dans le dossier.",
-                        "Demander l'avis à l'agent d'accueil du poste central."
+                        "Appeler la famille pour demander leur avis, qui prévaudra.",
+                        "Rechercher l'existence de directives anticipées, solliciter les aidants/tuteur et formaliser une procédure collégiale tracée dans le dossier."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 3
                 }
             ],
             "AS": [
@@ -1780,9 +1780,9 @@ SESSIONS = [
                     "id": "AS1",
                     "enonce": "Vous installez une personne âgée dénutrie et dépendante dans un box de votre zone. Quel soin de prévention mettez-vous en place d'emblée ?",
                     "options": [
-                        "Laisser le patient sur le brancard dur sans changer sa position pendant 6 heures.",
+                        "Laisser le patient sur le brancard sans changer sa position pendant 6 heures.",
                         "Mettre en place les supports anti-escarres adaptés, veiller au positionnement (décharge des points d'appui) et signaler l'état cutané initial à l'IDE.",
-                        "Mettre des ridelles sans vérifier si le patient risque de s'enjamber."
+                        "Mettre un plateau repas à côté."
                     ],
                     "bonne_reponse": 2
                 },
@@ -1790,29 +1790,29 @@ SESSIONS = [
                     "id": "AS2",
                     "enonce": "Lors de la distribution des repas/collations dans les box de la zone, un patient vulnérable présente des troubles de la déglutition identifiés. Que faites-vous ?",
                     "options": [
-                        "Poser le plateau standard et repartir immédiatement.",
                         "Vérifier la texture prescrite (haché/mixé, eau gélifiée), assister l'installation à 90°, surveiller le repas et transmettre l'ingestion à l'IDE.",
-                        "Donner à boire de l'eau claire au verre en grande quantité pour aller vite."
+                        "Poser le plateau standard et demander à l'accompagnant de signaler s'il y a une fausse route.",
+                        "Ne rien donner au patient, par précaution, et proposer une pose d'hydratation IV ou sous-cutanée."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 },
                 {
                     "id": "AS3",
-                    "enonce": "Un patient vulnérable et confus tente de se lever seul de sa chaise ou de son brancard au risque de tomber. Quelle est la réaction AS ?",
+                    "enonce": "Un patient vulnérable et confus tente de se lever seul de sa chaise au risque de tomber. Quelle est la réaction à avoir selon la HAS ?",
                     "options": [
-                        "Le réorganiser avec fermeté en l'attachant avec un drap.",
-                        "Le réinstaller en sécurité, évaluer son besoin immédiat (miction, soif, douleur), solliciter l'IDE et assurer une présence rassurante.",
-                        "Ignorer la situation tant que le patient n'est pas tombé par terre."
+                        "Le réinstaller, évaluer son besoin immédiat (miction, soif, douleur), solliciter l'IDE et rester à ses côtés pour assurer une présence rassurante.",
+                        "Le rappeler à l'ordre avec fermeté et le sécuriser avec un drap au niveau de la taille.",
+                        "Ignorer la situation tant que le patient n'est pas tombé par terre : y'a pas le temps dans ce service..."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 },
                 {
                     "id": "AS4",
                     "enonce": "Vous observez une rougeur sacrée fixée (érythème ne s'effaçant pas à la pression) lors du change d'un patient vulnérable. Que faites-vous ?",
                     "options": [
-                        "Appliquer une crème de beauté personnelle sans rien dire.",
+                        "Appliquer une crème type Bepanthen.",
                         "Alerter l'IDE de la zone pour évaluation/transmission, consigner le constat dans le dossier de soins et adapter le positionnement.",
-                        "Mettre un pansement sans avis et sans traçabilité."
+                        "Mettre un pansement."
                     ],
                     "bonne_reponse": 2
                 },
@@ -1820,21 +1820,21 @@ SESSIONS = [
                     "id": "AS5",
                     "enonce": "Comment préserver la dignité d'un patient vulnérable lors des soins d'hygiène ou d'installation en zone de soins très fréquentée ?",
                     "options": [
-                        "Laisser la porte du box grande ouverte sur le couloir pour aller plus vite.",
-                        "Utiliser systématiquement les paravents/fermetures de box, couvrir le patient et s'adresser directement à lui avec bienveillance.",
-                        "Parler du cas du patient à voix haute dans le couloir devant les autres familles."
+                        "Laisser la porte du box ouverte sur le couloir pour maintenir la sécurité de chacun.",
+                        "Parler entre les soignants pendant le change, comme si le patient ne comprenait pas ce qui se disait.",
+                        "Utiliser systématiquement les paravents/fermetures de box, couvrir le patient et s'adresser directement à lui avec bienveillance."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 3
                 }
             ],
             "ARM": [
                 {
                     "id": "ARM1",
-                    "enonce": "Un appel concerne un sujet très âgé vivant seul, en rupture de contacts depuis 48h, signalé par un voisin. Comment l'ARM qualifie-t-il cette vulnérabilité ?",
+                    "enonce": "Un appel concerne un sujet très âgé vivant seul, en rupture de contacts depuis 48h, signalé par un voisin. Selon la HAS, comment l'ARM doit-il qualifier cette vulnérabilité ?",
                     "options": [
-                        "Classer l'appel en démarche sociale non urgente à traiter le lendemain.",
+                        "Classer l'appel en démarche sociale non urgente.",
                         "Évaluer le risque d'isolement/détresse potentielle, rechercher des signes d'urgence vitale/traumatique et transmettre immédiatement au MRU pour décision.",
-                        "Demander au voisin de casser la porte lui-même avant de rappeler."
+                        "Demander au voisin de trouver un moyen d'ouvrir la porte avant de rappeler s'il n'y parvient pas."
                     ],
                     "bonne_reponse": 2
                 },
@@ -1850,73 +1850,73 @@ SESSIONS = [
                 },
                 {
                     "id": "ARM3",
-                    "enonce": "L'ARM reçoit un appel d'un EHPAD pour une décompensation aiguë chez un patient vulnérable sous directive anticipée d'arrêt de soins. Que fait l'ARM ?",
+                    "enonce": "L'ARM reçoit un appel d'un EHPAD pour une décompensation aiguë chez un patient vulnérable possédant des directives anticipées d'arrêt de soins. Un état gravissime semble être présent à l'appel. Que fait l'ARM ?",
                     "options": [
-                        "Refuser d'envoyer tout secours sans demander l'avis médical.",
-                        "Noter la présence des directives/statut éthique transmis par l'EHPAD et passer l'appel en priorité au MRU pour arbitrage médical de la réponse.",
-                        "Envoyer le SMUR en mode d'urgence absolue sans en informer le MRU."
+                        "Refuser d'envoyer tout secours, et dire à l'appelant de voir avec le médecin coordonateur ou la HAD.",
+                        "Envoyer le SMUR en P0 puis en informer le MRU.",
+                        "Noter la présence des directives anticipées et passer l'appel en priorité au MRU."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 3
                 },
                 {
                     "id": "ARM4",
                     "enonce": "Comment l'ARM traite-t-il une alerte de maltraitance à domicile formulée par une aide ménagère au téléphone ?",
                     "options": [
-                        "Ignorer l'appel si aucun motif de détresse médicale immédiate n'est présent.",
-                        "Recueillir précisément les déclarations, consigner dans le dossier de régulation (DRM) et formaliser l'alerte auprès du MRU et des autorités/cellules compétentes.",
-                        "Rappeler la famille pour la menacer de sanctions."
+                        "Passer l'appel au 17 si aucun motif de détresse médicale immédiate n'est présent.",
+                        "Recueillir les déclarations, consigner dans le DRM et alerter le MRU.",
+                        "Rappeler la famille pour enquêter."
                     ],
                     "bonne_reponse": 2
                 },
                 {
                     "id": "ARM5",
-                    "enonce": "Dans la chaîne de transmission amont, qui est le SEUL interlocuteur habilité à transmettre une consigne médicale ou un antécédent lourd à l'équipe SMUR engagée ?",
+                    "enonce": "Dans la chaîne de transmission, qui est le SEUL interlocuteur habilité à transmettre une consigne médicale ou un antécédent lourd à l'équipe SMUR engagée ?",
                     "options": [
-                        "L'ARM en direct par radio sans validation.",
-                        "Le Médecin Régulateur des Urgences (MRU), l'ARM assurant le lien logistique et la qualification de l'appel.",
-                        "L'accueil du centre hospitalier général."
+                        "Le MRU, l'ARM assurant le lien logistique et la qualification de l'appel.",
+                        "L'ARM en direct dès qu'il a l'information.",
+                        "L'ARM superviseur."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 }
             ],
             "Accueil": [
                 {
                     "id": "ACC1",
-                    "enonce": "Une personne âgée désorientée sans identité arrive seule à l'accueil 24h/24. Quelle est la prise en charge immédiate par l'agent d'accueil ?",
+                    "enonce": "Une personne âgée désorientée sans identité arrive seule à l'accueil. Quelle est la prise en charge immédiate par l'agent d'accueil ?",
                     "options": [
                         "Refuser l'accès tant qu'un accompagnant n'est pas présent avec la carte vitale.",
                         "Mettre la personne en sécurité dans l'espace d'attente visible, déclencher le repérage IOA/IDE de tri en priorité et créer un dossier provisoire sécurisé.",
-                        "L'envoyer attendre dehors sur un banc public."
+                        "L'envoyer attendre dehors sur un des cailloux qui servent de banc : le froid, c'est revigorant !"
                     ],
                     "bonne_reponse": 2
                 },
                 {
                     "id": "ACC2",
-                    "enonce": "Un proche inquiet se présente au guichet pour connaître la prescription médicale d'un patient vulnérable installé en zone de soins (6 box). Que fait l'agent d'accueil ?",
+                    "enonce": "Un proche inquiet se présente au guichet pour connaître la prescription médicale d'un patient vulnérable installé en zone de soins. Que fait l'agent d'accueil ?",
                     "options": [
-                        "Lire à voix haute la liste des médicaments affichée sur l'écran d'accueil.",
                         "Orienter le proche ou transférer la demande vers l'IDE/médecin de la zone concernée, en rappelant qu'aucune donnée thérapeutique n'est délivrée au guichet.",
-                        "Inventer une réponse rassurante pour éviter que le proche ne pose de questions."
+                        "Lire la liste des médicaments affichée sur l'écran d'accueil.",
+                        "Donner une réponse vague mais rassurante pour éviter que le proche ne pose de questions."
                     ],
                     "bonne_reponse": 1
                 },
                 {
                     "id": "ACC3",
-                    "enonce": "Comment l'agent d'accueil gère-t-il les effets personnels et objets de valeur d'un patient vulnérable transféré inconscient ?",
+                    "enonce": "Comment l'agent d'accueil gère-t-il les effets personnels et objets de valeur d'un patient inconscient, ramenés plus tard par les pompiers car ils avaient été "oubliés sur place" ?",
                     "options": [
-                        "Les laisser dans un sac plastique sans étiquette sur le comptoir.",
                         "Appliquer la procédure de dépôt (inventaire contradictoire avec un soignant/agent, traçabilité et mise en coffre ou remise sécurisée).",
-                        "Les donner au premier visiteur se réclamant de la famille sans contrôle d'identité."
+                        "Les laisser dans un sac plastique sur le comptoir.",
+                        "Les donner au premier visiteur se réclamant de la famille."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 },
                 {
                     "id": "ACC4",
                     "enonce": "Un patient vulnérable en salle d'attente exprime une aggravation de son inconfort (douleur, difficulté respiratoire). Que fait l'agent d'accueil ?",
                     "options": [
-                        "Lui dire de patienter gentiment que son tour arrive.",
-                        "Alerter immédiatement l'IDE de tri / coordinatrice pour une réévaluation clinique immédiate.",
-                        "Lui donner un comprimé d'aspirine pioché dans sa réserve personnelle."
+                        "Lui dire de patienter gentiment, et que son tour arrive.",
+                        "Alerter l'IOA pour une réévaluation clinique.",
+                        "Lui proposer un antalgique."
                     ],
                     "bonne_reponse": 2
                 },
@@ -1924,11 +1924,11 @@ SESSIONS = [
                     "id": "ACC5",
                     "enonce": "Face à la frustration d'une famille accompagnant un patient âgé vulnérable en attente de lit d'aval, quelle est la posture de l'agent d'accueil ?",
                     "options": [
-                        "Accuser les services d'hospitalisation d'incapacité et d'incompétence.",
+                        "Expliquer que l'hôpital est en tension ces derniers temps et que venir faire part de son mécontentement ne changera rien.",
+                        "Ignorer la famille en fermant le hygiaphone.",
                         "Réexpliquer avec empathie les étapes du parcours, le rôle de la régulation des lits et faire le lien avec l'équipe soignante de la zone.",
-                        "Ignorer la famille en fermant le hygiaphone."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 3
                 }
             ],
             "Brancardier": [
@@ -1936,49 +1936,49 @@ SESSIONS = [
                     "id": "BRAN1",
                     "enonce": "Vous devez brancarder un patient très âgé, algique et anxieux vers le service de radiologie. Quelle précaution prenez-vous ?",
                     "options": [
-                        "Transporter le patient en conduite rapide sans lui parler pour gagner du temps.",
+                        "Transporter le patient rapidement pour gagner du temps.",
                         "Présenter le soin, vérifier l'installation (couverture, barrières de sécurité, cales), manipuler avec douceur et rassurer durant le trajet.",
-                        "Demander au patient de marcher s'il se plaint du matelas."
+                        "Proposer au patient de marcher si le brancard est inconfortable à ce point."
                     ],
                     "bonne_reponse": 2
                 },
                 {
                     "id": "BRAN2",
-                    "enonce": "Transport d'un patient vulnérable sous oxygénothérapie portable (obus O2) : quelle est la règle d'or de sécurité du brancardier ?",
+                    "enonce": "Transport d'un patient vulnérable sous O2 : quelle est la règle d'or de sécurité du brancardier ?",
                     "options": [
-                        "Poser la bouteille d'oxygène en vrac entre les jambes du patient sur le brancard.",
-                        "Vérifier la charge de la bouteille avant le départ, la fixer sur le support homologué et s'assurer que le débit prescrit est actif.",
-                        "Couper l'oxygène pendant le transport pour économiser la réserve."
+                        "Poser la bouteille d'oxygène entre les jambes du patient sur le brancard.",
+                        "Couper l'oxygène pendant le transport.",
+                        "Vérifier la charge de la bouteille avant le départ, la fixer sur le support homologué et s'assurer que le débit prescrit est actif."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 3
                 },
                 {
                     "id": "BRAN3",
-                    "enonce": "Durant le transfert d'un patient vulnérable, celui-ci présente un malaise ou une modification de la conscience. Quelle est votre réaction ?",
+                    "enonce": "Durant le transfert d'un patient vulnérable, celui-ci présente un malaise avec altération de la conscience. Quelle est votre réaction ?",
                     "options": [
-                        "Continuer le trajet jusqu'à destination en espérant que le service d'arrivée s'en occupe.",
                         "Stopper immédiatement le brancard en zone sécurisée, appeler au secours l'équipe soignante la plus proche et rester auprès du patient.",
+                        "Continuer le trajet jusqu'à destination en espérant que le service d'arrivée s'en occupe.",
                         "Le secouer énergiquement pour le faire réagir."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 },
                 {
                     "id": "BRAN4",
                     "enonce": "Après avoir transporté un patient porteur d'une BMR ou en isolement protecteur, que faites-vous du brancard ?",
                     "options": [
                         "Le réutiliser immédiatement pour un autre patient vulnérable du couloir.",
-                        "Effectuer le bionettoyage/désinfection de contact des points d'appui avec le produit détergent-désinfectant homologué du service.",
-                        "Le laisser dehors au soleil pendant quelques minutes."
+                        "Le laisser dehors au soleil pendant quelques minutes.",
+                        "Effectuer le bionettoyage/désinfection de contact des points d'appui avec le produit détergent-désinfectant homologué du service."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 3
                 },
                 {
                     "id": "BRAN5",
                     "enonce": "Comment le brancardier participe-t-il à la fluidité du circuit des urgences ?",
                     "options": [
                         "En informant l'IDE de zone dès que le transfert en service d'aval est effectif pour libérer le box au plus vite.",
-                        "En décidant seul de l'ordre de passage des patients en radiologie.",
-                        "En refusant les transports 30 minutes avant la fin de son service."
+                        "En décidant de l'ordre de passage des patients en radiologie.",
+                        "En poussant vite les brancards dans les couloirs."
                     ],
                     "bonne_reponse": 1
                 }
@@ -1988,9 +1988,9 @@ SESSIONS = [
                     "id": "CAD1",
                     "enonce": "Dans le cadre de la certification HAS 2027, comment le cadre de santé évalue-t-il la qualité de la prise en charge des publics vulnérables dans son unité ?",
                     "options": [
-                        "En se fiant uniquement aux impressions orales lors des pauses café.",
+                        "En se fiant aux impressions orales lors des pauses café.",
                         "En réalisant des EPP et audits ciblés (traçabilité des repérages, audits de dossiers 'patient traceur', suivi des FEI) associés à des restitutions d'équipe.",
-                        "En masquant les données de temps de passage lors des visites des experts."
+                        "En questionnant certains patients au quotidiens."
                     ],
                     "bonne_reponse": 2
                 },
@@ -1998,35 +1998,35 @@ SESSIONS = [
                     "id": "CAD2",
                     "enonce": "Tension majeure sur les lits d'aval et accumulation de patients vulnérables en brancard de couloir. Quelle est l'action prioritaire du cadre ?",
                     "options": [
-                        "Blâmer l'équipe soignante de la zone pour le manque de fluidité.",
                         "Déclencher et piloter la cellule de crise/gestion des lits, coordonner avec la direction des soins et réallouer les ressources pour sécuriser les zones saturées.",
-                        "Quitter le service pour éviter les réclamations des familles."
+                        "Aller voir les équipes pour leur demander d'augmenter la fluidité.",
+                        "Aller chercher de nouveaux brancards, consigner la tension dans le cahier de garde et souhaiter bon courage aux équipes soignantes."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 },
                 {
                     "id": "CAD3",
-                    "enonce": "Un événement indésirable grave (EIG) survient chez un patient vulnérable (chute sévère avec fracture sous contention non tracée). Que fait le cadre ?",
+                    "enonce": "Un événement indésirable grave (EIG) survient chez un patient vulnérable (chute avec fracture sous contention non tracée). Que fait le cadre ?",
                     "options": [
                         "Modifier a posteriori le dossier de soins pour faire disparaître l'absence de prescription.",
+                        "Rejeter la faute exclusive sur l'élève aide-soignant présent.",
                         "Organiser une RMM (Revue de Maîtrise des Risques / Mortalité-Morbide), déclarer l'EIG sur le portail dédié et mettre en place un plan d'action correctif avec l'équipe.",
-                        "Rejeter la faute exclusive sur l'élève aide-soignant présent."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 3
                 },
                 {
                     "id": "CAD4",
                     "enonce": "Comment le cadre garantit-il l'appropriation par l'équipe des protocoles de bientraitance et de repérage des maltraitances chez les sujets fragiles ?",
                     "options": [
-                        "En envoyant un mail général avec 50 pièces jointes sans jamais en reparler.",
                         "En intégrant des temps d'échange réguliers (briefings, réunions d'unité), en formant les agents et en facilitant l'accès aux fiches réflexes.",
+                        "En envoyant un mail avec les protocoles en pièce-jointe.",
                         "En considérant que la formation initiale à l'école suffit pour toute la carrière."
                     ],
-                    "bonne_reponse": 2
+                    "bonne_reponse": 1
                 },
                 {
                     "id": "CAD5",
-                    "enonce": "Quel rôle joue le cadre dans le respect de l'organisation structurée du service (6 box/IDE, 2 zones/MD) ?",
+                    "enonce": "Quel rôle joue le cadre dans le respect de l'organisation structurée du service ?",
                     "options": [
                         "Modifier les zones tous les jours sans concertation.",
                         "Veiller au respect de la sectorisation pour garantir la clarté des rôles, la traçabilité des soins et la sécurité des transmissions inter-métiers.",
