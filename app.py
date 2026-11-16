@@ -390,7 +390,7 @@ SESSIONS = [
             "IDE": [{"q": "[Démo IDE] Quelle est l'obligation de traçabilité lors de la réévaluation de la douleur après administration antalgique ?", "options": ["Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique", "Informer oralement la collègue de la relève uniquement", "Attendre la fin du poste pour noter une note globale"], "rep": "Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique"}],
             "AS": [{"q": "[Démo AS] Quelle échelle d'évaluation de la douleur est privilégiée chez le sujet âgé non communicant ?", "options": ["L'échelle comportementale ALGOPLUS", "L'Échelle Visuelle Analogique (EVA)", "L'Échelle Numérique (EN)"], "rep": "L'échelle comportementale ALGOPLUS"}],
             "Medecin": [{"q": "[Démo Medecin] Quelle procédure doit être tracée lors d'une décision de Limitation ou Arrêt de Traitement (LAT) ?", "options": ["La décision collégiale, la consultation de la personne de confiance/directives anticipées", "Un simple mot dans le dossier sans avis collégial", "L'accord verbal du chef de service uniquement"], "rep": "La décision collégiale, la consultation de la personne de confiance/directives anticipées"}],
-            "ARM": [{"q": "[Démo ARM] Quel élément d'identitovigilance est indispensable lors de la création d'un dossier de régulation ?", "options": ["Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon", "Surnom habituel du patient", "Uniquement l'adresse de l'intervention"], "rep": "Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon"}],
+            "ARM (Assistant/e de Régulation Médicale)": [{"q": "[Démo ARM] Quel élément d'identitovigilance est indispensable lors de la création d'un dossier de régulation ?", "options": ["Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon", "Surnom habituel du patient", "Uniquement l'adresse de l'intervention"], "rep": "Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon"}],
             "Accueil": [{"q": "[Démo Accueil] Quelle attitude adopter si un patient en salle d'attente signale une douleur thoracique aiguë ?", "options": ["Prévenir immédiatement l'IAO pour une évaluation clinique sans délai", "Lui dire de remettre son ticket dans la borne", "Lui proposer un verre d'eau"], "rep": "Prévenir immédiatement l'IAO pour une évaluation clinique sans délai"}],
             "Brancardier": [{"q": "[Démo Brancardier] Quelle action est obligatoire avant de transférer un patient vers le scanner ?", "options": ["Vérifier la concordance de l'identité sur le bracelet d'identification", "Regarder uniquement le numéro de box", "Demander au patient son numéro de téléphone"], "rep": "Vérifier la concordance de l'identité sur le bracelet d'identification"}],
             "ASH": [{"q": "[Démo ASH] Quel produit doit être utilisé pour la désinfection d'un box d'urgences entre deux patients ?", "options": ["Un détergent-désinfectant homologué selon le protocole de l'établissement", "Uniquement de l'eau claire", "Du produit à vitres classique"], "rep": "Un détergent-désinfectant homologué selon le protocole de l'établissement"}],
@@ -482,7 +482,7 @@ SESSIONS = [
                 {"q": "9. [Module Medecin] Quelle information minimale doit obligatoirement être tracée dans le Dossier Patient Informatisé lors d'une sortie contre avis médical ?", "options": ["L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié", "La mention 'Patient parti' sans autre précision", "Le règlement des frais de séjour"], "rep": "L me l'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié"},
                 {"q": "10. [Module Medecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu de passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmis au Medecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmis au Medecin traitant dans les 24 heures maximum"}
             ],
-            "ARM": [
+            "ARM (Assistant/e de Régulation Médicale)": [
                 {"q": "6. [Module ARM] Lors de la création d'un dossier au SAMU/SAS, quelle est la priorité d'identitovigilance pour éviter les doublons ?", "options": ["Saisir uniquement le prénom et le numéro de téléphone portable", "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur", "Utiliser le pseudonyme donné par le patient à l'oral"], "rep": "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur"},
                 {"q": "7. [Module ARM] Un appelant demande confirmation de l'admission aux urgences de son voisin par téléphone. Quelle est votre obligation ?", "options": ["Lui donner la réponse s'il connaît le nom et le prénom du patient", "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité", "Lui transférer immédiatement la ligne du Medecin régulateur"], "rep": "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité"},
                 {"q": "8. [Module ARM] Lors de la régulation d'un appel urgent pour détresse vitale, quelle traçabilité est exigée dans le logiciel d'appel ?", "options": ["Rédiger un compte-rendu uniquement si le patient est transporté par le SMUR", "Enregistrer l'horodatage des décisions, le motif de régulation et les moyens envoyés", "Ne rien saisir et faire confiance à la bande d'enregistrement audio"], "rep": "Enregistrer l'horodatage des décisions, le motif de régulation et les moyens envoyés"},
@@ -553,9 +553,9 @@ SESSIONS = [
                     "**Sortie Contre Avis Médical** : Traçabilité des informations sur les risques vitaux encourus et formulaire signé."
                 ]
             },
-            "ARM": {
+            "ARM (Assistant/e de Régulation Médicale)": {
                 "class": "memo-box-arm",
-                "slug": "arm",
+                "slug": "ARM (Assistant/e de Régulation Médicale)",
                 "points": [
                     "**Identitovigilance SAMU / SAS** : Recueil rigoureux du triptyque (Nom de naissance, Prénom, Date de naissance).",
                     "**Secret Professionnel** : Interdiction absolue de confirmer la présence d'un patient par téléphone à un tiers."
@@ -789,7 +789,7 @@ SESSIONS = [
                     "rep": "La mise en place d'une analyse systémique non punitive (CREX) des dysfonctionnements pour transformer les retours de terrain en plans d'actions correctives."
                 }
             ],
-            "ARM": [
+            "ARM (Assistant/e de Régulation Médicale)": [
                 {
                     "q": "6. [Module ARM] Lors de la prise d'un appel signalant un Événement Impliquant de Multiples Victimes (EIMV), quel est le triptyque de qualification prioritaire pour l'ARM ?",
                     "options": [
@@ -1069,9 +1069,9 @@ SESSIONS = [
                     "**Traçabilité Allégée de Crise** : Conservation des informations cliniques essentielles sur support papier de crise."
                 ]
             },
-            "ARM": {
+            "ARM (Assistant/e de Régulation Médicale)": {
                 "class": "memo-box-arm",
-                "slug": "arm",
+                "slug": "ARM (Assistant/e de Régulation Médicale)",
                 "points": [
                     "**Qualification de l'EIMV** : Recueil normé du triptyque d'alerte (Cinétique, Nombre d'impliqués, Gravité potentielle) pour le Medecin régulateur.",
                     "**Sécurisation des Réseaux** : Utilisation exclusive des canaux de communication dédiés en situation critique.",
@@ -1315,7 +1315,7 @@ SESSIONS = [
                     "rep": "L'identification claire du prescripteur (RPPS, nom, signature), l'identité complète du patient, la date, la posologie et le smoments de prises de manière explicite (matin/midi/soir), et la mention manuscrite de l'absence d'informatisation si requis."
                 }
             ],
-            "ARM": [
+            "ARM (Assistant/e de Régulation Médicale)": [
                 {
                     "q": "6. [Module ARM] Un appelant signale qu'un patient a pris une dose massive de paracétamol il y a 2 heures. Que doit faire l'ARM immédiatement ?",
                     "options": [
@@ -1589,9 +1589,9 @@ SESSIONS = [
                     "**Traçabilité des Prescriptions Verbales** : Régularisation écrite et signature obligatoire de toute prescription verbale d'urgence dès que la situation critique immédiate est stabilisée."
                 ]
             },
-            "ARM": {
+            "ARM (Assistant/e de Régulation Médicale)": {
                 "class": "memo-box-arm",
-                "slug": "arm",
+                "slug": "ARM (Assistant/e de Régulation Médicale)",
                 "points": [
                     "**Filtrage et Sécurité Toxicologique** : Refus absolu de délivrer des conseils d'inadmentation ou de vomissement par téléphone ; transfert immédiat des appels d'intoxication ou de posologies au Medecin régulateur ou au Centre Antipoison.",
                     "**Transmission Ciblée au SMUR** : Restitution systématique et immédiate des antécédents médicamenteux connus aux équipes préhospitalières engagées pour sécuriser l'intervention d'urgence."
@@ -1847,7 +1847,7 @@ SESSIONS = [
                     "rep": "Utiliser systématiquement les paravents/fermetures de box, couvrir le patient et s'adresser directement à lui avec bienveillance."
                 }
             ],
-            "ARM": [
+            "ARM (Assistant/e de Régulation Médicale)": [
                 {
                     "id": "ARM1",
                     "q": "Un appel concerne un sujet très âgé vivant seul, en rupture de contacts depuis 48h, signalé par un voisin. Selon la HAS, comment l'ARM doit-il qualifier cette vulnérabilité ?",
@@ -2084,7 +2084,7 @@ SESSIONS = [
                     "Préservation de la dignité : utilisation systématique des paravents et respect de l'intimité malgré la forte affluence et la configuration ouverte des urgences."
                 ]
             },
-            "ARM": {
+            "ARM (Assistant/e de Régulation Médicale)": {
                 "titre": "Mémo Box ARM - Régulation & Vulnérabilités (Semaine 4)",
                 "points_cles": [
                     "Qualification ciblée : repérage immédiat des situations d'isolement, de perte de contact ou de fragilité gérontologique dès le premier décroché au 15.",
@@ -2440,8 +2440,8 @@ with tab_actuel:
                             q_liste.extend(session_active["metiers"].get("AS", []))
                         elif "Medecin" in role_soignant:
                             q_liste.extend(session_active["metiers"].get("Medecin", []))
-                        elif "ARM" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("ARM", []))
+                        elif "ARM (Assistant/e de Régulation Médicale)" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("ARM (Assistant/e de Régulation Médicale)", []))
                         elif "accueil" in role_soignant:
                             q_liste.extend(session_active["metiers"].get("Accueil", []))
                         elif "Brancardier" in role_soignant:
