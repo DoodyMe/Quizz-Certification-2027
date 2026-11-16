@@ -2452,7 +2452,7 @@ with tab_actuel:
 
                         st.markdown(f"""
                             <div class="question-card">
-                                <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
+                                <span class="question-badge">{'Tronc Commun' if current_idx < 6 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
                                 <div class="question-title">{q_data['q']}</div>
                             </div>
                         """, unsafe_allow_html=True)
