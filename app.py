@@ -165,7 +165,6 @@ def calculer_scores_podium_par_metier():
         
         mapping_metiers = {
             "ARM": "ARM (Assistant/e de Régulation Médicale)",
-            "medecin": "Medecin",
             "médecin": "Medecin",
         }
         
