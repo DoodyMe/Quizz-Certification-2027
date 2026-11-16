@@ -2411,44 +2411,50 @@ with tab_actuel:
                     if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant or st.session_state.get("session_id_courante") != session_active["id"]:
                         st.session_state.role_actif = role_soignant
                         st.session_state.session_id_courante = session_active["id"]
-                        q_liste = list(session_active.get("tronc_commun", []))
+                        
+                        raw_list = list(session_active.get("tronc_commun", []))
+                        metiers_dict = session_active.get("metiers", {})
                         
                         if "IDE" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("IDE", []))
-                        elif "AS (" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("AS", []))
+                            raw_list.extend(metiers_dict.get("IDE", []))
+                        elif "AS" in role_soignant:
+                            raw_list.extend(metiers_dict.get("AS", []))
                         elif "Médecin" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("Médecin", []))
+                            raw_list.extend(metiers_dict.get("Médecin", []))
                         elif "ARM" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("ARM", []))
-                        elif "accueil" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("Accueil", []))
+                            raw_list.extend(metiers_dict.get("ARM", []))
+                        elif "accueil" in role_soignant or "Accueil" in role_soignant:
+                            raw_list.extend(metiers_dict.get("Accueil", []))
                         elif "Brancardier" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("Brancardier", []))
+                            raw_list.extend(metiers_dict.get("Brancardier", []))
                         elif "ASH" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("ASH", []))
+                            raw_list.extend(metiers_dict.get("ASH", []))
                         elif "Cadre" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("Cadre", []))
-
-                        # Normalisation automatique pour accepter tes deux formats de clés
-                            q_liste = []
-                            for item in raw_list:
-                                if "enonce" in item:
-                                    # Format Semaine 4
-                                    idx_bonne_rep = item.get("bonne_reponse", 0)
-                                    q_normalisee = {
-                                        "q": item["enonce"],
-                                        "options": item["options"],
-                                        "rep": item["options"][idx_bonne_rep]
-                                    }
-                                else:
-                                    # Format standard Semaines 0, 1, 2, 3
-                                    q_normalisee = item
+                            raw_list.extend(metiers_dict.get("Cadre", []))
+                            
+                        q_liste = []
+                        for item in raw_list:
+                            if "enonce" in item:
+                                idx_bonne_rep = item.get("bonne_reponse", 0)
+                                try:
+                                    idx = int(idx_bonne_rep)
+                                    bonne_rep = item["options"][idx] if 0 <= idx < len(item["options"]) else item["options"][0]
+                                except (ValueError, TypeError, IndexError):
+                                    bonne_rep = item["options"][0] if item.get("options") else ""
+                                
+                                q_normalisee = {
+                                    "q": item["enonce"],
+                                    "options": item.get("options", []),
+                                    "rep": bonne_rep
+                                }
+                            else:
+                                q_normalisee = item
                                 q_liste.append(q_normalisee)
-                        
+                                
                         st.session_state.questions_courantes = q_liste
                         st.session_state.current_q_index = 0
                         st.session_state.user_quiz_answers = {}
+
 
                     questions_quiz = st.session_state.questions_courantes
                     total_q = len(questions_quiz)
