@@ -2465,11 +2465,14 @@ with tab_actuel:
                             if st.button("⏸️ Pause", key=f"pause_btn_{current_idx}"):
                                 st.session_state.quiz_paused = True
                                 st.rerun()
+                                
+                        # Sécurisation : récupère 'q' ou 'enonce' peu importe le format de la semaine
+                        texte_question = q_data.get('q', q_data.get('enonce', ''))
 
                         st.markdown(f"""
                             <div class="question-card">
                                 <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
-                                <div class="question-title">{q_data['q']}</div>
+                                <div class="question-title">{texte_question}</div>
                             </div>
                         """, unsafe_allow_html=True)
 
@@ -2508,10 +2511,18 @@ with tab_actuel:
                         st.balloons()
                         st.markdown("### 🎉 Quiz Terminé avec succès !")
                         
-                        score_obtenu = sum(
-                            1 for idx, q in enumerate(questions_quiz) 
-                            if st.session_state.user_quiz_answers.get(idx) == q["rep"]
-                        )
+                        score_obtenu = 0
+                        for idx, q in enumerate(questions_quiz):
+                            rep_soignant = st.session_state.user_quiz_answers.get(idx)
+                            
+                            # Détermination robuste de la bonne réponse selon le format de la semaine
+                            bonne_rep = q.get("rep")
+                            if not bonne_rep and "bonne_reponse" in q and "options" in q:
+                                bonne_rep = q["options"][q["bonne_reponse"]]
+                                
+                            if rep_soignant == bonne_rep:
+                                score_obtenu += 1
+
 
                         st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
