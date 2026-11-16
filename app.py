@@ -1613,7 +1613,6 @@ SESSIONS = [
             }
         }
     },
-
 {
     "id": 4,
     "titre": "Semaine 4 - Parcours patient, Fluidité & Sujets vulnérables",
