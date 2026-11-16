@@ -369,7 +369,7 @@ SESSIONS = [
         "metiers": {
             "IDE": [{"q": "[Démo IDE] Quelle est l'obligation de traçabilité lors de la réévaluation de la douleur après administration antalgique ?", "options": ["Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique", "Informer oralement la collègue de la relève uniquement", "Attendre la fin du poste pour noter une note globale"], "rep": "Tracer l'horaire, l'échelle de douleur réévaluée et l'efficacité sur le dossier patient informatique"}],
             "AS": [{"q": "[Démo AS] Quelle échelle d'évaluation de la douleur est privilégiée chez le sujet âgé non communicant ?", "options": ["L'échelle comportementale ALGOPLUS", "L'Échelle Visuelle Analogique (EVA)", "L'Échelle Numérique (EN)"], "rep": "L'échelle comportementale ALGOPLUS"}],
-            "Médecin": [{"q": "[Démo Médecin] Quelle procédure doit être tracée lors d'une décision de Limitation ou Arrêt de Traitement (LAT) ?", "options": ["La décision collégiale, la consultation de la personne de confiance/directives anticipées", "Un simple mot dans le dossier sans avis collégial", "L'accord verbal du chef de service uniquement"], "rep": "La décision collégiale, la consultation de la personne de confiance/directives anticipées"}],
+            "Medecin": [{"q": "[Démo Medecin] Quelle procédure doit être tracée lors d'une décision de Limitation ou Arrêt de Traitement (LAT) ?", "options": ["La décision collégiale, la consultation de la personne de confiance/directives anticipées", "Un simple mot dans le dossier sans avis collégial", "L'accord verbal du chef de service uniquement"], "rep": "La décision collégiale, la consultation de la personne de confiance/directives anticipées"}],
             "ARM": [{"q": "[Démo ARM] Quel élément d'identitovigilance est indispensable lors de la création d'un dossier de régulation ?", "options": ["Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon", "Surnom habituel du patient", "Uniquement l'adresse de l'intervention"], "rep": "Nom de naissance, prénom, date de naissance et vérification de l'absence de doublon"}],
             "Accueil": [{"q": "[Démo Accueil] Quelle attitude adopter si un patient en salle d'attente signale une douleur thoracique aiguë ?", "options": ["Prévenir immédiatement l'IAO pour une évaluation clinique sans délai", "Lui dire de remettre son ticket dans la borne", "Lui proposer un verre d'eau"], "rep": "Prévenir immédiatement l'IAO pour une évaluation clinique sans délai"}],
             "Brancardier": [{"q": "[Démo Brancardier] Quelle action est obligatoire avant de transférer un patient vers le scanner ?", "options": ["Vérifier la concordance de l'identité sur le bracelet d'identification", "Regarder uniquement le numéro de box", "Demander au patient son numéro de téléphone"], "rep": "Vérifier la concordance de l'identité sur le bracelet d'identification"}],
@@ -442,11 +442,11 @@ SESSIONS = [
         ],
         "metiers": {
             "IDE": [
-                {"q": "6. [Module IDE] Lors de l'administration d'un traitement antalgique réévalué aux urgences, quelle traçabilité minimale exige la HAS ?", "options": ["Horaire, molécule et nom du prescripteur uniquement sur le logiciel", "Score de douleur avant administration, re-évaluation post-injection et traçabilité de l'efficacité", "Transmission orale au médecin au changement d'équipe"], "rep": "Score de douleur avant administration, re-évaluation post-injection et traçabilité de l'efficacité"},
+                {"q": "6. [Module IDE] Lors de l'administration d'un traitement antalgique réévalué aux urgences, quelle traçabilité minimale exige la HAS ?", "options": ["Horaire, molécule et nom du prescripteur uniquement sur le logiciel", "Score de douleur avant administration, re-évaluation post-injection et traçabilité de l'efficacité", "Transmission orale au Medecin au changement d'équipe"], "rep": "Score de douleur avant administration, re-évaluation post-injection et traçabilité de l'efficacité"},
                 {"q": "7. [Module IDE] En cas d'accueil aux urgences d'un mineur non accompagné refusant l'avertissement de ses parents, que devez-vous appliquer ?", "options": ["Refuser la prise en charge sans l'accord écrit parental", "Dispenser les soins d'urgence si le mineur le demande expressément et se faire accompagner par un majeur protecteur", "Appeler immédiatement la gendarmerie"], "rep": "Dispenser les soins d'urgence si le mineur le demande expressément et se faire accompagner par un majeur protecteur"},
                 {"q": "8. [Module IDE] Dans la prise en charge des personnes victimes de violences aux urgences, quelle est la priorité de soins IDE ?", "options": ["Exiger un dépôt de plainte immédiat avant d'installer le patient", "Garantir un espace sécurisé, assurer la traçabilité des lésions sur certificat médical et orienter vers la prise en charge médico-psychologique", "Contacter directement le procureur sans l'accord du patient"], "rep": "Garantir un espace sécurisé, assurer la traçabilité des lésions sur certificat médical et orienter vers la prise en charge médico-psychologique"},
                 {"q": "9. [Module IDE] Quelle règle d'identitovigilance s'impose avant toute pose de voie veineuse ou injection aux urgences ?", "options": ["Interroger le patient sur son nom/prénom/date de naissance et vérifier la concordance avec son bracelet", "Faire confiance au numéro de box indiqué sur le tableau d'affichage", "Regarder le nom écrit au crayon sur la perfusion"], "rep": "Interroger le patient sur son nom/prénom/date de naissance et vérifier la concordance avec son bracelet"},
-                {"q": "10. [Module IDE] Quelle est la conduite à tenir face à la suspicion d'une erreur d'administration de traitement sans conséquence grave immédiate ?", "options": ["Ne rien dire pour éviter de perturber le patient", "Prévenir le médecin, surveiller le patient et déclarer l'Événement Indésirable (EI) sur le logiciel institutionnel", "Modifier discrètement la prescription a posteriori"], "rep": "Prévenir le médecin, surveiller le patient et déclarer l'Événement Indésirable (EI) sur le logiciel institutionnel"}
+                {"q": "10. [Module IDE] Quelle est la conduite à tenir face à la suspicion d'une erreur d'administration de traitement sans conséquence grave immédiate ?", "options": ["Ne rien dire pour éviter de perturber le patient", "Prévenir le Medecin, surveiller le patient et déclarer l'Événement Indésirable (EI) sur le logiciel institutionnel", "Modifier discrètement la prescription a posteriori"], "rep": "Prévenir le Medecin, surveiller le patient et déclarer l'Événement Indésirable (EI) sur le logiciel institutionnel"}
             ],
             "AS": [
                 {"q": "6. [Module AS] Quelle mesure de bientraitance est prioritaire lors de la prise en charge d'une personne âgée confuse aux urgences ?", "options": ["Appliquer immédiatement des ridelles et une contention pelvienne pour éviter les chutes", "Évaluer la douleur, chercher des causes réversibles (globe, fécalome) et rassurer avec la présence d'un proche", "L'isoler dans une chambre fermée pour limiter les stimulations"], "rep": "Évaluer la douleur, chercher des causes réversibles (globe, fécalome) et rassurer avec la présence d'un proche"},
@@ -455,18 +455,18 @@ SESSIONS = [
                 {"q": "9. [Module AS] Lors de l'installation d'un patient fragile sur un brancard d'urgence, quel est le moyen prioritaire de prévention des escarres ?", "options": ["Laisser le patient sur le même drap pendant 12 heures", "Changer régulièrement les points d'appui, utiliser un matelas réducteur de pression et signaler tout érythème", "Mettre du talc sous les talons"], "rep": "Changer régulièrement les points d'appui, utiliser un matelas réducteur de pression et signaler tout érythème"},
                 {"q": "10. [Module AS] Quelle est la bonne réaction si un proche agressif exige d'entrer dans la zone de soins ?", "options": ["L'insulter en retour pour imposer son autorité", "Garder son calme, utiliser une communication apaisante (Méthode DESC) et faire appel à l'équipe ou à la sécurité si nécessaire", "Fermer à clé la porte du box et laisser le proche seul"], "rep": "Garder son calme, utiliser une communication apaisante (Méthode DESC) et faire appel à l'équipe ou à la sécurité si nécessaire"}
             ],
-            "Médecin": [
-                {"q": "6. [Module Médecin] Concernant les directives anticipées aux urgences, quelle est la règle applicable pour le médecin ?", "options": ["Elles ont une durée de validité limitée à 3 ans", "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)", "Elles ne sont qu'un simple avis consultatif que le médecin peut ignorer librement"], "rep": "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)"},
-                {"q": "7. [Module Médecin] Lors d'une décision de Limitation ou Arrêt de Traitement (LAT) aux urgences, quelle est l'obligation réglementaire ?", "options": ["Décider seul pour ne pas perdre de temps", "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier", "Demander l'autorisation préalable au directeur de l'hôpital"], "rep": "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier"},
-                {"q": "8. [Module Médecin] Un proche réclame des informations médicales sur un patient majeur hospitalisé aux urgences. Le médecin peut lui répondre si :", "options": ["Le proche prouve son lien de parenté direct (livret de famille)", "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche", "Le proche habite sous le même toit que le patient"], "rep": "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche"},
-                {"q": "9. [Module Médecin] Quelle information minimale doit obligatoirement être tracée dans le Dossier Patient Informatisé lors d'une sortie contre avis médical ?", "options": ["L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié", "La mention 'Patient parti' sans autre précision", "Le règlement des frais de séjour"], "rep": "L me l'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié"},
-                {"q": "10. [Module Médecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu de passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmis au médecin traitant dans les 24 heures maximum"}
+            "Medecin": [
+                {"q": "6. [Module Medecin] Concernant les directives anticipées aux urgences, quelle est la règle applicable pour le Medecin ?", "options": ["Elles ont une durée de validité limitée à 3 ans", "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)", "Elles ne sont qu'un simple avis consultatif que le Medecin peut ignorer librement"], "rep": "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)"},
+                {"q": "7. [Module Medecin] Lors d'une décision de Limitation ou Arrêt de Traitement (LAT) aux urgences, quelle est l'obligation réglementaire ?", "options": ["Décider seul pour ne pas perdre de temps", "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier", "Demander l'autorisation préalable au directeur de l'hôpital"], "rep": "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier"},
+                {"q": "8. [Module Medecin] Un proche réclame des informations médicales sur un patient majeur hospitalisé aux urgences. Le Medecin peut lui répondre si :", "options": ["Le proche prouve son lien de parenté direct (livret de famille)", "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche", "Le proche habite sous le même toit que le patient"], "rep": "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche"},
+                {"q": "9. [Module Medecin] Quelle information minimale doit obligatoirement être tracée dans le Dossier Patient Informatisé lors d'une sortie contre avis médical ?", "options": ["L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié", "La mention 'Patient parti' sans autre précision", "Le règlement des frais de séjour"], "rep": "L me l'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié"},
+                {"q": "10. [Module Medecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu de passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmis au Medecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmis au Medecin traitant dans les 24 heures maximum"}
             ],
             "ARM": [
                 {"q": "6. [Module ARM] Lors de la création d'un dossier au SAMU/SAS, quelle est la priorité d'identitovigilance pour éviter les doublons ?", "options": ["Saisir uniquement le prénom et le numéro de téléphone portable", "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur", "Utiliser le pseudonyme donné par le patient à l'oral"], "rep": "Saisir le nom de naissance, le prénom, la date de naissance et vérifier l'existence d'un dossier antérieur"},
-                {"q": "7. [Module ARM] Un appelant demande confirmation de l'admission aux urgences de son voisin par téléphone. Quelle est votre obligation ?", "options": ["Lui donner la réponse s'il connaît le nom et le prénom du patient", "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité", "Lui transférer immédiatement la ligne du médecin régulateur"], "rep": "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité"},
+                {"q": "7. [Module ARM] Un appelant demande confirmation de l'admission aux urgences de son voisin par téléphone. Quelle est votre obligation ?", "options": ["Lui donner la réponse s'il connaît le nom et le prénom du patient", "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité", "Lui transférer immédiatement la ligne du Medecin régulateur"], "rep": "Refuser poliment de répondre pour respecter le secret professionnel et la confidentialité"},
                 {"q": "8. [Module ARM] Lors de la régulation d'un appel urgent pour détresse vitale, quelle traçabilité est exigée dans le logiciel d'appel ?", "options": ["Rédiger un compte-rendu uniquement si le patient est transporté par le SMUR", "Enregistrer l'horodatage des décisions, le motif de régulation et les moyens envoyés", "Ne rien saisir et faire confiance à la bande d'enregistrement audio"], "rep": "Enregistrer l'horodatage des décisions, le motif de régulation et les moyens envoyés"},
-                {"q": "9. [Module ARM] Que faire en cas de réception d'un appel concernant une suspicion de violence intrafamiliale aiguë ?", "options": ["Passer l'appel en attente indéfinie", "Recueillir la localisation exacte, transmettre immédiatement au médecin régulateur et appliquer la procédure d'alerte dédiée", "Conseiller à la personne de rappeler le lendemain"], "rep": "Recueillir la localisation exacte, transmettre immédiatement au médecin régulateur et appliquer la procédure d'alerte dédiée"},
+                {"q": "9. [Module ARM] Que faire en cas de réception d'un appel concernant une suspicion de violence intrafamiliale aiguë ?", "options": ["Passer l'appel en attente indéfinie", "Recueillir la localisation exacte, transmettre immédiatement au Medecin régulateur et appliquer la procédure d'alerte dédiée", "Conseiller à la personne de rappeler le lendemain"], "rep": "Recueillir la localisation exacte, transmettre immédiatement au Medecin régulateur et appliquer la procédure d'alerte dédiée"},
                 {"q": "10. [Module ARM] Quelle est la règle concernant le partage d'informations médicales entre l'ARM et les équipes de secours sur le terrain ?", "options": ["Interdiction totale de donner la moindre information", "Transmettre uniquement les éléments strictly nécessaires à la sécurité de l'intervention et à la prise en charge du patient", "Lire l'intégralité de l'historique médical du patient sur la fréquence radio publique"], "rep": "Transmettre uniquement les éléments strictly nécessaires à la sécurité de l'intervention et à la prise en charge du patient"}
             ],
             "Accueil": [
@@ -525,7 +525,7 @@ SESSIONS = [
                     "**Brancardage & Intimité** : Respect absolu du pudeur, ridelles levées et secret professionnel."
                 ]
             },
-            "Médecin": {
+            "Medecin": {
                 "class": "memo-box-med",
                 "slug": "medecin",
                 "points": [
@@ -661,7 +661,7 @@ SESSIONS = [
                     "options": [
                         "Dès l'apparition de cris/coups, de manière préventive pour protéger le matériel de soins et les autres patients.",
                         "Sur prescription médicale écrite après échec des alternatives.",
-                        "Sur décision de l'IDE en accord avec les agents de sécurité de l'hôpital et du médecin."
+                        "Sur décision de l'IDE en accord avec les agents de sécurité de l'hôpital et du Medecin."
                     ],
                     "rep": "Sur prescription médicale écrite après échec des alternatives."
                 },
@@ -722,18 +722,18 @@ SESSIONS = [
                     "rep": "Accueillir avec empathie, rappeler les règles de circulation de crise et orienter vers la structure d'information dédiée sans divulguer de données nominatives."
                 }
             ],
-            "Médecin": [
+            "Medecin": [
                 {
-                    "q": "6. [Module Médecin] En situation de saturation aiguë des urgences (Plan Blanc), quel critère médico-légal valide la décision de sortie précoce ou d'orientation directe vers l'aval ?",
+                    "q": "6. [Module Medecin] En situation de saturation aiguë des urgences (Plan Blanc), quel critère médico-légal valide la décision de sortie précoce ou d'orientation directe vers l'aval ?",
                     "options": [
                         "L'absence de réclamation du patient après quatre heures d'attente dans les couloirs.",
-                        "La formalisation d'une évaluation médicale de sécurité, la validation des critères de stabilité et la transmission des consignes écrites au médecin traitant.",
-                        "L'accord tacite du médecin, qui sera tracé plus tard."
+                        "La formalisation d'une évaluation médicale de sécurité, la validation des critères de stabilité et la transmission des consignes écrites au Medecin traitant.",
+                        "L'accord tacite du Medecin, qui sera tracé plus tard."
                     ],
-                    "rep": "La formalisation d'une évaluation médicale de sécurité, la validation des critères de stabilité et la transmission des consignes écrites au médecin traitant."
+                    "rep": "La formalisation d'une évaluation médicale de sécurité, la validation des critères de stabilité et la transmission des consignes écrites au Medecin traitant."
                 },
                 {
-                    "q": "7. [Module Médecin] Lors d'un afflux massif de victimes (AMV), sur quoi se fonde la doctrine de triage médico-chirurgical (PMA / Accueil des urgences) ?",
+                    "q": "7. [Module Medecin] Lors d'un afflux massif de victimes (AMV), sur quoi se fonde la doctrine de triage médico-chirurgical (PMA / Accueil des urgences) ?",
                     "options": [
                         "L'ordre d'arrivée chronologique des patients sur le site des urgences.",
                         "La hiérarchisation rapide de la criticité (urgences absolues U1 vs relatives U2/U3) pour optimiser l'allocation immédiate des ressources vitales.",
@@ -742,25 +742,25 @@ SESSIONS = [
                     "rep": "La hiérarchisation rapide de la criticité (urgences absolues U1 vs relatives U2/U3) pour optimiser l'allocation immédiate des ressources vitales."
                 },
                 {
-                    "q": "8. [Module Médecin] En mode dégradé informatique, quelles mentions obligatoires doivent impérativement figurer sur une prescription médicale d'urgence rédigée sur papier ?",
+                    "q": "8. [Module Medecin] En mode dégradé informatique, quelles mentions obligatoires doivent impérativement figurer sur une prescription médicale d'urgence rédigée sur papier ?",
                     "options": [
-                        "Le tampon de l'hôpital, la signature et les initiales du médecin.",
+                        "Le tampon de l'hôpital, la signature et les initiales du Medecin.",
                         "L'identification nominative du prescripteur, sa signature manuscrite, la date et l'horodatage de manière lisible.",
-                        "La transcription ultérieure par le secrétariat sans contre-signature du médecin prescripteur."
+                        "La transcription ultérieure par le secrétariat sans contre-signature du Medecin prescripteur."
                     ],
                     "rep": "L'identification nominative du prescripteur, sa signature manuscrite, la date et l'horodatage de manière lisible."
                 },
                 {
-                    "q": "9. [Module Médecin] En contexte de tension extrême aux urgences, quelle règle encadre la prise de décision collégiale de limitation ou d'arrêt de traitement (LAT) ?",
+                    "q": "9. [Module Medecin] En contexte de tension extrême aux urgences, quelle règle encadre la prise de décision collégiale de limitation ou d'arrêt de traitement (LAT) ?",
                     "options": [
-                        "La décision du médecin s'occupant du patient suffit.",
+                        "La décision du Medecin s'occupant du patient suffit.",
                         "Malgré la situation, il faut respecter la procédure collégiale, la consultation des directives anticipées ou de la personne de confiance, et la traçabilité formelle de la discussion.",
                         "Le report de la discussion au-delà de la fin de la vague épidémique ou de la crise est possible."
                     ],
                     "rep": "Malgré la situation, il faut respecter la procédure collégiale, la consultation des directives anticipées ou de la personne de confiance, et la traçabilité formelle de la discussion."
                 },
                 {
-                    "q": "10. [Module Médecin] Quelle est l'attente majeure de la HAS concernant l'organisation du retour d'expérience (REX) après une séquence de crise SSE ?",
+                    "q": "10. [Module Medecin] Quelle est l'attente majeure de la HAS concernant l'organisation du retour d'expérience (REX) après une séquence de crise SSE ?",
                     "options": [
                         "La constitution d'un rapport de synthèse anonyme classé immédiatement dans les archives de l'hôpital.",
                         "La mise en place d'une analyse systémique non punitive (CREX) des dysfonctionnements pour transformer les retours de terrain en plans d'actions correctives.",
@@ -1039,13 +1039,13 @@ SESSIONS = [
                     "**Identitovigilance SSE** : Utilisation des bracelets et numéros de crise provisoires pour les victimes anonymes."
                 ]
             },
-            "Médecin": {
+            "Medecin": {
                 "class": "memo-box-med",
                 "slug": "medecin",
                 "points": [
                     "**Régulation & Coordination Interne** : Supervision médicale du tri, arbitrage des priorités d'examens et pilotage des sorties directes vers l'aval.",
                     "**Validation des Prescriptions de Crise** : Traçabilité formalisée des décisions d'urgence sous contrainte de plateau technique dégradé.",
-                    "**Commandement Médical & Triage** : Rôle du médecin chef de triage et coordination étroite avec le SAMU-Centre 15.",
+                    "**Commandement Médical & Triage** : Rôle du Medecin chef de triage et coordination étroite avec le SAMU-Centre 15.",
                     "**Traçabilité Allégée de Crise** : Conservation des informations cliniques essentielles sur support papier de crise."
                 ]
             },
@@ -1053,7 +1053,7 @@ SESSIONS = [
                 "class": "memo-box-arm",
                 "slug": "arm",
                 "points": [
-                    "**Qualification de l'EIMV** : Recueil normé du triptyque d'alerte (Cinétique, Nombre d'impliqués, Gravité potentielle) pour le médecin régulateur.",
+                    "**Qualification de l'EIMV** : Recueil normé du triptyque d'alerte (Cinétique, Nombre d'impliqués, Gravité potentielle) pour le Medecin régulateur.",
                     "**Sécurisation des Réseaux** : Utilisation exclusive des canaux de communication dédiés en situation critique.",
                     "**Régulation en Flux Tendu** : Priorisation des appels d'urgence vitale et main courante papier de secours.",
                     "**Orientation des Familles** : Redirection systématique vers la cellule d'information du public (CIP)."
@@ -1121,7 +1121,7 @@ SESSIONS = [
                 "options": [
                     "Elle est optionnelle aux urgences en raison de l'urgence vitale et reportée à l'hospitalisation en aval.",
                     "Elle doit être amorcée dès l'accueil (recherche d'ordonnance, entretien) et formalisée pour les patients à risque (âgés, polypathologiques) avant toute prescription de sortie ou d'aval.",
-                    "Elle est réalisée de manière systématique par l'équipe médicale uniquement pour les patients orientés vers l'hospitalisation, mais facultative pour ceux retournant à domicile puisque le médecin traitant reprend le relais."
+                    "Elle est réalisée de manière systématique par l'équipe médicale uniquement pour les patients orientés vers l'hospitalisation, mais facultative pour ceux retournant à domicile puisque le Medecin traitant reprend le relais."
                 ],
                 "rep": "Elle doit être amorcée dès l'accueil (recherche d'ordonnance, entretien) et formalisée pour les patients à risque (âgés, polypathologiques) avant toute prescription de sortie ou d'aval."
             },
@@ -1139,7 +1139,7 @@ SESSIONS = [
                 "options": [
                     "Ne rien signaler puisque le patient n'a pas eu de dommage clinique avéré (quasi-erreur non déclarée pour éviter la surcharge administrative).",
                     "Réaliser une FEI pour analyser les causes systémiques et ajuster les pratiques.",
-                    "Faire un simple rappel à l'ordre verbal au médecin et à l'IDE concernés pour éviter que cela ne se reproduise, sans trace écrite."
+                    "Faire un simple rappel à l'ordre verbal au Medecin et à l'IDE concernés pour éviter que cela ne se reproduise, sans trace écrite."
                 ],
                 "rep": "Réaliser une FEI pour analyser les causes systémiques et ajuster les pratiques."
             },
@@ -1176,7 +1176,7 @@ SESSIONS = [
                 {
                     "q": "8. [Module IDE] Il reste de la morphine injectable dans une ampoule après administration de la dose prescrite. Quelle est la règle réglementaire de gestion du reliquat ?",
                     "options": [
-                        "Stocker le reliquat dans le frigo sécurisé des stups, étiqueté au nom du patient, pour pouvoir injecter le solde lors de la prochaine réévaluation de la douleur si le médecin le prescrit.",
+                        "Stocker le reliquat dans le frigo sécurisé des stups, étiqueté au nom du patient, pour pouvoir injecter le solde lors de la prochaine réévaluation de la douleur si le Medecin le prescrit.",
                         "Procéder à l'élimination sécurisée et traçable du reliquat (jeté avec témoin ou destruction selon protocole) pour éviter tout détournement ou erreur.",
                         "Jeter le reliquat dans le conteneur en fin de tour, et le noter pour régulariser le registre des stups en fin de semaine."
                     ],
@@ -1233,10 +1233,10 @@ SESSIONS = [
                     "q": "9. [Module AS] Un patient sous anticoagulant oral direct (AOD) reçoit son repas. L'AS remarque un complément alimentaire riche en vitamine K apporté par la famille. Que doit faire l'AS ?",
                     "options": [
                         "Laisser le patient consommer le complément sans rien dire car c'est son habitude.",
-                        "Alerter l'IDE ou le médecin avant toute administration de ce complément qui pourrait interférer avec l'équilibre de l'hémostase ou la prescription.",
+                        "Alerter l'IDE ou le Medecin avant toute administration de ce complément qui pourrait interférer avec l'équilibre de l'hémostase ou la prescription.",
                         "Jeter directement le produit en expliquant au patient le fait que cela risque d'interférer avec son traitement."
                     ],
-                    "rep": "Alerter l'IDE ou le médecin avant toute administration de ce complément qui pourrait interférer avec l'équilibre de l'hémostase ou la prescription."
+                    "rep": "Alerter l'IDE ou le Medecin avant toute administration de ce complément qui pourrait interférer avec l'équilibre de l'hémostase ou la prescription."
                 },
                 {
                     "q": "10. [Module AS] Un patient agité sous traitement sédatif refuse de s'hydrater toute la journée. L'AS se dit qu'il boira quand il aura soif. Quelle est la bonne pratique HAS ?",
@@ -1248,36 +1248,36 @@ SESSIONS = [
                     "rep": "Proposer régulièrement de petites quantités d'eau, surveiller l'état cutanéo-muqueux et tracer les apports pour prévenir la déshydratation iatrogène."
                 }
             ],
-            "Médecin": [
+            "Medecin": [
                 {
-                    "q": "6. [Module Médecin] Le logiciel d'urgences émet une alerte rouge d'intéraction médicamenteuse majeure lors de la prescription d'un traitement. Pressé par la file d'attente, vous décidez de passer outre l'alerte sans commentaire. Que dit la certification HAS ?",
+                    "q": "6. [Module Medecin] Le logiciel d'urgences émet une alerte rouge d'intéraction médicamenteuse majeure lors de la prescription d'un traitement. Pressé par la file d'attente, vous décidez de passer outre l'alerte sans commentaire. Que dit la certification HAS ?",
                     "options": [
-                        "C'est toléré si le médecin estime l'urgence clinique supérieure au risque théorique.",
+                        "C'est toléré si le Medecin estime l'urgence clinique supérieure au risque théorique.",
                         "Le franchissement d'une alerte critique requiert une justification tracée dans le dossier et une évaluation bénéfice-risque explicite, la simple cécité aux alertes étant une non-conformité majeure.",
                         "Les alertes logicielles n'ont aucune valeur réglementaire, elles peuvent être désactivées globalement."
                     ],
                     "rep": "Le franchissement d'une alerte critique requiert une justification tracée dans le dossier et une évaluation bénéfice-risque explicite, la simple cécité aux alertes étant une non-conformité majeure."
                 },
                 {
-                    "q": "7. [Module Médecin] Un patient âgé sous anticoagulants et IEC est admis pour une déshydratation aiguë avec insuffisance rénale aiguë modérée. Lors de la rédaction de l'ordonnance de sortie, vous omettez de réajuster les posologies en fonction de la clairance de la créatinine de sortie stabilisée. Quel piège la HAS épingle-t-elle ?",
+                    "q": "7. [Module Medecin] Un patient âgé sous anticoagulants et IEC est admis pour une déshydratation aiguë avec insuffisance rénale aiguë modérée. Lors de la rédaction de l'ordonnance de sortie, vous omettez de réajuster les posologies en fonction de la clairance de la créatinine de sortie stabilisée. Quel piège la HAS épingle-t-elle ?",
                     "options": [
                         "Une simple divergence d'affichage informatique entre le dossier des urgences et le portail de la biologie, sans impact clinique immédiat puisque le traitement de ville était déjà connu.",
                         "Un défaut de réévaluation pharmacologique post-épisode aigu : le maintien à l'identique de doses inadaptées à la fonction rénale récupérée (ou non) expose le patient à un surdosage iatrogène majeur (hémorragie ou toxicité rénale).",
-                        "Une non-conformité mineure de traçabilité, le médecin traitant étant seul garant de l'adaptation des posologies lors du premier renouvellement d'ordonnance au cabinet."
+                        "Une non-conformité mineure de traçabilité, le Medecin traitant étant seul garant de l'adaptation des posologies lors du premier renouvellement d'ordonnance au cabinet."
                     ],
                     "rep": "Un défaut de réévaluation pharmacologique post-épisode aigu : le maintien à l'identique de doses inadaptées à la fonction rénale récupérée (ou non) expose le patient à un surdosage iatrogène majeur (hémorragie ou toxicité rénale)."
                 },
                 {
-                    "q": "8. [Module Médecin] En plein choc anaphylactique, vous donnez un ordre verbal d'injection d'adrénaline à l'IDE. Quelle est l'exigence HAS de traçabilité a posteriori ?",
+                    "q": "8. [Module Medecin] En plein choc anaphylactique, vous donnez un ordre verbal d'injection d'adrénaline à l'IDE. Quelle est l'exigence HAS de traçabilité a posteriori ?",
                     "options": [
                         "L'acte étant déjà tracé dans le dossier de soins infirmier par l'exécutant(e), la signature médicale a posteriori de la prescription verbale peut être omise.",
-                        "La prescription verbale doit être retranscrite et signée par le médecin prescripteur dans le dossier patient dès que l'urgence immédiate est levée.",
+                        "La prescription verbale doit être retranscrite et signée par le Medecin prescripteur dans le dossier patient dès que l'urgence immédiate est levée.",
                         "La régularisation doit obligatoirement être validée en double signature médicale lors de la transmission de poste du soir."
                     ],
-                    "rep": "La prescription verbale doit être retranscrite et signée par le médecin prescripteur dans le dossier patient dès que l'urgence immédiate est levée."
+                    "rep": "La prescription verbale doit être retranscrite et signée par le Medecin prescripteur dans le dossier patient dès que l'urgence immédiate est levée."
                 },
                 {
-                    "q": "9. [Module Médecin] Face à une infection suspectée aux urgences, l'interne prescrit une antibiothérapie large spectre sans prélèvement bactériologique préalable. Quelle est l'exigence qualité HAS ?",
+                    "q": "9. [Module Medecin] Face à une infection suspectée aux urgences, l'interne prescrit une antibiothérapie large spectre sans prélèvement bactériologique préalable. Quelle est l'exigence qualité HAS ?",
                     "options": [
                         "Les urgences n'étant pas propices aux prélèvements bactériologiques (absence de fièvre lors du passage, germes croisés du fait du flux...), cela est autorisé dans ce contexte.",
                         "La stratégie probabiliste doit s'accompagner de la réalisation des prélèvements microbiologiques avant antibiothérapie et d'une réévaluation à 48-72h.",
@@ -1286,7 +1286,7 @@ SESSIONS = [
                     "rep": "La stratégie probabiliste doit s'accompagner de la réalisation des prélèvements microbiologiques avant antibiothérapie et d'une réévaluation à 48-72h."
                 },
                 {
-                    "q": "10. [Module Médecin] En cas de panne du DPI, vous rédigez une ordonnance de sortie manuscrite. Quelles mentions sont obligatoires selon les exigences de sécurité HAS ?",
+                    "q": "10. [Module Medecin] En cas de panne du DPI, vous rédigez une ordonnance de sortie manuscrite. Quelles mentions sont obligatoires selon les exigences de sécurité HAS ?",
                     "options": [
                         "Le nom du patient, sa date de naissance. Puis le nom du médicament, sa posologie, la durée du traitement et les moments de prise en '1-1-1'.",
                         "L'identification claire du prescripteur (RPPS, nom, signature), l'identité complète du patient, la date, la posologie et le smoments de prises de manière explicite (matin/midi/soir), et la mention manuscrite de l'absence d'informatisation si requis.",
@@ -1300,10 +1300,10 @@ SESSIONS = [
                     "q": "6. [Module ARM] Un appelant signale qu'un patient a pris une dose massive de paracétamol il y a 2 heures. Que doit faire l'ARM immédiatement ?",
                     "options": [
                         "Conseiller de lui donner du lait et de surveiller s'il a mal au ventre demain matin.",
-                        "Transférer immédiatement l'appel au médecin régulateur pour évaluation toxicologique urgente.",
+                        "Transférer immédiatement l'appel au Medecin régulateur pour évaluation toxicologique urgente.",
                         "Envoyer une ambulance privée immédiatement, au vu de l'intoxication médicamenteuse volontaire suspectée."
                     ],
-                    "rep": "Transférer immédiatement l'appel au médecin régulateur pour évaluation toxicologique urgente."
+                    "rep": "Transférer immédiatement l'appel au Medecin régulateur pour évaluation toxicologique urgente."
                 },
                 {
                     "q": "7. [Module ARM] Lors de l'engagement d'une équipe SMUR pour un malaise grave, l'ARM retrouve sur un appel précédent les traitements du patient (notamment insuline/anticoagulants). Que fait l'ARM ?",
@@ -1318,28 +1318,28 @@ SESSIONS = [
                     "q": "8. [Module ARM] Un tiers appelle car un enfant a ingéré un produit ménager. L'ARM donne de tête le protocole de dilution et fait vomir. Est-ce conforme ?",
                     "options": [
                         "Oui, l'ARM a l'expérience des produits courants.",
-                        "Non, l'ARM ne doit jamais donner de consigne médicale d'administration ou de vomissement et doit basculer immédiatement l'appel vers le médecin régulateur ou le Centre Antipoison.",
+                        "Non, l'ARM ne doit jamais donner de consigne médicale d'administration ou de vomissement et doit basculer immédiatement l'appel vers le Medecin régulateur ou le Centre Antipoison.",
                         "Oui, à condition de lui demander de rappeler rapidement ensuite pour refaire le point."
                     ],
-                    "rep": "Non, l'ARM ne doit jamais donner de consigne médicale d'administration ou de vomissement et doit basculer immédiatement l'appel vers le médecin régulateur ou le Centre Antipoison."
+                    "rep": "Non, l'ARM ne doit jamais donner de consigne médicale d'administration ou de vomissement et doit basculer immédiatement l'appel vers le Medecin régulateur ou le Centre Antipoison."
                 },
                 {
                     "q": "9. [Module ARM] Un patient appelle pour savoir s'il peut doubler sa dose de traitement habituel car ses symptômes persistent. L'ARM lui répond oralement que oui. Faut-il tracer ?",
                     "options": [
                         "Non, la bande enregistrée permet déjà le traçage.",
-                        "Oui, après avis auprès du médecin régulateur.",
+                        "Oui, après avis auprès du Medecin régulateur.",
                         "Oui, l'ARM le note dans le DRM avant de raccrocher."
                     ],
-                    "rep": "Oui, après avis auprès du médecin régulateur."
+                    "rep": "Oui, après avis auprès du Medecin régulateur."
                 },
                 {
                     "q": "10. [Module ARM] Un pharmacien d'officine appelle le SAMU pour savoir si tel patient a été hospitalisé et quel traitement lui a été administré. Que répond l'ARM ?",
                     "options": [
                         "Donne les détails du traitement pour aider le pharmacien pour la délivrance der traitements de l'ordonnance de sortie.",
-                        "Applique le secret professionnel strict, ne confirme ni n'infirme sans validation médicale et oriente vers le médecin régulateur.",
+                        "Applique le secret professionnel strict, ne confirme ni n'infirme sans validation médicale et oriente vers le Medecin régulateur.",
                         "Explique au pharmacien que le patient a un compte-rendu avec ces informations là, et qu'il doit s'y référer."
                     ],
-                    "rep": "Applique le secret professionnel strict, ne confirme ni n'infirme sans validation médicale et oriente vers le médecin régulateur."
+                    "rep": "Applique le secret professionnel strict, ne confirme ni n'infirme sans validation médicale et oriente vers le Medecin régulateur."
                 }
             ],
             "Accueil": [
@@ -1374,10 +1374,10 @@ SESSIONS = [
                     "q": "9. [Module Accueil] Un proche demande à l'accueil si le patient se voit administrer des psychotropes car il le trouve étrange au téléphone. Que répond l'agent ?",
                     "options": [
                         "Refuser de donner toute information à l'accueil et dire aux proches d'attendre qu'on les appelle.",
-                        "Transmettre l'appel ou orienter vers l'IDE ou le médecin de la zone assignée en rappelant qu'aucun détail de traitement ne doit être délivré directement par l'agent d'accueil au comptoir.",
+                        "Transmettre l'appel ou orienter vers l'IDE ou le Medecin de la zone assignée en rappelant qu'aucun détail de traitement ne doit être délivré directement par l'agent d'accueil au comptoir.",
                         "Indiquer au proche, sans nommer de molécule précise, que le patient est pris en charge par l'équipe pour être soulagé."
                     ],
-                    "rep": "Transmettre l'appel ou orienter vers l'IDE ou le médecin de la zone assignée en rappelant qu'aucun détail de traitement ne doit être délivré directement par l'agent d'accueil au comptoir."
+                    "rep": "Transmettre l'appel ou orienter vers l'IDE ou le Medecin de la zone assignée en rappelant qu'aucun détail de traitement ne doit être délivré directement par l'agent d'accueil au comptoir."
                 },
                 {
                     "q": "10. [Module Accueil] En panne informatique, comment l'agent garantit-il la transmission des identifiants corrects pour le circuit du médicament ?",
@@ -1560,7 +1560,7 @@ SESSIONS = [
                     "**Sécurité Environnementale** : Élimination immédiate des objets piquants/tranchants trouvés dans les box dans les conteneurs rigides OPCT sans jamais tenter de les recapuchonner."
                 ]
             },
-            "Médecin": {
+            "Medecin": {
                 "class": "memo-box-med",
                 "slug": "medecin",
                 "points": [
@@ -1573,7 +1573,7 @@ SESSIONS = [
                 "class": "memo-box-arm",
                 "slug": "arm",
                 "points": [
-                    "**Filtrage et Sécurité Toxicologique** : Refus absolu de délivrer des conseils d'inadmentation ou de vomissement par téléphone ; transfert immédiat des appels d'intoxication ou de posologies au médecin régulateur ou au Centre Antipoison.",
+                    "**Filtrage et Sécurité Toxicologique** : Refus absolu de délivrer des conseils d'inadmentation ou de vomissement par téléphone ; transfert immédiat des appels d'intoxication ou de posologies au Medecin régulateur ou au Centre Antipoison.",
                     "**Transmission Ciblée au SMUR** : Restitution systématique et immédiate des antécédents médicamenteux connus aux équipes préhospitalières engagées pour sécuriser l'intervention d'urgence."
                 ]
             },
@@ -1644,10 +1644,10 @@ SESSIONS = [
                 "q": "Face à un patient vulnérable présentant des signes d'alerte évoquant une maltraitance (lésions atypiques, discours discordant de l'entourage), quelle est la procédure HAS à enclencher ?",
                 "options": [
                     "Demander des explications à l'accompagnant.",
-                    "Tracer les constatations factuelles dans le DPI, alerter le médecin sénior de zone et déclencher la filière de signalement (fiche FEI / assistance sociale / cadre).",
+                    "Tracer les constatations factuelles dans le DPI, alerter le Medecin sénior de zone et déclencher la filière de signalement (fiche FEI / assistance sociale / cadre).",
                     "Hospitaliser obligatoirement le patient afin que le service se charge de la mise en place de protection pour la personne vulnérable."
                 ],
-                "rep": "Tracer les constatations factuelles dans le DPI, alerter le médecin sénior de zone et déclencher la filière de signalement (fiche FEI / assistance sociale / cadre)."
+                "rep": "Tracer les constatations factuelles dans le DPI, alerter le Medecin sénior de zone et déclencher la filière de signalement (fiche FEI / assistance sociale / cadre)."
             },
             {
                 "id": "TC4",
@@ -1678,7 +1678,7 @@ SESSIONS = [
                     "options": [
                         "Verrouiller la porte du box à clé de l'extérieur pour poursuivre vos soins dans les autres box.",
                         "Adapter l'environnement (barrières, sonnette à portée, rapprochement du poste si possible), tracer le risque et coordonner la surveillance avec l'AS de la zone.",
-                        "Attacher le patient aux quatre membres puis aller avoir le médecin pour le signaler et avoir la prescription."
+                        "Attacher le patient aux quatre membres puis aller avoir le Medecin pour le signaler et avoir la prescription."
                     ],
                     "rep": "Adapter l'environnement (barrières, sonnette à portée, rapprochement du poste si possible), tracer le risque et coordonner la surveillance avec l'AS de la zone."
                 },
@@ -1718,15 +1718,15 @@ SESSIONS = [
                     "options": [
                         "Corriger la dose dans le DPI, puisque ça n'a pas eu de conséquence.",
                         "Attendre la fin du poste pour voir si des effets secondaires apparaissent.",
-                        "Suspendre l'administration, alerter immédiatement le médecin de la zone et déclarer l'événement indésirable (FEI)."
+                        "Suspendre l'administration, alerter immédiatement le Medecin de la zone et déclarer l'événement indésirable (FEI)."
                     ],
-                    "rep": "Suspendre l'administration, alerter immédiatement le médecin de la zone et déclarer l'événement indésirable (FEI)."
+                    "rep": "Suspendre l'administration, alerter immédiatement le Medecin de la zone et déclarer l'événement indésirable (FEI)."
                 }
             ],
             "Medecin": [
                 {
                     "id": "MED1",
-                    "q": "En tant que médecin référent de vos 2 zones du Long, vous devez prescrire une contention physique pour un patient dément en agitation sévère mettant en danger ses soins vitaux. Quelle règle appliquez-vous ?",
+                    "q": "En tant que Medecin référent de vos 2 zones du Long, vous devez prescrire une contention physique pour un patient dément en agitation sévère mettant en danger ses soins vitaux. Quelle règle appliquez-vous ?",
                     "options": [
                         "Donner une consigne orale à l'équipe et leur demander de réévaluer dans quelques heures.",
                         "Rédiger une prescription médicale écrite, datée, limitée dans le temps, motivée au regard de la balance bénéfice/risque et assortie d'une surveillance tracée.",
@@ -1756,7 +1756,7 @@ SESSIONS = [
                 },
                 {
                     "id": "MED4",
-                    "q": "En situation d'engorgement majeur des 2 zones du Long avec attente prolongée de lits d'aval, quel est le rôle du médecin sénior de zone ?",
+                    "q": "En situation d'engorgement majeur des 2 zones du Long avec attente prolongée de lits d'aval, quel est le rôle du Medecin sénior de zone ?",
                     "options": [
                         "Effectuer des réévaluations cliniques régulières des patients en attente, réajuster les prescriptions et signaler le niveau d'engorgement à la régulation/cadre (le protocole HET du service est tout en bas du meuble où sont les prescriptions bio/EFS etc).",
                         "Fermer et quitter le service. Y'en a marre à la fin.",
@@ -1843,7 +1843,7 @@ SESSIONS = [
                     "q": "Lors du décrochage pour une personne vulnérable désorientée en ligne, quelle est la priorité de l'ARM pour sécuriser le parcours ?",
                     "options": [
                         "Localiser précisément le lieu, garder le contact pour rassurer, identifier l'entourage et transmettre les éléments clés au MRU.",
-                        "Couper la communication dès que le médecin régulateur prend la main sans rien noter.",
+                        "Couper la communication dès que le Medecin régulateur prend la main sans rien noter.",
                         "Recommander au patient de prendre un somnifère pour se calmer."
                     ],
                     "rep": "Localiser précisément le lieu, garder le contact pour rassurer, identifier l'entourage et transmettre les éléments clés au MRU."
@@ -1852,7 +1852,7 @@ SESSIONS = [
                     "id": "ARM3",
                     "q": "L'ARM reçoit un appel d'un EHPAD pour une décompensation aiguë chez un patient vulnérable possédant des directives anticipées d'arrêt de soins. Un état gravissime semble être présent à l'appel. Que fait l'ARM ?",
                     "options": [
-                        "Refuser d'envoyer tout secours, et dire à l'appelant de voir avec le médecin coordonateur ou la HAD.",
+                        "Refuser d'envoyer tout secours, et dire à l'appelant de voir avec le Medecin coordonateur ou la HAD.",
                         "Envoyer le SMUR en P0 puis en informer le MRU.",
                         "Noter la présence des directives anticipées et passer l'appel en priorité au MRU."
                     ],
@@ -1894,11 +1894,11 @@ SESSIONS = [
                     "id": "ACC2",
                     "q": "Un proche inquiet se présente au guichet pour connaître la prescription médicale d'un patient vulnérable installé en zone de soins. Que fait l'agent d'accueil ?",
                     "options": [
-                        "Orienter le proche ou transférer la demande vers l'IDE/médecin de la zone concernée, en rappelant qu'aucune donnée thérapeutique n'est délivrée au guichet.",
+                        "Orienter le proche ou transférer la demande vers l'IDE/Medecin de la zone concernée, en rappelant qu'aucune donnée thérapeutique n'est délivrée au guichet.",
                         "Lire la liste des médicaments affichée sur l'écran d'accueil.",
                         "Donner une réponse vague mais rassurante pour éviter que le proche ne pose de questions."
                     ],
-                    "rep": "Orienter le proche ou transférer la demande vers l'IDE/médecin de la zone concernée, en rappelant qu'aucune donnée thérapeutique n'est délivrée au guichet."
+                    "rep": "Orienter le proche ou transférer la demande vers l'IDE/Medecin de la zone concernée, en rappelant qu'aucune donnée thérapeutique n'est délivrée au guichet."
                 },
                 {
                     "id": "ACC3",
@@ -2047,7 +2047,7 @@ SESSIONS = [
                 ]
             },
             "Medecin": {
-                "titre": "Mémo Box Médecin - Parcours & Vulnérabilités (Semaine 4)",
+                "titre": "Mémo Box Medecin - Parcours & Vulnérabilités (Semaine 4)",
                 "points_cles": [
                     "Pilotage sectoriel : responsabilité clinique de l'ensemble des 2 zones rattachées (gestion globale des flux et des priorités médicales).",
                     "Sécurisation thérapeutique : adaptation stricte des posologies aux fonctions d'élimination (DFG) chez le sujet âgé et traçabilité des conciliations médicamenteuses.",
@@ -2069,7 +2069,7 @@ SESSIONS = [
                 "points_cles": [
                     "Qualification ciblée : repérage immédiat des situations d'isolement, de perte de contact ou de fragilité gérontologique dès le premier décroché au 15.",
                     "Traçabilité amont : consignation rigoureuse des antécédents lourds, des traitements et des statuts éthiques (directives anticipées) dans le DRM.",
-                    "Interface sécurisée : transmission exclusive des éléments cliniques et logistiques au Médecin Régulateur des Urgences (MRU) pour arbitrage et engagement des secours adaptés.",
+                    "Interface sécurisée : transmission exclusive des éléments cliniques et logistiques au Medecin Régulateur des Urgences (MRU) pour arbitrage et engagement des secours adaptés.",
                     "Gestion des signalements : application stricte des consignes d'alerte en cas de suspicion de maltraitance transmise par un tiers."
                 ]
             },
@@ -2399,7 +2399,7 @@ with tab_actuel:
                     "Cadre de Santé / Encadrement",
                     "Hôte / Hôtesse d'accueil & Admission",
                     "IDE (Infirmier/ère)",
-                    "Médecin"
+                    "Medecin"
                 ]
 
                 role_soignant = st.selectbox(
@@ -2418,8 +2418,8 @@ with tab_actuel:
                             q_liste.extend(session_active["metiers"].get("IDE", []))
                         elif "AS (" in role_soignant:
                             q_liste.extend(session_active["metiers"].get("AS", []))
-                        elif "Médecin" in role_soignant:
-                            q_liste.extend(session_active["metiers"].get("Médecin", []))
+                        elif "Medecin" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Medecin", []))
                         elif "ARM" in role_soignant:
                             q_liste.extend(session_active["metiers"].get("ARM", []))
                         elif "accueil" in role_soignant:
