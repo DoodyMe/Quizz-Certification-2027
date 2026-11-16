@@ -2411,50 +2411,28 @@ with tab_actuel:
                     if "questions_courantes" not in st.session_state or st.session_state.get("role_actif") != role_soignant or st.session_state.get("session_id_courante") != session_active["id"]:
                         st.session_state.role_actif = role_soignant
                         st.session_state.session_id_courante = session_active["id"]
-                        
-                        raw_list = list(session_active.get("tronc_commun", []))
-                        metiers_dict = session_active.get("metiers", {})
+                        q_liste = list(session_active.get("tronc_commun", []))
                         
                         if "IDE" in role_soignant:
-                            raw_list.extend(metiers_dict.get("IDE", []))
-                        elif "AS" in role_soignant:
-                            raw_list.extend(metiers_dict.get("AS", []))
+                            q_liste.extend(session_active["metiers"].get("IDE", []))
+                        elif "AS (" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("AS", []))
                         elif "Médecin" in role_soignant:
-                            raw_list.extend(metiers_dict.get("Médecin", []))
+                            q_liste.extend(session_active["metiers"].get("Médecin", []))
                         elif "ARM" in role_soignant:
-                            raw_list.extend(metiers_dict.get("ARM", []))
-                        elif "accueil" in role_soignant or "Accueil" in role_soignant:
-                            raw_list.extend(metiers_dict.get("Accueil", []))
+                            q_liste.extend(session_active["metiers"].get("ARM", []))
+                        elif "accueil" in role_soignant:
+                            q_liste.extend(session_active["metiers"].get("Accueil", []))
                         elif "Brancardier" in role_soignant:
-                            raw_list.extend(metiers_dict.get("Brancardier", []))
+                            q_liste.extend(session_active["metiers"].get("Brancardier", []))
                         elif "ASH" in role_soignant:
-                            raw_list.extend(metiers_dict.get("ASH", []))
+                            q_liste.extend(session_active["metiers"].get("ASH", []))
                         elif "Cadre" in role_soignant:
-                            raw_list.extend(metiers_dict.get("Cadre", []))
+                            q_liste.extend(session_active["metiers"].get("Cadre", []))
                             
-                        q_liste = []
-                        for item in raw_list:
-                            if "enonce" in item:
-                                idx_bonne_rep = item.get("bonne_reponse", 0)
-                                try:
-                                    idx = int(idx_bonne_rep)
-                                    bonne_rep = item["options"][idx] if 0 <= idx < len(item["options"]) else item["options"][0]
-                                except (ValueError, TypeError, IndexError):
-                                    bonne_rep = item["options"][0] if item.get("options") else ""
-                                
-                                q_normalisee = {
-                                    "q": item["enonce"],
-                                    "options": item.get("options", []),
-                                    "rep": bonne_rep
-                                }
-                            else:
-                                q_normalisee = item
-                                q_liste.append(q_normalisee)
-                                
                         st.session_state.questions_courantes = q_liste
                         st.session_state.current_q_index = 0
                         st.session_state.user_quiz_answers = {}
-
 
                     questions_quiz = st.session_state.questions_courantes
                     total_q = len(questions_quiz)
@@ -2471,14 +2449,11 @@ with tab_actuel:
                             if st.button("⏸️ Pause", key=f"pause_btn_{current_idx}"):
                                 st.session_state.quiz_paused = True
                                 st.rerun()
-                                
-                        # Sécurisation : récupère 'q' ou 'enonce' peu importe le format de la semaine
-                        texte_question = q_data.get('q', q_data.get('enonce', ''))
 
                         st.markdown(f"""
                             <div class="question-card">
                                 <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
-                                <div class="question-title">{texte_question}</div>
+                                <div class="question-title">{q_data['q']}</div>
                             </div>
                         """, unsafe_allow_html=True)
 
@@ -2517,18 +2492,10 @@ with tab_actuel:
                         st.balloons()
                         st.markdown("### 🎉 Quiz Terminé avec succès !")
                         
-                        score_obtenu = 0
-                        for idx, q in enumerate(questions_quiz):
-                            rep_soignant = st.session_state.user_quiz_answers.get(idx)
-
-                        bonne_rep = q.get("rep")
-                        if not bonne_rep and "bonne_reponse" in q and "options" in q:
-                                try:
-                                    idx = int(q["bonne_reponse"])
-                                    if 0 <= idx < len(q["options"]):
-                                         bonne_rep = q["options"][idx]
-                                except (ValueError, TypeError, IndexError):
-                                    bonne_rep = q["options"][0] if q.get("options") else ""
+                        score_obtenu = sum(
+                            1 for idx, q in enumerate(questions_quiz) 
+                            if st.session_state.user_quiz_answers.get(idx) == q["rep"]
+                        )
 
                         st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
