@@ -2429,7 +2429,23 @@ with tab_actuel:
                             q_liste.extend(session_active["metiers"].get("ASH", []))
                         elif "Cadre" in role_soignant:
                             q_liste.extend(session_active["metiers"].get("Cadre", []))
-                            
+
+                        # Normalisation automatique pour accepter tes deux formats de clés
+                            q_liste = []
+                            for item in raw_list:
+                                if "enonce" in item:
+                                    # Format Semaine 4
+                                    idx_bonne_rep = item.get("bonne_reponse", 0)
+                                    q_normalisee = {
+                                        "q": item["enonce"],
+                                        "options": item["options"],
+                                        "rep": item["options"][idx_bonne_rep]
+                                    }
+                                else:
+                                    # Format standard Semaines 0, 1, 2, 3
+                                    q_normalisee = item
+                                q_liste.append(q_normalisee)
+                        
                         st.session_state.questions_courantes = q_liste
                         st.session_state.current_q_index = 0
                         st.session_state.user_quiz_answers = {}
@@ -2452,7 +2468,7 @@ with tab_actuel:
 
                         st.markdown(f"""
                             <div class="question-card">
-                                <span class="question-badge">{'Tronc Commun' if current_idx < 6 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
+                                <span class="question-badge">{'Tronc Commun' if current_idx < 5 else 'Spécifique ' + role_soignant.split(' ')[0]}</span>
                                 <div class="question-title">{q_data['q']}</div>
                             </div>
                         """, unsafe_allow_html=True)
