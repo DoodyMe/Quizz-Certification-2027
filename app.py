@@ -38,29 +38,47 @@ def get_sheet():
     client = get_gspread_client()
     return client.open_by_url(st.secrets["spreadsheet_url"])
 
-def charger_utilisateurs():
+# Instance globale de la feuille
+try:
+    sheet = get_sheet()
+except Exception:
+    sheet = None
+
+@st.cache_data(ttl=60)
+def charger_utilisateurs_cached():
     try:
-        sheet = get_sheet().worksheet("Utilisateurs")
-        records = charger_donnees_scores()
+        ws = sheet.worksheet("Utilisateurs")
+        records = ws.get_all_records()
         return {str(r["Pseudo"]): str(r.get("Mot_De_Passe", "")) for r in records if "Pseudo" in r and r["Pseudo"]}
     except Exception:
         return {}
 
+def charger_utilisateurs():
+    return charger_utilisateurs_cached()
+
 def ajouter_utilisateur(pseudo, mdp, animal=""):
     try:
-        sheet = get_sheet().worksheet("Utilisateurs")
+        ws = sheet.worksheet("Utilisateurs")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([date_str, str(pseudo), str(mdp), str(animal)])
+        ws.append_row([date_str, str(pseudo), str(mdp), str(animal)])
+        charger_utilisateurs_cached.clear()
         return True
     except Exception as e:
         st.error(f"Erreur d'enregistrement Google Sheets : {e}")
         return False
 
+@st.cache_data(ttl=300)
+def charger_reponses_globales():
+    try:
+        ws = sheet.worksheet("Reponses")
+        return ws.get_all_records()
+    except Exception:
+        return []
+
 @st.cache_data(ttl=60)
 def charger_notes_utilisateur_cached(pseudo):
     try:
-        sheet = get_sheet().worksheet("Reponses")
-        records = charger_donnees_scores()
+        records = charger_reponses_globales()
         return [r for r in records if str(r.get("Pseudo")) == str(pseudo)]
     except Exception:
         return []
@@ -70,9 +88,10 @@ def charger_notes_utilisateur(pseudo):
 
 def enregistrer_reponse(pseudo, semaine_id, score, total, role=""):
     try:
-        sheet = get_sheet().worksheet("Reponses")
+        ws = sheet.worksheet("Reponses")
         date_str = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        sheet.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total), str(role)])
+        ws.append_row([date_str, str(pseudo), int(semaine_id), int(score), int(total), str(role)])
+        charger_reponses_globales.clear()
         return True
     except Exception as e:
         st.error(f"Erreur de sauvegarde : {e}")
@@ -80,8 +99,7 @@ def enregistrer_reponse(pseudo, semaine_id, score, total, role=""):
 
 def charger_top10_semaine(semaine_id):
     try:
-        sheet = get_sheet().worksheet("Reponses")
-        records = charger_donnees_scores()
+        records = charger_reponses_globales()
         reponses_semaine = [r for r in records if str(r.get("Semaine_ID")) == str(semaine_id)]
         
         meilleurs_scores = {}
@@ -109,8 +127,7 @@ def charger_top10_semaine(semaine_id):
 
 def calculer_scores_podium():
     try:
-        sheet = get_sheet().worksheet("Reponses")
-        records = charger_donnees_scores()
+        records = charger_reponses_globales()
         tentatives_uniques = {}
         
         for r in records:
@@ -143,8 +160,7 @@ def calculer_scores_podium():
 
 def calculer_scores_podium_par_metier():
     try:
-        sheet = get_sheet().worksheet("Reponses")
-        records = charger_donnees_scores()
+        records = charger_reponses_globales()
         scores_par_metier = {}
         
         for r in records:
@@ -1323,7 +1339,7 @@ SESSIONS = [
                     "options": [
                         "Oui, l'ARM a l'expérience des produits courants.",
                         "Non, l'ARM ne doit jamais donner de consigne médicale d'administration ou de vomissement et doit basculer immédiatement l'appel vers le Medecin régulateur ou le Centre Antipoison.",
-                        "Oui, à condition de lui demander de rappeler rapidement ensuite pour refaire le point."
+                        "Oui, à condition de lui rappeler rapidement ensuite pour refaire le point."
                     ],
                     "rep": "Non, l'ARM ne doit jamais donner de consigne médicale d'administration ou de vomissement et doit basculer immédiatement l'appel vers le Medecin régulateur ou le Centre Antipoison."
                 },
@@ -2083,7 +2099,7 @@ SESSIONS = [
                     "Accueil sécurisé 24h/24 : prise en charge immédiate et mise en sécurité des patients vulnérables isolés ou confus se présentant au comptoir.",
                     "Barrière du secret professionnel : interdiction absolue de divulguer des informations thérapeutiques au guichet ; orientation systématique vers l'IDE ou l'équipe médicale de la zone.",
                     "Gestion rigoureuse des valeurs : application stricte des procédures d'inventaire contradictoire et de mise en coffre des effets personnels des patients non conscients.",
-                    "Veille visuelle continue : repérage des signes d'aggravation en salle d'attente et alerte immédiate de l'équipe de tri."
+                    "Veille visuale continue : repérage des signes d'aggravation en salle d'attente et alerte immédiate de l'équipe de tri."
                 ]
             },
             "Brancardier": {
@@ -2506,7 +2522,6 @@ with tab_actuel:
 
                         if enregistrer_reponse(st.session_state.user_pseudo, session_active["id"], score_obtenu, total_q, role=role_soignant):
                             st.success(f"Félicitations **{st.session_state.user_pseudo}** ! Vos résultats ont bien été enregistrés pour la session {session_active['titre']}.")
-                            charger_notes_utilisateur_cached.clear()
 
                         st.divider()
                         st.markdown("### 📖 Bilan des Réponses")
@@ -2582,7 +2597,6 @@ with tab_historique:
         if not sessions_passees:
             st.info("Aucune synthèse disponible pour le moment.")
         else:
-            # Récupération des semaines déjà validées par l'utilisateur
             mes_notes_actuelles = charger_notes_utilisateur(st.session_state.user_pseudo)
             semaines_validees_ids = [str(item.get("Semaine_ID")) for item in mes_notes_actuelles]
 
@@ -2593,7 +2607,6 @@ with tab_historique:
                 statut = obtenir_statut_session(s)
                 est_valide = str(s["id"]) in semaines_validees_ids
                 
-                # Si c'est la semaine actuelle et qu'elle n'est pas encore validée (et pas la démo semaine 0)
                 if statut == "Actuelle" and not est_valide and s["id"] != 0:
                     with st.expander(f"🔒 {s['titre']} (Verrouillé - Quiz en cours)"):
                         st.warning("⚠️ Cette synthèse se débloquera automatiquement ici dès que tu auras validé le quiz de cette semaine dans l'onglet 'Semaine Actuelle' !")
@@ -2626,11 +2639,9 @@ with tab_historique:
         if not sessions_passees:
             st.info("Aucune fiche PDF disponible pour le moment.")
         else:
-            # Récupération des semaines déjà validées par l'utilisateur
             mes_notes_actuelles = charger_notes_utilisateur(st.session_state.user_pseudo)
             semaines_validees_ids = [str(item.get("Semaine_ID")) for item in mes_notes_actuelles]
 
-            # Filtrage : on autorise les semaines passées ou celles dont le quiz a déjà été validé
             sessions_fiches_disponibles = []
             for s in sessions_passees:
                 statut = obtenir_statut_session(s)
@@ -2703,7 +2714,6 @@ with tab_podium:
         metiers_disponibles = sorted(list(podiums_data.keys()))
         tabs_podiums = st.tabs(["🌟 Général"] + [f"🩺 {m}" for m in metiers_disponibles])
         
-        # 1. Sous-onglet Général
         with tabs_podiums[0]:
             st.markdown("#### 🌟 Top 10 Général de l'Équipe")
             st.markdown("<br>", unsafe_allow_html=True)
@@ -2740,7 +2750,6 @@ with tab_podium:
                         </div>
                     """, unsafe_allow_html=True)
 
-        # 2. Sous-onglets par Métier
         for idx_m, metier in enumerate(metiers_disponibles):
             with tabs_podiums[idx_m + 1]:
                 st.markdown(f"#### 🎯 Podium — {metier}")
@@ -2754,6 +2763,7 @@ with tab_podium:
                     for idx, user_data in enumerate(classement_metier[:10]):
                         rang = idx + 1
                         if rang == 1:
+        
                             medaille = "🥇"
                             card_bg = "background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); border: 2px solid #eab308;"
                         elif rang == 2:
