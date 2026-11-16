@@ -2514,15 +2514,15 @@ with tab_actuel:
                         score_obtenu = 0
                         for idx, q in enumerate(questions_quiz):
                             rep_soignant = st.session_state.user_quiz_answers.get(idx)
-                            
-                            # Détermination robuste de la bonne réponse selon le format de la semaine
-                            bonne_rep = q.get("rep")
-                            if not bonne_rep and "bonne_reponse" in q and "options" in q:
-                                bonne_rep = q["options"][q["bonne_reponse"]]
-                                
-                            if rep_soignant == bonne_rep:
-                                score_obtenu += 1
 
+                        bonne_rep = q.get("rep")
+                        if not bonne_rep and "bonne_reponse" in q and "options" in q:
+                                try:
+                                    idx = int(q["bonne_reponse"])
+                                    if 0 <= idx < len(q["options"]):
+                                         bonne_rep = q["options"][idx]
+                                except (ValueError, TypeError, IndexError):
+                                    bonne_rep = q["options"][0] if q.get("options") else ""
 
                         st.metric("Votre score final", f"{score_obtenu} / {total_q}")
 
