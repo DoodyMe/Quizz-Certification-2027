@@ -6,6 +6,10 @@ import gspread
 from google.oauth2.service_account import Credentials
 from streamlit_pdf_viewer import pdf_viewer
 
+@st.cache_data(ttl=300)
+def charger_donnees_scores():
+    return sheet.get_all_records()
+
 # ------------------------------------------------------------------------------
 # 1. CONFIGURATION DE LA PAGE
 # ------------------------------------------------------------------------------
@@ -37,7 +41,7 @@ def get_sheet():
 def charger_utilisateurs():
     try:
         sheet = get_sheet().worksheet("Utilisateurs")
-        records = sheet.get_all_records()
+        records = charger_donnees_scores()
         return {str(r["Pseudo"]): str(r.get("Mot_De_Passe", "")) for r in records if "Pseudo" in r and r["Pseudo"]}
     except Exception:
         return {}
@@ -56,7 +60,7 @@ def ajouter_utilisateur(pseudo, mdp, animal=""):
 def charger_notes_utilisateur_cached(pseudo):
     try:
         sheet = get_sheet().worksheet("Reponses")
-        records = sheet.get_all_records()
+        records = charger_donnees_scores()
         return [r for r in records if str(r.get("Pseudo")) == str(pseudo)]
     except Exception:
         return []
@@ -77,7 +81,7 @@ def enregistrer_reponse(pseudo, semaine_id, score, total, role=""):
 def charger_top10_semaine(semaine_id):
     try:
         sheet = get_sheet().worksheet("Reponses")
-        records = sheet.get_all_records()
+        records = charger_donnees_scores()
         reponses_semaine = [r for r in records if str(r.get("Semaine_ID")) == str(semaine_id)]
         
         meilleurs_scores = {}
@@ -106,7 +110,7 @@ def charger_top10_semaine(semaine_id):
 def calculer_scores_podium():
     try:
         sheet = get_sheet().worksheet("Reponses")
-        records = sheet.get_all_records()
+        records = charger_donnees_scores()
         tentatives_uniques = {}
         
         for r in records:
@@ -140,7 +144,7 @@ def calculer_scores_podium():
 def calculer_scores_podium_par_metier():
     try:
         sheet = get_sheet().worksheet("Reponses")
-        records = sheet.get_all_records()
+        records = charger_donnees_scores()
         scores_par_metier = {}
         
         for r in records:
