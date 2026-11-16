@@ -1613,79 +1613,7 @@ SESSIONS = [
             }
         }
     },
-    {
-        "id": 4,
-        "titre": "Semaine 4 - Parcours patient, Fluidité & Sujets vulnérables",
-        "date_debut": datetime.date(2026, 11, 16),
-        "date_fin": datetime.date(2026, 11, 22),
-        "tronc_commun": [
-            {
-                "id": "TC1",
-                "enonce": "Lors de l'admission d'une personne âgée vulnérable en situation de perte d'autonomie majeure ou de dénutrition, quel est le premier réflexe exigé par les critères HAS de repérage des vulnérabilités aux urgences ?",
-                "options": [
-                    "Reporter l'évaluation gérontologique à la sortie des urgences : pour l'instant, la somatique aiguë compte.",
-                    "Demander un transfert direct en USLD.",
-                    "Formaliser dès l'admission le repérage des risques (escarres, chutes, dénutrition, troubles cognitifs) et l'initier dans le dossier patient informatisé (DPI)."
-                ],
-                "bonne_reponse": 3
-            },
-            {
-                "id": "TC2",
-                "enonce": "En période de tension sur les capacités d'aval, quel indicateur HAS permet de piloter la sécurité des soins des patients en attente prolongée dans la structure ?",
-                "options": [
-                    "Le temps d'attente au guichet administratif avant la prise de constantes.",
-                    "Le temps de passage aux urgences (TPU) et la traçabilité des re-titrations/surveillances des patients en 'brancard couloir' ou UHCD.",
-                    "Le nombre de dossiers papier classés en fin de vacation."
-                ],
-                "bonne_reponse": 2
-            },
-            {
-                "id": "TC3",
-                "enonce": "Face à un patient vulnérable présentant des signes d'alerte évoquant une maltraitance (lésions atypiques, discours discordant de l'entourage), quelle est la procédure HAS à enclencher ?",
-                "options": [
-                    "Demander des explications à l'accompagnant.",
-                    "Tracer les constatations factuelles dans le DPI, alerter le médecin sénior de zone et déclencher la filière de signalement (fiche FEI / assistance sociale / cadre).",
-                    "Hospitaliser obligatoirement le patient afin que le service se charge de la mise en place de protection pour la personne vulnérable."
-                ],
-                "bonne_reponse": 2
-            },
-            {
-                "id": "TC4",
-                "enonce": "Qu'implique la conciliation médicamenteuse d'admission pour une personne âgée polypathologique transférée d'EHPAD ?",
-                "options": [
-                    "Réaliser le bilan comparatif entre l'ordonnance de l'EHPAD et les prescriptions d'urgence pour prévenir la iatrogénie et tracer les arrêts/poursuites.",
-                    "Stopper tous les traitements habituels par précaution pendant 24 heures.",
-                    "Reconduire l'ordonnance d'entrée sans réévaluer la fonction rénale ni l'état aigu."
-                ],
-                "bonne_reponse": 1
-            },
-            {
-                "id": "TC5",
-                "enonce": "Comment la HAS préconise-t-elle d'évaluer la douleur chez un patient vulnérable non communicant (troubles cognitifs sévères, coma, aphasie) ?",
-                "options": [
-                    "Conclure à l'absence de douleur si le patient ne verbalise aucune plainte.",
-                    "Administrer d'emblée une dose maximale de morphine sans observation préalable.",
-                    "Utiliser une échelle d'hétéro-évaluation comportementale validée (ex: Algoplus/Doloplus) et tracer la réévaluation après antalgie.",
-                ],
-                "bonne_reponse": 3
-            }
-        ],
-        "metiers": {
-            "IDE": [
-                {
-                    "id": "IDE1",
-                    "enonce": "Dans votre zone de box au circuit Long, un patient vulnérable et désorienté présente un risque élevé de chute et de déambulation. Quelle est la conduite appropriée ?",
-                    "options": [
-                        "Verrouiller la porte du box à clé de l'extérieur pour poursuivre vos soins dans les autres box.",
-                        "Adapter l'environnement (barrières, sonnette à portée, rapprochement du poste si possible), tracer le risque et coordonner la surveillance avec l'AS de la zone.",
-                        "Attacher le patient aux quatre membres puis aller avoir le médecin pour le signaler et avoir la prescription."
-                    ],
-                    "bonne_reponse": 2
-                },
-                {
-                    "id": "IDE2",
-                    "enonce": "Vous devez administrer un traitement IV à haut risque chez un patient vulnérable sous tutelle. Le tuteur est joignable mais pas sur place. Que devez-vous vérifier ?",
-                    "options": [
+    
                         "Vérifier la prescription médicale validée dans le DPI, l'identité du patient (identitovigilance) et tracer l'administration en informant la personne de confiance/tuteur selon le degré d'urgence.",
                         "Attendre le déplacement physique du tuteur avant d'injecter, quelle que soit l'urgence thérapeutique.",
                         "Faire signer un accord à l'ambulancier qui a transporté le patient."
@@ -2036,72 +1964,497 @@ SESSIONS = [
                 }
             ]
         },
-        "fiches_reflexes": {
-            "IDE": {
-                "titre": "Mémo Box IDE - Parcours & Vulnérabilités (Semaine 4)",
-                "points_cles": [
-                    "Sectorisation stricte : responsabilité directe de la gestion des soins et des risques sur sa zone de 6 box.",
-                    "Repérage et traçabilité : cotation systématique des risques de vulnérabilité (chutes, escarres, dénutrition, troubles cognitifs) dès l'admission dans le DPI.",
-                    "Surveillance des temps d'attente : traçabilité renforcée des patients en attente prolongée ou en brancard de couloir (hydratation, confort, réévaluations).",
-                    "Sécurité des transmissions : relèves ciblées axées sur l'autonomie, les alertes thérapeutique et le statut des lits d'aval."
-                ]
-            },
-            "Medecin": {
-                "titre": "Mémo Box Médecin - Parcours & Vulnérabilités (Semaine 4)",
-                "points_cles": [
-                    "Pilotage sectoriel : responsabilité clinique de l'ensemble des 2 zones rattachées (gestion globale des flux et des priorités médicales).",
-                    "Sécurisation thérapeutique : adaptation stricte des posologies aux fonctions d'élimination (DFG) chez le sujet âgé et traçabilité des conciliations médicamenteuses.",
-                    "Cadre réglementaire des décisions lourdes : protocoles stricts de contention physique (prescription écrite, limitée, réévaluée) et recherche des directives anticipées.",
-                    "Continuité des soins d'aval : validation systématique et transmission immédiate de la lettre de liaison de sortie pour garantir la fluidité du parcours patient."
-                ]
-            },
-            "AS": {
-                "titre": "Mémo Box AS - Parcours & Vulnérabilités (Semaine 4)",
-                "points_cles": [
-                    "Prévention active : installation immédiate des supports anti-escarres et respect des postures de décharge pour les patients dépendants ou grabataires.",
-                    "Sécurité alimentaire & hydrique : surveillance des apports, adaptation des textures (mixé, eau gélifiée) et prévention des fausses routes lors des repas en zone de soins.",
-                    "Veille comportementale : repérage et signalement immédiat à l'IDE de tout changement d'état cutané, de conscience ou d'agitation à risque de chute.",
-                    "Préservation de la dignité : utilisation systématique des paravents et respect de l'intimité malgré la forte affluence et la configuration ouverte des urgences."
-                ]
-            },
-            "ARM": {
-                "titre": "Mémo Box ARM - Régulation & Vulnérabilités (Semaine 4)",
-                "points_cles": [
-                    "Qualification ciblée : repérage immédiat des situations d'isolement, de perte de contact ou de fragilité gérontologique dès le premier décroché au 15.",
-                    "Traçabilité amont : consignation rigoureuse des antécédents lourds, des traitements et des statuts éthiques (directives anticipées) dans le DRM.",
-                    "Interface sécurisée : transmission exclusive des éléments cliniques et logistiques au Médecin Régulateur des Urgences (MRU) pour arbitrage et engagement des secours adaptés.",
-                    "Gestion des signalements : application stricte des consignes d'alerte en cas de suspicion de maltraitance transmise par un tiers."
-                ]
-            },
-            "Accueil": {
-                "titre": "Mémo Box Accueil - Guichet & Vulnérabilités (Semaine 4)",
-                "points_cles": [
-                    "Accueil sécurisé 24h/24 : prise en charge immédiate et mise en sécurité des patients vulnérables isolés ou confus se présentant au comptoir.",
-                    "Barrière du secret professionnel : interdiction absolue de divulguer des informations thérapeutiques au guichet ; orientation systématique vers l'IDE ou l'équipe médicale de la zone.",
-                    "Gestion rigoureuse des valeurs : application stricte des procédures d'inventaire contradictoire et de mise en coffre des effets personnels des patients non conscients.",
-                    "Veille visuelle continue : repérage des signes d'aggravation en salle d'attente et alerte immédiate de l'équipe de tri."
-                ]
-            },
-            "Brancardier": {
-                "titre": "Mémo Box Brancardier - Transport & Vulnérabilités (Semaine 4)",
-                "points_cles": [
-                    "Confort et sécurité du transport : installation minutieuse du patient fragile (barrières relevées, protections thermiques, cales posturales) et vigilance permanente.",
-                    "Sécurité des appareillages : vérification et fixation des obus d'oxygène et des dispositifs de perfusion avant tout départ de la zone de soins.",
-                    "Réaction face à l'incident : arrêt immédiat du transfert en zone sécurisée et appel des soignants les plus proches en cas de modification de la conscience ou des constantes.",
-                    "Hygiène et bionettoyage : désinfection systématique des points de contact du brancard avec les produits homologués après le transport de patients à risque (BMR/isolements)."
-                ]
-            },
-            "Cadre": {
-                "titre": "Mémo Box Cadre - Management & Vulnérabilités (Semaine 4)",
-                "points_cles": [
-                    "Pilotage qualité & certification HAS 2027 : mise en place d'audits flash, d'EPP ciblées et de revues de dossiers sur le parcours des patients vulnérables.",
-                    "Gestion opérationnelle des tensions : animation des cellules de flux, régulation des lits d'aval et réallocation des ressources en cas de saturation des zones (6 box/IDE).",
-                    "Maîtrise des risques : pilotage des déclarations d'événements indésirables (FEI/EIG), animation des RMM et mise en place d'actions correctives pérennes.",
-                    "Culture de service : accompagnement des équipes, diffusion des protocoles de bientraitance et maintien d'une sectorisation claire des rôles professionnels."
-                ]
-            }
+
+{
+    "id": 4,
+    "titre": "Semaine 4 - Parcours patient, Fluidité & Sujets vulnérables",
+    "date_debut": datetime.date(2026, 11, 16),
+    "date_fin": datetime.date(2026, 11, 22),
+    "tronc_commun": [
+        {
+            "id": "TC1",
+            "q": "Lors de l'admission d'une personne âgée vulnérable en situation de perte d'autonomie majeure ou de dénutrition, quel est le premier réflexe exigé par les critères HAS de repérage des vulnérabilités aux urgences ?",
+            "options": [
+                "Reporter l'évaluation gérontologique à la sortie des urgences : pour l'instant, la somatique aiguë compte.",
+                "Demander un transfert direct en USLD.",
+                "Formaliser dès l'admission le repérage des risques (escarres, chutes, dénutrition, troubles cognitifs) et l'initier dans le dossier patient informatisé (DPI)."
+            ],
+            "rep": "Formaliser dès l'admission le repérage des risques (escarres, chutes, dénutrition, troubles cognitifs) et l'initier dans le dossier patient informatisé (DPI)."
+        },
+        {
+            "id": "TC2",
+            "q": "En période de tension sur les capacités d'aval, quel indicateur HAS permet de piloter la sécurité des soins des patients en attente prolongée dans la structure ?",
+            "options": [
+                "Le temps d'attente au guichet administratif avant la prise de constantes.",
+                "Le temps de passage aux urgences (TPU) et la traçabilité des re-titrations/surveillances des patients en 'brancard couloir' ou UHCD.",
+                "Le nombre de dossiers papier classés en fin de vacation."
+            ],
+            "rep": "Le temps de passage aux urgences (TPU) et la traçabilité des re-titrations/surveillances des patients en 'brancard couloir' ou UHCD."
+        },
+        {
+            "id": "TC3",
+            "q": "Face à un patient vulnérable présentant des signes d'alerte évoquant une maltraitance (lésions atypiques, discours discordant de l'entourage), quelle est la procédure HAS à enclencher ?",
+            "options": [
+                "Demander des explications à l'accompagnant.",
+                "Tracer les constatations factuelles dans le DPI, alerter le médecin sénior de zone et déclencher la filière de signalement (fiche FEI / assistance sociale / cadre).",
+                "Hospitaliser obligatoirement le patient afin que le service se charge de la mise en place de protection pour la personne vulnérable."
+            ],
+            "rep": "Tracer les constatations factuelles dans le DPI, alerter le médecin sénior de zone et déclencher la filière de signalement (fiche FEI / assistance sociale / cadre)."
+        },
+        {
+            "id": "TC4",
+            "q": "Qu'implique la conciliation médicamenteuse d'admission pour une personne âgée polypathologique transférée d'EHPAD ?",
+            "options": [
+                "Réaliser le bilan comparatif entre l'ordonnance de l'EHPAD et les prescriptions d'urgence pour prévenir la iatrogénie et tracer les arrêts/poursuites.",
+                "Stopper tous les traitements habituels par précaution pendant 24 heures.",
+                "Reconduire l'ordonnance d'entrée sans réévaluer la fonction rénale ni l'état aigu."
+            ],
+            "rep": "Réaliser le bilan comparatif entre l'ordonnance de l'EHPAD et les prescriptions d'urgence pour prévenir la iatrogénie et tracer les arrêts/poursuites."
+        },
+        {
+            "id": "TC5",
+            "q": "Comment la HAS préconise-t-elle d'évaluer la douleur chez un patient vulnérable non communicant (troubles cognitifs sévères, coma, aphasie) ?",
+            "options": [
+                "Conclure à l'absence de douleur si le patient ne verbalise aucune plainte.",
+                "Administrer d'emblée une dose maximale de morphine sans observation préalable.",
+                "Utiliser une échelle d'hétéro-évaluation comportementale validée (ex: Algoplus/Doloplus) et tracer la réévaluation après antalgie."
+            ],
+            "rep": "Utiliser une échelle d'hétéro-évaluation comportementale validée (ex: Algoplus/Doloplus) et tracer la réévaluation après antalgie."
         }
+    ],
+    "metiers": {
+        "IDE": [
+            {
+                "id": "IDE1",
+                "q": "Dans votre zone de box au circuit Long, un patient vulnérable et désorienté présente un risque élevé de chute et de déambulation. Quelle est la conduite appropriée ?",
+                "options": [
+                    "Verrouiller la porte du box à clé de l'extérieur pour poursuivre vos soins dans les autres box.",
+                    "Adapter l'environnement (barrières, sonnette à portée, rapprochement du poste si possible), tracer le risque et coordonner la surveillance avec l'AS de la zone.",
+                    "Attacher le patient aux quatre membres puis aller avoir le médecin pour le signaler et avoir la prescription."
+                ],
+                "rep": "Adapter l'environnement (barrières, sonnette à portée, rapprochement du poste si possible), tracer le risque et coordonner la surveillance avec l'AS de la zone."
+            },
+            {
+                "id": "IDE2",
+                "q": "Vous devez administrer un traitement IV à haut risque chez un patient vulnérable sous tutelle. Le tuteur est joignable mais pas sur place. Que devez-vous vérifier ?",
+                "options": [
+                    "Vérifier la prescription médicale validée dans le DPI, l'identité du patient (identitovigilance) et tracer l'administration en informant la personne de confiance/tuteur selon le degré d'urgence.",
+                    "Attendre le déplacement physique du tuteur avant d'injecter, quelle que soit l'urgence thérapeutique.",
+                    "Faire signer un accord à l'ambulancier qui a transporté le patient."
+                ],
+                "rep": "Vérifier la prescription médicale validée dans le DPI, l'identité du patient (identitovigilance) et tracer l'administration en informant la personne de confiance/tuteur selon le degré d'urgence."
+            },
+            {
+                "id": "IDE3",
+                "q": "Un patient très âgé en brancard de couloir attend un lit d'aval depuis 8 heures dans votre zone. Quelle surveillance IDE est indispensable pour la certification ?",
+                "options": [
+                    "Seuls les paramètres vitaux matin/midi/soir doivent être tracés, ainsi que les repas donnés.",
+                    "Etat cutané (prévention escarres), hydratation/miction, paramètres vitaux, douleur et tolérance de l'attente.",
+                    "Passer s'assurer que le patient va bien et lui demander s'il a besoin de quelques chose suffit."
+                ],
+                "rep": "Etat cutané (prévention escarres), hydratation/miction, paramètres vitaux, douleur et tolérance de l'attente."
+            },
+            {
+                "id": "IDE4",
+                "q": "Lors de la relève inter-équipe dans votre zone en Long, quelle information est prioritaire pour un patient vulnérable ?",
+                "options": [
+                    "Pas plus d'informations que les autres : la place de son brancard, son histoire et les médicaments donnés.",
+                    "La couleur des vêtements du patient, au cas où il s'enfuit.",
+                    "La transmission ciblée précisant l'autonomie, les risques identifiés (fausse route, fuite, escarre), les réévaluations médicamenteuses et le statut du lit d'aval."
+                ],
+                "rep": "La transmission ciblée précisant l'autonomie, les risques identifiés (fausse route, fuite, escarre), les réévaluations médicamenteuses et le statut du lit d'aval."
+            },
+            {
+                "id": "IDE5",
+                "q": "Face à une suspicion d'erreur de dosage médicamenteux chez un patient fragile transféré d'une autre structure, quelle est l'action IDE immédiate ?",
+                "options": [
+                    "Corriger la dose dans le DPI, puisque ça n'a pas eu de conséquence.",
+                    "Attendre la fin du poste pour voir si des effets secondaires apparaissent.",
+                    "Suspendre l'administration, alerter immédiatement le médecin de la zone et déclarer l'événement indésirable (FEI)."
+                ],
+                "rep": "Suspendre l'administration, alerter immédiatement le médecin de la zone et déclarer l'événement indésirable (FEI)."
+            }
+        ],
+        "Medecin": [
+            {
+                "id": "MED1",
+                "q": "En tant que médecin référent de vos 2 zones du Long, vous devez prescrire une contention physique pour un patient dément en agitation sévère mettant en danger ses soins vitaux. Quelle règle appliquez-vous ?",
+                "options": [
+                    "Donner une consigne orale à l'équipe et leur demander de réévaluer dans quelques heures.",
+                    "Rédiger une prescription médicale écrite, datée, limitée dans le temps, motivée au regard de la balance bénéfice/risque et assortie d'une surveillance tracée.",
+                    "Demander à l'équipe d'accueil d'appeler la police pour gérer l'agitation."
+                ],
+                "rep": "Rédiger une prescription médicale écrite, datée, limitée dans le temps, motivée au regard de la balance bénéfice/risque et assortie d'une surveillance tracée."
+            },
+            {
+                "id": "MED2",
+                "q": "Lors de la sortie ou du transfert d'un patient fragile aux antécédents complexes, quel document médical garantit la continuité de la prise en charge selon la HAS ?",
+                "options": [
+                    "La lettre de liaison de sortie (ou résumé d'urgence) validée et transmise le jour même, incluant le traitement d'entrée/sortie et les consignes de suivi.",
+                    "Une simple consigne orale donnée au brancardier lors du départ.",
+                    "Un mot manuscrit succinct sur un morceau de papier déposé dans la poche du patient."
+                ],
+                "rep": "La lettre de liaison de sortie (ou résumé d'urgence) validée et transmise le jour même, incluant le traitement d'entrée/sortie et les consignes de suivi."
+            },
+            {
+                "id": "MED3",
+                "q": "Comment adapter la prescription médicamenteuse chez un sujet très âgé en insuffisance rénale aiguë admis dans l'une de vos zones ?",
+                "options": [
+                    "Se fier seulement au DFG pour qualifier l'IRA et arrêter les traitements néphrotoxiques.",
+                    "Consulter la créatinine habituelle pour valider la réelle présence d'une IRA, réévaluer les rapports bénéfice/risque des molécules néphrotoxiques et expliciter l'adaptation posologique dans le DPI.",
+                    "Maintenir les posologies habituelles du VIDAL."
+                ],
+                "rep": "Consulter la créatinine habituelle pour valider la réelle présence d'une IRA, réévaluer les rapports bénéfice/risque des molécules néphrotoxiques et expliciter l'adaptation posologique dans le DPI."
+            },
+            {
+                "id": "MED4",
+                "q": "En situation d'engorgement majeur des 2 zones du Long avec attente prolongée de lits d'aval, quel est le rôle du médecin sénior de zone ?",
+                "options": [
+                    "Effectuer des réévaluations cliniques régulières des patients en attente, réajuster les prescriptions et signaler le niveau d'engorgement à la régulation/cadre (le protocole HET du service est tout en bas du meuble où sont les prescriptions bio/EFS etc).",
+                    "Fermer et quitter le service. Y'en a marre à la fin.",
+                    "Valider des sorties et transferts prématurés pour vider les box."
+                ],
+                "rep": "Effectuer des réévaluations cliniques régulières des patients en attente, réajuster les prescriptions et signaler le niveau d'engorgement à la régulation/cadre (le protocole HET du service est tout en bas du meuble où sont les prescriptions bio/EFS etc)."
+            },
+            {
+                "id": "MED5",
+                "q": "Prise en charge d'un patient vulnérable sans personne de confiance identifiée nécessitant une décision médicale lourde non urgente. Quelle est la démarche réglementaire ?",
+                "options": [
+                    "Décider seul dans son coin sans en parler à quiconque.",
+                    "Appeler la famille pour demander leur avis, qui prévaudra.",
+                    "Rechercher l'existence de directives anticipées, solliciter les aidants/tuteur et formaliser une procédure collégiale tracée dans le dossier."
+                ],
+                "rep": "Rechercher l'existence de directives anticipées, solliciter les aidants/tuteur et formaliser une procédure collégiale tracée dans le dossier."
+            }
+        ],
+        "AS": [
+            {
+                "id": "AS1",
+                "q": "Vous installez une personne âgée dénutrie et dépendante dans un box de votre zone. Quel soin de prévention mettez-vous en place d'emblée ?",
+                "options": [
+                    "Laisser le patient sur le brancard sans changer sa position pendant 6 heures.",
+                    "Mettre en place les supports anti-escarres adaptés, veiller au positionnement (décharge des points d'appui) et signaler l'état cutané initial à l'IDE.",
+                    "Mettre un plateau repas à côté."
+                ],
+                "rep": "Mettre en place les supports anti-escarres adaptés, veiller au positionnement (décharge des points d'appui) et signaler l'état cutané initial à l'IDE."
+            },
+            {
+                "id": "AS2",
+                "q": "Lors de la distribution des repas/collations dans les box de la zone, un patient vulnérable présente des troubles de la déglutition identifiés. Que faites-vous ?",
+                "options": [
+                    "Vérifier la texture prescrite (haché/mixé, eau gélifiée), assister l'installation à 90°, surveiller le repas et transmettre l'ingestion à l'IDE.",
+                    "Poser le plateau standard et demander à l'accompagnant de signaler s'il y a une fausse route.",
+                    "Ne rien donner au patient, par précaution, et proposer une pose d'hydratation IV ou sous-cutanée."
+                ],
+                "rep": "Vérifier la texture prescrite (haché/mixé, eau gélifiée), assister l'installation à 90°, surveiller le repas et transmettre l'ingestion à l'IDE."
+            },
+            {
+                "id": "AS3",
+                "q": "Un patient vulnérable et confus tente de se lever seul de sa chaise au risque de tomber. Quelle est la réaction à avoir selon la HAS ?",
+                "options": [
+                    "Le réinstaller, évaluer son besoin immédiat (miction, soif, douleur), solliciter l'IDE et rester à ses côtés pour assurer une présence rassurante.",
+                    "Le rappeler à l'ordre avec fermeté et le sécuriser avec un drap au niveau de la taille.",
+                    "Ignorer la situation tant que le patient n'est pas tombé par terre : y'a pas le temps dans ce service..."
+                ],
+                "rep": "Le réinstaller, évaluer son besoin immédiat (miction, soif, douleur), solliciter l'IDE et rester à ses côtés pour assurer une présence rassurante."
+            },
+            {
+                "id": "AS4",
+                "q": "Vous observez une rougeur sacrée fixée (érythème ne s'effaçant pas à la pression) lors du change d'un patient vulnérable. Que faites-vous ?",
+                "options": [
+                    "Appliquer une crème type Bepanthen.",
+                    "Alerter l'IDE de la zone pour évaluation/transmission, consigner le constat dans le dossier de soins et adapter le positionnement.",
+                    "Mettre un pansement."
+                ],
+                "rep": "Alerter l'IDE de la zone pour évaluation/transmission, consigner le constat dans le dossier de soins et adapter le positionnement."
+            },
+            {
+                "id": "AS5",
+                "q": "Comment préserver la dignité d'un patient vulnérable lors des soins d'hygiène ou d'installation en zone de soins très fréquentée ?",
+                "options": [
+                    "Laisser la porte du box ouverte sur le couloir pour maintenir la sécurité de chacun.",
+                    "Parler entre les soignants pendant le change, comme si le patient ne comprenait pas ce qui se disait.",
+                    "Utiliser systématiquement les paravents/fermetures de box, couvrir le patient et s'adresser directement à lui avec bienveillance."
+                ],
+                "rep": "Utiliser systématiquement les paravents/fermetures de box, couvrir le patient et s'adresser directement à lui avec bienveillance."
+            }
+        ],
+        "ARM": [
+            {
+                "id": "ARM1",
+                "q": "Un appel concerne un sujet très âgé vivant seul, en rupture de contacts depuis 48h, signalé par un voisin. Selon la HAS, comment l'ARM doit-il qualifier cette vulnérabilité ?",
+                "options": [
+                    "Classer l'appel en démarche sociale non urgente.",
+                    "Évaluer le risque d'isolement/détresse potentielle, rechercher des signes d'urgence vitale/traumatique et transmettre immédiatement au MRU pour décision.",
+                    "Demander au voisin de trouver un moyen d'ouvrir la porte avant de rappeler s'il n'y parvient pas."
+                ],
+                "rep": "Évaluer le risque d'isolement/détresse potentielle, rechercher des signes d'urgence vitale/traumatique et transmettre immédiatement au MRU pour décision."
+            },
+            {
+                "id": "ARM2",
+                "q": "Lors du décrochage pour une personne vulnérable désorientée en ligne, quelle est la priorité de l'ARM pour sécuriser le parcours ?",
+                "options": [
+                    "Localiser précisément le lieu, garder le contact pour rassurer, identifier l'entourage et transmettre les éléments clés au MRU.",
+                    "Couper la communication dès que le médecin régulateur prend la main sans rien noter.",
+                    "Recommander au patient de prendre un somnifère pour se calmer."
+                ],
+                "rep": "Localiser précisément le lieu, garder le contact pour rassurer, identifier l'entourage et transmettre les éléments clés au MRU."
+            },
+            {
+                "id": "ARM3",
+                "q": "L'ARM reçoit un appel d'un EHPAD pour une décompensation aiguë chez un patient vulnérable possédant des directives anticipées d'arrêt de soins. Un état gravissime semble être présent à l'appel. Que fait l'ARM ?",
+                "options": [
+                    "Refuser d'envoyer tout secours, et dire à l'appelant de voir avec le médecin coordonateur ou la HAD.",
+                    "Envoyer le SMUR en P0 puis en informer le MRU.",
+                    "Noter la présence des directives anticipées et passer l'appel en priorité au MRU."
+                ],
+                "rep": "Noter la présence des directives anticipées et passer l'appel en priorité au MRU."
+            },
+            {
+                "id": "ARM4",
+                "q": "Comment l'ARM traite-t-il une alerte de maltraitance à domicile formulée par une aide ménagère au téléphone ?",
+                "options": [
+                    "Passer l'appel au 17 si aucun motif de détresse médicale immédiate n'est présent.",
+                    "Recueillir les déclarations, consigner dans le DRM et alerter le MRU.",
+                    "Rappeler la famille pour enquêter."
+                ],
+                "rep": "Recueillir les déclarations, consigner dans le DRM et alerter le MRU."
+            },
+            {
+                "id": "ARM5",
+                "q": "Dans la chaîne de transmission, qui est le SEUL interlocuteur habilité à transmettre une consigne médicale ou un antécédent lourd à l'équipe SMUR engagée ?",
+                "options": [
+                    "Le MRU, l'ARM assurant le lien logistique et la qualification de l'appel.",
+                    "L'ARM en direct dès qu'il a l'information.",
+                    "L'ARM superviseur."
+                ],
+                "rep": "Le MRU, l'ARM assurant le lien logistique et la qualification de l'appel."
+            }
+        ],
+        "Accueil": [
+            {
+                "id": "ACC1",
+                "q": "Une personne âgée désorientée sans identité arrive seule à l'accueil. Quelle est la prise en charge immédiate par l'agent d'accueil ?",
+                "options": [
+                    "Refuser l'accès tant qu'un accompagnant n'est pas présent avec la carte vitale.",
+                    "Mettre la personne en sécurité dans l'espace d'attente visible, déclencher le repérage IOA/IDE de tri en priorité et créer un dossier provisoire sécurisé.",
+                    "L'envoyer attendre dehors sur un des cailloux qui servent de banc : le froid, c'est revigorant !"
+                ],
+                "rep": "Mettre la personne en sécurité dans l'espace d'attente visible, déclencher le repérage IOA/IDE de tri en priorité et créer un dossier provisoire sécurisé."
+            },
+            {
+                "id": "ACC2",
+                "q": "Un proche inquiet se présente au guichet pour connaître la prescription médicale d'un patient vulnérable installé en zone de soins. Que fait l'agent d'accueil ?",
+                "options": [
+                    "Orienter le proche ou transférer la demande vers l'IDE/médecin de la zone concernée, en rappelant qu'aucune donnée thérapeutique n'est délivrée au guichet.",
+                    "Lire la liste des médicaments affichée sur l'écran d'accueil.",
+                    "Donner une réponse vague mais rassurante pour éviter que le proche ne pose de questions."
+                ],
+                "rep": "Orienter le proche ou transférer la demande vers l'IDE/médecin de la zone concernée, en rappelant qu'aucune donnée thérapeutique n'est délivrée au guichet."
+            },
+            {
+                "id": "ACC3",
+                "q": "Comment l'agent d'accueil gère-t-il les effets personnels et objets de valeur d'un patient inconscient, ramenés plus tard par les pompiers car ils avaient été 'oubliés sur place' ?",
+                "options": [
+                    "Appliquer la procédure de dépôt (inventaire contradictoire avec un soignant/agent, traçabilité et mise en coffre ou remise sécurisée).",
+                    "Les laisser dans un sac plastique sur le comptoir.",
+                    "Les donner au premier visiteur se réclamant de la famille."
+                ],
+                "rep": "Appliquer la procédure de dépôt (inventaire contradictoire avec un soignant/agent, traçabilité et mise en coffre ou remise sécurisée)."
+            },
+            {
+                "id": "ACC4",
+                "q": "Un patient vulnérable en salle d'attente exprime une aggravation de son inconfort (douleur, difficulté respiratoire). Que fait l'agent d'accueil ?",
+                "options": [
+                    "Lui dire de patienter gentiment, et que son tour arrive.",
+                    "Alerter l'IOA pour une réévaluation clinique.",
+                    "Lui proposer un antalgique."
+                ],
+                "rep": "Alerter l'IOA pour une réévaluation clinique."
+            },
+            {
+                "id": "ACC5",
+                "q": "Face à la frustration d'une famille accompagnant un patient âgé vulnérable en attente de lit d'aval, quelle est la posture de l'agent d'accueil ?",
+                "options": [
+                    "Expliquer que l'hôpital est en tension ces derniers temps et que venir faire part de son mécontentement ne changera rien.",
+                    "Ignorer la famille en fermant le hygiaphone.",
+                    "Réexpliquer avec empathie les étapes du parcours, le rôle de la régulation des lits et faire le lien avec l'équipe soignante de la zone."
+                ],
+                "rep": "Réexpliquer avec empathie les étapes du parcours, le rôle de la régulation des lits et faire le lien avec l'équipe soignante de la zone."
+            }
+        ],
+        "Brancardier": [
+            {
+                "id": "BRAN1",
+                "q": "Vous devez brancarder un patient très âgé, algique et anxieux vers le service de radiologie. Quelle précaution prenez-vous ?",
+                "options": [
+                    "Transporter le patient rapidement pour gagner du temps.",
+                    "Présenter le soin, vérifier l'installation (couverture, barrières de sécurité, cales), manipuler avec douceur et rassurer durant le trajet.",
+                    "Proposer au patient de marcher si le brancard est inconfortable à ce point."
+                ],
+                "rep": "Présenter le soin, vérifier l'installation (couverture, barrières de sécurité, cales), manipuler avec douceur et rassurer durant le trajet."
+            },
+            {
+                "id": "BRAN2",
+                "q": "Transport d'un patient vulnérable sous O2 : quelle est la règle d'or de sécurité du brancardier ?",
+                "options": [
+                    "Poser la bouteille d'oxygène entre les jambes du patient sur le brancard.",
+                    "Couper l'oxygène pendant le transport.",
+                    "Vérifier la charge de la bouteille avant le départ, la fixer sur le support homologué et s'assurer que le débit prescrit est actif."
+                ],
+                "rep": "Vérifier la charge de la bouteille avant le départ, la fixer sur le support homologué et s'assurer que le débit prescrit est actif."
+            },
+            {
+                "id": "BRAN3",
+                "q": "Durant le transfert d'un patient vulnérable, celui-ci présente un malaise avec altération de la conscience. Quelle est votre réaction ?",
+                "options": [
+                    "Stopper immédiatement le brancard en zone sécurisée, appeler au secours l'équipe soignante la plus prochaine et rester auprès du patient.",
+                    "Continuer le trajet jusqu'à destination en espérant que le service d'arrivée s'en occupe.",
+                    "Le secouer énergiquement pour le faire réagir."
+                ],
+                "rep": "Stopper immédiatement le brancard en zone sécurisée, appeler au secours l'équipe soignante la plus prochaine et rester auprès du patient."
+            },
+            {
+                "id": "BRAN4",
+                "q": "Après avoir transporté un patient porteur d'une BMR ou en isolement protecteur, que faites-vous du brancard ?",
+                "options": [
+                    "Le réutiliser immédiatement pour un autre patient vulnérable du couloir.",
+                    "Le laisser dehors au soleil pendant quelques minutes.",
+                    "Effectuer le bionettoyage/désinfection de contact des points d'appui avec le produit détergent-désinfectant homologué du service."
+                ],
+                "rep": "Effectuer le bionettoyage/désinfection de contact des points d'appui avec le produit détergent-désinfectant homologué du service."
+            },
+            {
+                "id": "BRAN5",
+                "q": "Comment le brancardier participe-t-il à la fluidité du circuit des urgences ?",
+                "options": [
+                    "En informant l'IDE de zone dès que le transfert en service d'aval est effectif pour libérer le box au plus vite.",
+                    "En décidant de l'ordre de passage des patients en radiologie.",
+                    "En poussant vite les brancards dans les couloirs."
+                ],
+                "rep": "En informant l'IDE de zone dès que le transfert en service d'aval est effectif pour libérer le box au plus vite."
+            }
+        ],
+        "Cadre": [
+            {
+                "id": "CAD1",
+                "q": "Dans le cadre de la certification HAS 2027, comment le cadre de santé évalue-t-il la qualité de la prise en charge des publics vulnérables dans son unité ?",
+                "options": [
+                    "En se fiant aux impressions orales lors des pauses café.",
+                    "En réalisant des EPP et audits ciblés (traçabilité des repérages, audits de dossiers 'patient traceur', suivi des FEI) associés à des restitutions d'équipe.",
+                    "En questionnant certains patients au quotidien."
+                ],
+                "rep": "En réalisant des EPP et audits ciblés (traçabilité des repérages, audits de dossiers 'patient traceur', suivi des FEI) associés à des restitutions d'équipe."
+            },
+            {
+                "id": "CAD2",
+                "q": "Tension majeure sur les lits d'aval et accumulation de patients vulnérables en brancard de couloir. Quelle est l'action prioritaire du cadre ?",
+                "options": [
+                    "Déclencher et piloter la cellule de crise/gestion des lits, coordonner avec la direction des soins et réallouer les ressources pour sécuriser les zones saturées.",
+                    "Aller voir les équipes pour leur demander d'augmenter la fluidité.",
+                    "Aller chercher de nouveaux brancards, consigner la tension dans le cahier de garde et souhaiter bon courage aux équipes soignantes."
+                ],
+                "rep": "Déclencher et piloter la cellule de crise/gestion des lits, coordonner avec la direction des soins et réallouer les ressources pour sécuriser les zones saturées."
+            },
+            {
+                "id": "CAD3",
+                "q": "Un événement indésirable grave (EIG) survient chez un patient vulnérable (chute avec fracture sous contention non tracée). Que fait le cadre ?",
+                "options": [
+                    "Modifier a posteriori le dossier de soins pour faire disparaître l'absence de prescription.",
+                    "Rejeter la faute exclusive sur l'élève aide-soignant présent.",
+                    "Organiser une RMM (Revue de Maîtrise des Risques / Mortalité-Morbide), déclarer l'EIG sur le portail dédié et mettre en place un plan d'action correctif avec l'équipe."
+                ],
+                "rep": "Organiser une RMM (Revue de Maîtrise des Risques / Mortalité-Morbide), déclarer l'EIG sur le portail dédié et mettre en place un plan d'action correctif avec l'équipe."
+            },
+            {
+                "id": "CAD4",
+                "q": "Comment le cadre garantit-il l'appropriation par l'équipe des protocoles de bientraitance et de repérage des maltraitances chez les sujets fragiles ?",
+                "options": [
+                    "En intégrant des temps d'échange réguliers (briefings, réunions d'unité), en formant les agents et en facilitant l'accès aux fiches réflexes.",
+                    "En envoyant un mail avec les protocoles en pièce-jointe.",
+                    "En considérant que la formation initiale à l'école suffit pour toute la carrière."
+                ],
+                "rep": "En intégrant des temps d'échange réguliers (briefings, réunions d'unité), en formant les agents et en facilitant l'accès aux fiches réflexes."
+            },
+            {
+                "id": "CAD5",
+                "q": "Quel rôle joue le cadre dans le respect de l'organisation structurée du service ?",
+                "options": [
+                    "Modifier les zones tous les jours sans concertation.",
+                    "Veiller au respect de la sectorisation pour garantir la clarté des rôles, la traçabilité des soins et la sécurité des transmissions inter-métiers.",
+                    "Supprimer les zones pour créer un espace unique sans référent soignant."
+                ],
+                "rep": "Veiller au respect de la sectorisation pour garantir la clarté des rôles, la traçabilité des soins et la sécurité des transmissions inter-métiers."
+            }
+        ]
     },
+    "fiches_reflexes": {
+        "IDE": {
+            "titre": "Mémo Box IDE - Parcours & Vulnérabilités (Semaine 4)",
+            "points_cles": [
+                "Sectorisation stricte : responsabilité directe de la gestion des soins et des risques sur sa zone de 6 box.",
+                "Repérage et traçabilité : cotation systématique des risques de vulnérabilité (chutes, escarres, dénutrition, troubles cognitifs) dès l'admission dans le DPI.",
+                "Surveillance des temps d'attente : traçabilité renforcée des patients en attente prolongée ou en brancard de couloir (hydratation, confort, réévaluations).",
+                "Sécurité des transmissions : relèves ciblées axées sur l'autonomie, les alertes thérapeutiques et le statut des lits d'aval."
+            ]
+        },
+        "Medecin": {
+            "titre": "Mémo Box Médecin - Parcours & Vulnérabilités (Semaine 4)",
+            "points_cles": [
+                "Pilotage sectoriel : responsabilité clinique de l'ensemble des 2 zones rattachées (gestion globale des flux et des priorités médicales).",
+                "Sécurisation thérapeutique : adaptation stricte des posologies aux fonctions d'élimination (DFG) chez le sujet âgé et traçabilité des conciliations médicamenteuses.",
+                "Cadre réglementaire des décisions lourdes : protocoles stricts de contention physique (prescription écrite, limitée, réévaluée) et recherche des directives anticipées.",
+                "Continuité des soins d'aval : validation systématique et transmission immédiate de la lettre de liaison de sortie pour garantir la fluidité du parcours patient."
+            ]
+        },
+        "AS": {
+            "titre": "Mémo Box AS - Parcours & Vulnérabilités (Semaine 4)",
+            "points_cles": [
+                "Prévention active : installation immédiate des supports anti-escarres et respect des postures de décharge pour les patients dépendants ou grabataires.",
+                "Sécurité alimentaire & hydrique : surveillance des apports, adaptation des textures (mixé, eau gélifiée) et prévention des fausses routes lors des repas en zone de soins.",
+                "Veille comportementale : repérage et signalement immédiat à l'IDE de tout changement d'état cutané, de conscience ou d'agitation à risque de chute.",
+                "Préservation de la dignité : utilisation systématique des paravents et respect de l'intimité malgré la forte affluence et la configuration ouverte des urgences."
+            ]
+        },
+        "ARM": {
+            "titre": "Mémo Box ARM - Régulation & Vulnérabilités (Semaine 4)",
+            "points_cles": [
+                "Qualification ciblée : repérage immédiat des situations d'isolement, de perte de contact ou de fragilité gérontologique dès le premier décroché au 15.",
+                "Traçabilité amont : consignation rigoureuse des antécédents lourds, des traitements et des statuts éthiques (directives anticipées) dans le DRM.",
+                "Interface sécurisée : transmission exclusive des éléments cliniques et logistiques au Médecin Régulateur des Urgences (MRU) pour arbitrage et engagement des secours adaptés.",
+                "Gestion des signalements : application stricte des consignes d'alerte en cas de suspicion de maltraitance transmise par un tiers."
+            ]
+        },
+        "Accueil": {
+            "titre": "Mémo Box Accueil - Guichet & Vulnérabilités (Semaine 4)",
+            "points_cles": [
+                "Accueil sécurisé 24h/24 : prise en charge immédiate et mise en sécurité des patients vulnérables isolés ou confus se présentant au comptoir.",
+                "Barrière du secret professionnel : interdiction absolue de divulguer des informations thérapeutiques au guichet ; orientation systématique vers l'IDE ou l'équipe médicale de la zone.",
+                "Gestion rigoureuse des valeurs : application stricte des procédures d'inventaire contradictoire et de mise en coffre des effets personnels des patients non conscients.",
+                "Veille visuelle continue : repérage des signes d'aggravation en salle d'attente et alerte immédiate de l'équipe de tri."
+            ]
+        },
+        "Brancardier": {
+            "titre": "Mémo Box Brancardier - Transport & Vulnérabilités (Semaine 4)",
+            "points_cles": [
+                "Confort et sécurité du transport : installation minutieuse du patient fragile (barrières relevées, protections thermiques, cales posturales) et vigilance permanente.",
+                "Sécurité des appareillages : vérification et fixation des obus d'oxygène et des dispositifs de perfusion avant tout départ de la zone de soins.",
+                "Réaction face à l'incident : arrêt immédiat du transfert en zone sécurisée et appel des soignants les plus proches en cas de modification de la conscience ou des constantes.",
+                "Hygiène et bionettoyage : désinfection systématique des points de contact du brancard avec les produits homologués après le transport de patients à risque (BMR/isolements)."
+            ]
+        },
+        "Cadre": {
+            "titre": "Mémo Box Cadre - Management & Vulnérabilités (Semaine 4)",
+            "points_cles": [
+                "Pilotage qualité & certification HAS 2027 : mise en place d'audits flash, d'EPP ciblées et de revues de dossiers sur le parcours des patients vulnérables.",
+                "Gestion opérationnelle des tensions : animation des cellules de flux, régulation des lits d'aval et réallocation des ressources en cas de saturation des zones (6 box/IDE).",
+                "Maîtrise des risques : pilotage des déclarations d'événements indésirables (FEI/EIG), animation des RMM et mise en place d'actions correctives pérennes.",
+                "Culture de service : accompagnement des équipes, diffusion des protocoles de bientraitance et maintien d'une sectorisation claire des rôles professionnels."
+            ]
+        }
+    }
+}
+
     {
         "id": 5,
         "titre": "Semaine 5 - Gestion des Risques & Identitovigilance",
