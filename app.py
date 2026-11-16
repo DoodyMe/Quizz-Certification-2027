@@ -163,12 +163,20 @@ def calculer_scores_podium_par_metier():
         records = charger_reponses_globales()
         scores_par_metier = {}
         
+        mapping_metiers = {
+            "ARM": "ARM (Assistant/e de Régulation Médicale)",
+            "medecin": "Medecin",
+            "médecin": "Medecin",
+        }
+        
         for r in records:
             pseudo = str(r.get("Pseudo"))
             semaine_id = str(r.get("Semaine_ID"))
             metier = str(r.get("Role", r.get("Metier", "Autre"))).strip()
             if not metier or metier == "":
                 metier = "Général / Non renseigné"
+            else:
+                metier = mapping_metiers.get(metier, metier)
                 
             try:
                 score = int(r.get("Score", 0))
@@ -197,6 +205,7 @@ def calculer_scores_podium_par_metier():
         return podiums_metiers
     except Exception:
         return {}
+
 
 def afficher_et_telecharger_pdf(semaine_id, metier_slug, nom_affichage):
     chemin_pdf = f"fiches_pdf/semaine{semaine_id}_{metier_slug}.pdf"
