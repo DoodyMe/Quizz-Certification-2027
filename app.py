@@ -2130,15 +2130,832 @@ SESSIONS = [
             }
         }
     },
-
-    {
+        {
         "id": 5,
         "titre": "Semaine 5 - Gestion des Risques & Identitovigilance",
         "date_debut": datetime.date(2026, 11, 23),
         "date_fin": datetime.date(2026, 11, 29),
         "tronc_commun": [],
-        "metiers": {},
-        "fiches_reflexes": {}
+        "metiers": {
+            "IDE": [
+                {
+                    "q": "1. [IDE] Un patient arrive aux urgences avec un bracelet d'identitovigilance comportant une inversion entre le nom de naissance et le nom d'usage. L'IDE doit administrer un traitement critique immédiat. Quelle est la règle HAS absolue ?",
+                    "options": [
+                        "Exiger la correction immédiate et la réédition du bracelet conforme (Triptyque : Nom de naissance, Prénom, Date de naissance) avant toute administration de soin à risque.",
+                        "Administrer le traitement sous réserve de vérifier l'oralité avec le patient conscient.",
+                        "Ne rien faire tant que le bureau des entrées n'a pas refait le bracelet complet, quitte à retarder le soin critique de 30 minutes."
+                    ],
+                    "rep": "Exiger la correction immédiate et la réédition du bracelet conforme (Triptyque : Nom de naissance, Prénom, Date de naissance) avant toute administration de soin à risque."
+                },
+                {
+                    "q": "2. [IDE] Lors d'une double lecture pour l'administration de potassium IV direct en urgence absolue (erreur de prescription constatée au dernier moment), l'IDE évite de justesse l'accident. Que qualifie la HAS ?",
+                    "options": [
+                        "Un Événement Indésirable Grave (EIG) avec déclaration obligatoire sous 24h à l'ARS.",
+                        "Une simple friction de service sans importance puisque l'erreur a été évitée in extremis.",
+                        "Un quasi-événement (ou 'near-miss') qui doit impérativement faire l'objet d'une Fiche d'Événement Indésirable (FEI) pour analyse collective des causes."
+                    ],
+                    "rep": "Un quasi-événement (ou 'near-miss') qui doit impérativement faire l'objet d'une Fiche d'Événement Indésirable (FEI) pour analyse collective des causes."
+                },
+                {
+                    "q": "3. [IDE] Un patient présente une allergie documentée aux pénicillines dans son dossier. Une prescription mentionne une amoxicilline-acide clavulanique sans alerte visuelle active sur le logiciel. Quelle est la conduite attendue ?",
+                    "options": [
+                        "Administrer une dose test réduite de moitié pour vérifier la tolérance clinique immédiate.",
+                        "Surseoir à l'administration, alerter le prescripteur pour réévaluer la stratégie thérapeutique et tracer l'interception de l'erreur médicamenteuse.",
+                        "Remplacer d'office la molécule par une céphalosporine de 3e génération sans avis médical."
+                    ],
+                    "rep": "Surseoir à l'administration, alerter le prescripteur pour réévaluer la stratégie thérapeutique et tracer l'interception de l'erreur médicamenteuse."
+                },
+                {
+                    "q": "4. [IDE] En préparant un soluté en zone de soins, l'IDE est interrompu par un appel téléphonique urgent du SMUR. Le flacon reste sur le plan de travail sans étiquette nominative. Piège HAS :",
+                    "options": [
+                        "Tout médicament préparé et non administré immédiatement par le préparateur doit être détruit ou étiqueté selon les règles strictes de traçabilité pour éliminer tout risque de confusion.",
+                        "Le flacon peut être utilisé si l'IDE se souvient parfaitement de ce qu'il a mis dedans.",
+                        "Il suffit de demander à la collègue de valider la préparation à l'aveugle."
+                    ],
+                    "rep": "Tout médicament préparé et non administré immédiatement par le préparateur doit être détruit ou étiqueté selon les règles strictes de traçabilité pour éliminer tout risque de confusion."
+                },
+                {
+                    "q": "5. [IDE] Comment l'IDE doit-il procéder lors d'un prélèvement sanguin complexe chez deux patients homonymes présents simultanément dans des box contigus ?",
+                    "options": [
+                        "Prélever les deux patients à la suite en gardant les tubes dans les mains pour aller plus vite au chariot.",
+                        "Imprimer les étiquettes à l'avance au poste central pour gagner du temps en zone de soins.",
+                        "Utiliser le principe du 'patient unique' : étiquetter les tubes au chevet du patient après l'avoir identifié formellement avec son bracelet, avant de passer au second patient."
+                    ],
+                    "rep": "Utiliser le principe du 'patient unique' : étiquetter les tubes au chevet du patient après l'avoir identifié formellement avec son bracelet, avant de passer au second patient."
+                },
+                {
+                    "q": "6. [IDE] Lors d'une relève de poste, l'IDE sortant signale qu'une hémoculture a été prélevée 2 heures plus tôt mais que le bon de transport n'a pas été validé dans le logiciel. Quel est l'enjeu de sécurité ?",
+                    "options": [
+                        "Un simple retard administratif sans impact sur la fiabilité microbiologique.",
+                        "Un risque de perte de traçabilité, de retard d'acheminement ou de fausse négativité/contamination, imposant une vérification immédiate du circuit et une régularisation tracée.",
+                        "La nécessité de jeter le flacon et de ne pas prévenir le médecin."
+                    ],
+                    "rep": "Un risque de perte de traçabilité, de retard d'acheminement ou de fausse négativité/contamination, imposant une vérification immédiate du circuit et une régularisation tracée."
+                },
+                {
+                    "q": "7. [IDE] Lors de la survenue d'un effet indésirable inattendu suite à l'injection d'un produit de contraste radiologique, l'IDE :",
+                    "options": [
+                        "Traite l'urgence, prévient le médecin sénior, trace l'événement dans le dossier et réalise une déclaration de matériovigilance/pharmacovigilance.",
+                        "Se contente de le dire à l'oral au radiologue sans tracer dans le DPI.",
+                        "Demande au manipulateur radio de faire la déclaration à sa place."
+                    ],
+                    "rep": "Traite l'urgence, prévient le médecin sénior, trace l'événement dans le dossier et réalise une déclaration de matériovigilance/pharmacovigilance."
+                },
+                {
+                    "q": "8. [IDE] Quelle règle d'identitovigilance s'applique impérativement lors du transfert d'un patient des urgences vers le bloc opératoire ou la réanimation ?",
+                    "options": [
+                        "S'assurer que le dossier informatique est simplement fermé sur l'écran du box.",
+                        "Donner les papiers d'identité en main propre au patient pour qu'il les tende au service d'accueil.",
+                        "Vérification croisée verbale et physique de l'identité entre l'IDE des urgences et l'agent transporteur/receveur à partir du bracelet infalsifiable."
+                    ],
+                    "rep": "Vérification croisée verbale et physique de l'identité entre l'IDE des urgences et l'agent transporteur/receveur à partir du bracelet infalsifiable."
+                },
+                {
+                    "q": "9. [IDE] Face à une prescription de chimiothérapie ou de produit hautement cytotoxique égarée ou ambiguë dans les urgences, l'IDE :",
+                    "options": [
+                        "Applique le principe de précaution en devinant la dose usuelle.",
+                        "Refuse l'exécution, contacte immédiatement le prescripteur pour confirmation écrite explicite et alerte la pharmacie (PUI).",
+                        "Demande à un collègue plus ancien de valider l'interprétation de la prescription."
+                    ],
+                    "rep": "Refuse l'exécution, contacte immédiatement le prescripteur pour confirmation écrite explicite et alerte la pharmacie (PUI)."
+                },
+                {
+                    "q": "10. [IDE] En fin de prise en charge d'un patient quittant le service avec une ordonnance et des consignes de surveillance, quel point critique l'IDE vérifie-t-il avant le départ ?",
+                    "options": [
+                        "La compréhension effective des signes d'alerte justifiant un retour aux urgences et la concordance entre les consignes orales, l'ordonnance et l'identité du patient.",
+                        "Uniquement que le brancard du box a été sorti dans le couloir.",
+                        "Que le patient a bien réglé ses éventuels dépassements avant de lire l'ordonnance."
+                    ],
+                    "rep": "La compréhension effective des signes d'alerte justifiant un retour aux urgences et la concordance entre les consignes orales, l'ordonnance et l'identité du patient."
+                }
+            ],
+            "Medecin": [
+                {
+                    "q": "1. [Medecin] Un patient en urgence absolue présente des troubles cognitifs majeurs sans aucun proche ni directives anticipées. Une intervention chirurgicale vitale immédiate s'impose. Quelle règle procédurale valide la décision ?",
+                    "options": [
+                        "Attendre 24 heures l'autorisation d'un juge des tutelles de permanence.",
+                        "Demander l'avis téléphonique d'un voisin présent dans la salle d'attente.",
+                        "Décision médicale collégiale d'urgence tracée dans le dossier (urgence vitale immédiate primant sur le consentement différé, avec recherche active de la personne de confiance)."
+                    ],
+                    "rep": "Décision médicale collégiale d'urgence tracée dans le dossier (urgence vitale immédiate primant sur le consentement différé, avec recherche active de la personne de confiance)."
+                },
+                {
+                    "q": "2. [Medecin] Erreur de prescription de molécule par un interne sous votre responsabilité directe, interceptée par l'IDE avant administration. Quelle est l'exigence culturelle de sécurité HAS ?",
+                    "options": [
+                        "Analyser collectivement le contexte (fatigue, surcharge, ergonomie du logiciel de prescription) via une démarche d'équipe non punitive et déclarer le quasi-événement.",
+                        "Sanctionner l'interne par un avertissement écrit dans son livret de stage pour l'exemple.",
+                        "Ne rien faire puisque le patient n'a subi aucun dommage physique."
+                    ],
+                    "rep": "Analyser collectivement le contexte (fatigue, surcharge, ergonomie du logiciel de prescription) via une démarche d'équipe non punitive et déclarer le quasi-événement."
+                },
+                {
+                    "q": "3. [Medecin] Lors de la validation de la sortie d'un patient fragile polymédiqué, vous omettez de signer la lettre de liaison de sortie obligatoire. Quel risque majeur pointe la certification HAS ?",
+                    "options": [
+                        "Un retard de facturation administrative pour le service financier de l'hôpital.",
+                        "Une rupture majeure dans la continuité des soins de ville, favorisant la iatrogénie médicamenteuse et les réadmissions évitables.",
+                        "Une simple anomalie statistique sans incidence sur la sécurité du patient."
+                    ],
+                    "rep": "Une rupture majeure dans la continuité des soins de ville, favorisant la iatrogénie médicamenteuse et les réadmissions évitables."
+                },
+                {
+                    "q": "4. [Medecin] Un patient décède aux urgences dans un contexte d'Événement Indésirable Grave Associé aux Soins (EIGAS). Quelle est la chronologie réglementaire de déclaration imposée à l'établissement ?",
+                    "options": [
+                        "Déclaration sans délai sur le portail ministériel des signalements (par l'ARS/direction) et enclenchement immédiat d'une analyse des causes (RMM/CREX).",
+                        "Attendre la fin du mois pour compiler tous les décès survenus aux urgences.",
+                        "Informer uniquement la famille par téléphone sans formaliser de dossier de déclaration interne."
+                    ],
+                    "rep": "Déclaration sans délai sur le portail ministériel des signalements (par l'ARS/direction) et enclenchement immédiat d'une analyse des causes (RMM/CREX)."
+                },
+                {
+                    "q": "5. [Medecin] Un patient présente une hémorragie digestive active nécessitant une transfusion en urgence. L'étiquette de groupage sanguin porte une mention 'détermination en cours - 1 seule détermination disponible'. Quelle règle transfusionnelle s'impose ?",
+                    "options": [
+                        "Transfuser des concentrés de globules rouges isogroupes sur la base d'une seule détermination si le patient n'est pas en arrêt cardiaque.",
+                        "Respecter strictement les règles de sécurité transfusionnelle (O négatif/KEL- en urgence vitale immédiate selon protocole si pas de double détermination validée) et ne jamais valider une compatibilité sur une seule détermination hors urgence vitale non différable.",
+                        "Demander à l'IDE de re-prélever le même tube et de le renvoyer sous le même nom."
+                    ],
+                    "rep": "Respecter strictement les règles de sécurité transfusionnelle (O négatif/KEL- en urgence vitale immédiate selon protocole si pas de double détermination validée) et ne jamais valider une compatibilité sur une seule détermination hors urgence vitale non différable."
+                },
+                {
+                    "q": "6. [Medecin] Devant un afflux massif de résultats biologiques critiques non consultés dans les délais (en raison de la saturation du service), quelle est la responsabilité du médecin sénior référent de zone ?",
+                    "options": [
+                        "Considérer que le patient est parti donc le problème est réglé.",
+                        "Mettre en place une organisation garantissant l'alerte et la levée des doutes sur les résultats anormaux avant la sortie définitive du patient.",
+                        "Déléguer cette surveillance exclusivement aux secrétaires médicales."
+                    ],
+                    "rep": "Mettre en place une organisation garantissant l'alerte et la levée des doutes sur les résultats anormaux avant la sortie définitive du patient."
+                },
+                {
+                    "q": "7. [Medecin] Comment traiter sur le plan de l'identitovigilance un patient inconscient, non identifié, amené par les secours sans le moindre document ?",
+                    "options": [
+                        "Créer un dossier d'urgence sous identité provisoire codifiée selon la charte d'identitovigilance institutionnelle, avec un bracelet de crise spécifique, enclenchant la recherche active d'identité.",
+                        "L'appeler par un prénom inventé par l'interne de garde sur le tableau d'affichage.",
+                        "Attendre qu'il se réveille pour lui demander son nom de naissance."
+                    ],
+                    "rep": "Créer un dossier d'urgence sous identité provisoire codifiée selon la charte d'identitovigilance institutionnelle, avec un bracelet de crise spécifique, enclenchant la recherche active d'identité."
+                },
+                {
+                    "q": "8. [Medecin] Un patient refuse une hospitalisation en aval alors que son état somatique l'exige. Le médecin rédige la sortie contre avis médical :",
+                    "options": [
+                        "En lui faisant signer une décharge de responsabilité juridique absolue qui dédouane totalement l'hôpital.",
+                        "En refusant de lui rendre ses effets personnels tant qu'il n'a pas accepté le transfert.",
+                        "En s'assurant que le patient a reçu une information loyale et éclairée sur les risques encourus, en traçant cette information dans le DPI et en lui proposant des alternatives de suivi."
+                    ],
+                    "rep": "En s'assurant que le patient a reçu une information loyale et éclairée sur les risques encourus, en traçant cette information dans le DPI et en lui proposant des alternatives de suivi."
+                },
+                {
+                    "q": "9. [Medecin] Lors de la réalisation d'un geste invasif à haut risque en urgence (ex: pose de voie centrale), le médecin :",
+                    "options": [
+                        "Peut s'affranchir des règles d'asepsie stricte si la situation est critique.",
+                        "Applique les checklists de sécurité des soins, le marquage/contrôle d'identitovigilance et trace la réalisation ainsi que ses complications éventuelles.",
+                        "Délègue l'intégralité de la traçabilité à l'étudiant en médecine présent."
+                    ],
+                    "rep": "Applique les checklists de sécurité des soins, le marquage/contrôle d'identitovigilance et trace la réalisation ainsi que ses complications éventuelles."
+                },
+                {
+                    "q": "10. [Medecin] Quelle est la définition exacte du 'Patient Traceur' lors de la visite des experts-visiteurs de la HAS ?",
+                    "options": [
+                        "Un mode d'évaluation méthodologique où les experts analysent la qualité et la sécurité des soins en suivant pas à pas le dossier et le parcours réel d'un patient hospitalisé.",
+                        "Un patient porteur d'une balise GPS pour suivre ses déplacements dans l'hôpital.",
+                        "Un patient choisi au hasard pour tester la rapidité du laboratoire de biologie."
+                    ],
+                    "rep": "Un mode d'évaluation méthodologique où les experts analysent la qualité et la sécurité des soins en suivant pas à pas le dossier et le parcours réel d'un patient hospitalisé."
+                }
+            ],
+            "AS": [
+                {
+                    "q": "1. [AS] Un patient confus est installé sur un brancard des urgences. L'AS remarque que le bracelet d'identification est absent du poignet et traîne sur le matelas. Que fait l'AS ?",
+                    "options": [
+                        "Le remet elle-même au poignet du patient en devinant l'emplacement.",
+                        "Jette le bracelet à la poubelle pour éviter qu'il ne se perde.",
+                        "Alerte immédiatement l'IDE pour qu'un contrôle formel d'identité soit opéré et qu'un nouveau bracelet certifié soit posé avant tout soin ou transport."
+                    ],
+                    "rep": "Alerte immédiatement l'IDE pour qu'un contrôle formel d'identité soit opéré et qu'un nouveau bracelet certifié soit posé avant tout soin ou transport."
+                },
+                {
+                    "q": "2. [AS] Lors de l'installation d'un patient vulnérable en box, l'AS constate une lésion suspecte de maltraitance (ecchymoses d'âges différents sur le corps). Quelle est la conduite HAS ?",
+                    "options": [
+                        "Transmettre immédiatement et de façon confidentielle les observations factuelles à l'IDE et au médecin sénior, et consigner les faits dans le dossier de soins.",
+                        "Interroger agressivement l'accompagnant dans le couloir pour obtenir des aveux.",
+                        "Ne rien dire pour respecter le secret de la vie privée de la famille."
+                    ],
+                    "rep": "Transmettre immédiatement et de façon confidentielle les observations factuelles à l'IDE et au médecin sénior, et consigner les faits dans le dossier de soins."
+                },
+                {
+                    "q": "3. [AS] En préparant un box pour un patient présentant une toux productive avec suspicion de tuberculose pulmonaire, quel équipement l'AS doit-il porter à l'entrée du box ?",
+                    "options": [
+                        "Un simple masque chirurgical porté uniquement par le patient si possible.",
+                        "Un appareil de protection respiratoire de type masque FFP2 ajusté, dans le cadre des précautions complémentaires 'Air', et s'assurer de la porte fermée.",
+                        "Une surblouse en tissu sans protection respiratoire."
+                    ],
+                    "rep": "Un appareil de protection respiratoire de type masque FFP2 ajusté, dans le cadre des précautions complémentaires 'Air', et s'assurer de la porte fermée."
+                },
+                {
+                    "q": "4. [AS] En réalisant le bio-nettoyage d'un box, l'AS découvre un flacon ouvert contenant un produit chimique d'entretien sans étiquette. Piège sécurité :",
+                    "options": [
+                        "Ne jamais utiliser un produit non identifié, l'isoler et appliquer le protocole de signalisation des risques chimiques (produit non étiqueté = danger majeur).",
+                        "L'utiliser pour finir le sol du box voisin.",
+                        "Le transvaser dans une bouteille d'eau vide."
+                    ],
+                    "rep": "Ne jamais utiliser un produit non identifié, l'isoler et appliquer le protocole de signalisation des risques chimiques (produit non étiqueté = danger majeur)."
+                },
+                {
+                    "q": "5. [AS] Quelle est la règle d'or de l'AS en matière d'identitovigilance lors du transport ou de l'accompagnement d'un patient vers l'imagerie ?",
+                    "options": [
+                        "Se fier au numéro du box indiqué sur la porte.",
+                        "Laisser le patient donner lui-même son dossier au radiologue sans contrôle.",
+                        "Demander au patient son prénom et vérifier la concordance avec le brancard et le dossier d'accompagnement."
+                    ],
+                    "rep": "Demander au patient son prénom et vérifier la concordance avec le brancard et le dossier d'accompagnement."
+                },
+                {
+                    "q": "6. [AS] Lors d'une réfection de lit ou d'un change en box, l'AS constate qu'une sonde urinaire ou un drain est tiré ou coudé sous le drap. Quelle est la conduite attendue ?",
+                    "options": [
+                        "Tirer d'un coup sec pour remettre le dispositif en place et replier le drap dessus.",
+                        "Prévenir immédiatement l'IDE sans forcer ni mobiliser abusivement le dispositif, afin d'éviter un traumatisme ou un arrachement accidentel.",
+                        "Laisser le tuyau coincé sous le matelas jusqu'à la fin du poste."
+                    ],
+                    "rep": "Prévenir immédiatement l'IDE sans forcer ni mobiliser abusivement le dispositif, afin d'éviter un traumatisme ou un arrachement accidentel."
+                },
+                {
+                    "q": "7. [AS] Un patient à jeun pour un examen ou un geste invasif demande un verre d'eau et un biscuit car il a faim. Quelle est la règle de sécurité ?",
+                    "options": [
+                        "Vérifier impérativement la consigne de jeûne avec l'IDE ou le médecin avant toute prise alimentaire ou hydrique, car une rupture de jeûne peut faire reporter ou annuler un acte urgent.",
+                        "Lui donner un petit encas en cachette puisque ce n'est pas un vrai repas.",
+                        "Lui dire de boire un grand verre d'eau du robinet pour patienter."
+                    ],
+                    "rep": "Vérifier impérativement la consigne de jeûne avec l'IDE ou le médecin avant toute prise alimentaire ou hydrique, car une rupture de jeûne peut faire reporter ou annuler un acte urgent."
+                },
+                {
+                    "q": "8. [AS] Bientraitance et intimité : un box d'urgences n'a pas de porte pleine mais un simple rideau. Des passants discutent bruyamment dans le couloir. L'AS :",
+                    "options": [
+                        "Laisse le rideau entrouvert pour surveiller la luminosité.",
+                        "Demande au patient de parler moins fort.",
+                        "Ferme le rideau hermétiquement, ajuste les protections visuelles et veille à baisser la voix lors des échanges relatifs à l'intimité du patient."
+                    ],
+                    "rep": "Ferme le rideau hermétiquement, ajuste les protections visuelles et veille à baisser la voix lors des échanges relatifs à l'intimité du patient."
+                },
+                {
+                    "q": "9. [AS] Lors de la remise d'un plateau-repas ou d'une collation en box, l'AS vérifie la présence d'un régime particulier ou d'une texture adaptée (ex: dysphagie / mixé / liquide épaissi). Pourquoi ?",
+                    "options": [
+                        "Uniquement pour respecter les préférences gustatives du patient.",
+                        "Pour prévenir un risque grave de fausse route ou d'erreur diététique/allergique chez un patient fragile.",
+                        "Parce que le service restauration impose de vérifier l'étiquette du plateau."
+                    ],
+                    "rep": "Pour prévenir un risque grave de fausse route ou d'erreur diététique/allergique chez un patient fragile."
+                },
+                {
+                    "q": "10. [AS] Comment l'AS participe-t-elle activement à la démarche qualité HAS dans sa zone de travail ?",
+                    "options": [
+                        "En signalant les pannes, en participant aux remontées de fiches d'événements indésirables (FEI) et en appliquant rigoureusement les protocoles d'hygiène et de bientraitance.",
+                        "En rangeant le placard à balais une fois par an.",
+                        "En ne faisant remonter aucun incident pour ne pas surcharger la hiérarchie."
+                    ],
+                    "rep": "En signalant les pannes, en participant aux remontées de fiches d'événements indésirables (FEI) et en appliquant rigoureusement les protocoles d'hygiène et de bientraitance."
+                }
+            ],
+            "ARM (Assistant/e de Régulation Médicale)": [
+                {
+                    "q": "1. [ARM] Un appel arrive au SAMU pour un patient dont l'identité est incertaine (témoin affolé qui raccroche vite). Quelle est la priorité absolue d'identitovigilance de l'ARM ?",
+                    "options": [
+                        "Clôturer l'appel sans suite pour ne pas encombrer la ligne.",
+                        "Attendre que l'appelant rappelle par lui-même.",
+                        "Tenter de rappeler immédiatement, géolocaliser l'appel, créer un dossier de crise sécurisé avec les indices disponibles et alerter le régulateur."
+                    ],
+                    "rep": "Tenter de rappeler immédiatement, géolocaliser l'appel, créer un dossier de crise sécurisé avec les indices disponibles et alerter le régulateur."
+                },
+                {
+                    "q": "2. [ARM] Risque d'erreur d'aiguillage de moyen : un appelant signale une détresse respiratoire aiguë mais l'ARM sélectionne par erreur un vecteur de transport simple au lieu d'un SMUR. Piège de gestion des risques :",
+                    "options": [
+                        "Dès la prise de conscience, l'ARM applique la procédure d'alerte corrective immédiate en réajustant le vecteur et rédige une fiche d'événement indésirable (FEI) pour analyse systémique.",
+                        "L'ARM doit masquer son erreur dans le dossier informatique pour éviter un blâme.",
+                        "Laisser l'ambulance simple arriver sur les lieux pour voir."
+                    ],
+                    "rep": "Dès la prise de conscience, l'ARM applique la procédure d'alerte corrective immédiate en réajustant le vecteur et rédige une fiche d'événement indésirable (FEI) pour analyse systémique."
+                },
+                {
+                    "q": "3. [ARM] Un tiers appelle en se faisant passer pour un proche pour obtenir des renseignements médicaux confidentiels sur une victime d'accident grave. L'ARM :",
+                    "options": [
+                        "Donne l'ensemble du bilan hémodynamique car l'appelant est insistant.",
+                        "Applique strictement les règles du secret professionnel et de non-divulgation, et oriente vers la cellule d'information officielle ou le médecin régulateur.",
+                        "Transmet le numéro de portable personnel du médecin urgentiste."
+                    ],
+                    "rep": "Applique strictement les règles du secret professionnel et de non-divulgation, et oriente vers la cellule d'information officielle ou le médecin régulateur."
+                },
+                {
+                    "q": "4. [ARM] En mode dégradé informatique complet (panne du logiciel CENTAURE), comment l'ARM garantit-il la sécurité de la traçabilité des engagements de moyens ?",
+                    "options": [
+                        "En basculant immédiatement sur les mains courantes et fiches chronologiques papier de crise préétablies, avec double horodatage.",
+                        "En mémorisant les interventions dans sa tête sans support écrit.",
+                        "En arrêtant de prendre les appels d'urgence jusqu'au retour du réseau."
+                    ],
+                    "rep": "En basculant immédiatement sur les mains courantes et fiches chronologiques papier de crise préétablies, avec double horodatage."
+                },
+                {
+                    "q": "5. [ARM] Homonymie en régulation : deux dossiers de patients portant exactement le même nom de naissance et prénom sont créés à 10 minutes d'intervalle. L'ARM :",
+                    "options": [
+                        "Fusionne les deux dossiers en un seul pour faire de la place.",
+                        "Supprime le plus ancien des deux.",
+                        "Vérifie les critères discriminants (date de naissance, adresse, numéro de téléphone, contexte) pour s'assurer de la stricte dissociation des dossiers et éviter la confusion de moyens."
+                    ],
+                    "rep": "Vérifie les critères discriminants (date de naissance, adresse, numéro de téléphone, contexte) pour s'assurer de la stricte dissociation des dossiers et éviter la confusion de moyens."
+                },
+                {
+                    "q": "6. [ARM] Un appelant signale une situation de violence intrafamiliale menaçante. L'ARM :",
+                    "options": [
+                        "Conseille à la victime de changer de serrure.",
+                        "Sécurise les données, évalue le degré d'urgence, transmet immédiatement au médecin régulateur et coordonne l'intervention des forces de l'ordre selon la doctrine de sécurité.",
+                        "Transfère l'appel vers une ligne de loisirs."
+                    ],
+                    "rep": "Sécurise les données, évalue le degré d'urgence, transmet immédiatement au médecin régulateur et coordonne l'intervention des forces de l'ordre selon la doctrine de sécurité."
+                },
+                {
+                    "q": "7. [ARM] Quelle est l'exigence de la HAS concernant l'enregistrement audio des appels au centre 15 et leur traçabilité informatique ?",
+                    "options": [
+                        "Conservation réglementaire des bandes et traçabilité inaltérable des actions de régulation dans les dossiers informatisés, opposables en cas de contentieux.",
+                        "Les enregistrements peuvent être effacés au bout de 24 heures pour gagner de l'espace disque.",
+                        "Aucun enregistrement n'est obligatoire."
+                    ],
+                    "rep": "Conservation réglementaire des bandes et traçabilité inaltérable des actions de régulation dans les dossiers informatisés, opposables en cas de contentieux."
+                },
+                {
+                    "q": "8. [ARM] Lors d'un rappel d'un requérant pour un dossier déjà ouvert, l'ARM constate que l'adresse d'intervention saisie initialement comportait une erreur de rue. Quelle action est critique ?",
+                    "options": [
+                        "Corriger immédiatement la localisation dans le dossier, notifier le changement au régulateur et aux vecteurs déjà engagés, et tracer la rectification pour éviter un retard d'arrivée sur site.",
+                        "Créer un deuxième dossier distinct sans fermer ni relier le premier.",
+                        "Attendre que l'équipage sur place signale qu'il ne trouve pas l'adresse."
+                    ],
+                    "rep": "Corriger immédiatement la localisation dans le dossier, notifier le changement au régulateur et aux vecteurs déjà engagés, et tracer la rectification pour éviter un retard d'arrivée sur site."
+                },
+                {
+                    "q": "9. [ARM] Transmission d'une alerte sanitaire grave (ex: intoxication collective) : l'ARM doit :",
+                    "options": [
+                        "Diffuser l'information sur ses réseaux sociaux personnels.",
+                        "Alerter immédiatement le médecin régulateur chef de service et appliquer la procédure de signalement institutionnel de crise sanitaire.",
+                        "Attendre la fin de sa semaine de travail pour en parler."
+                    ],
+                    "rep": "Alerter immédiatement le médecin régulateur chef de service et appliquer la procédure de signalement institutionnel de crise sanitaire."
+                },
+                {
+                    "q": "10. [ARM] Rôle de l'ARM dans la culture de sécurité des soins du SAMU :",
+                    "options": [
+                        "Être le premier maillon de la barrière de sécurité, qualifiant rigoureusement le risque et participant activement aux retours d'expérience (REX).",
+                        "Se contenter de décrocher le téléphone sans analyser les risques de l'appel.",
+                        "Laisser l'ordinateur faire tout le travail de tri."
+                    ],
+                    "rep": "Être le premier maillon de la barrière de sécurité, qualifiant rigoureusement le risque et participant activement aux retours d'expérience (REX)."
+                }
+            ],
+            "Accueil": [
+                {
+                    "q": "1. [Accueil] Un patient se présente au guichet avec une carte d'identité périmée mais un passeport valide et sa carte Vitale. Quel est le réflexe d'identitovigilance ?",
+                    "options": [
+                        "Refuser systématiquement l'enregistrement administratif et le renvoyer chez lui sans prévenir l'IOA.",
+                        "Enregistrer l'identité à partir du justificatif valide le plus probant (passeport / CNI valide) en respectant la charte d'identitovigilance, sans inventer de donnée.",
+                        "Saisir un prénom approximatif en attendant qu'il retrouve un autre papier."
+                    ],
+                    "rep": "Enregistrer l'identité à partir du justificatif valide le plus probant (passeport / CNI valide) en respectant la charte d'identitovigilance, sans inventer de donnée."
+                },
+                {
+                    "q": "2. [Accueil] Erreur d'enregistrement d'identité au guichet : un agent sélectionne par erreur le mauvais homonyme dans la base de données administrative. Conséquence critique HAS :",
+                    "options": [
+                        "Risque majeur de télescopage des dossiers médicaux, d'erreurs d'examens et d'administration de traitements inadaptés. La vigilance à l'accueil est le premier rempart d'identitovigilance.",
+                        "Aucun impact, c'est purement de la papeterie.",
+                        "Le médecin rectifiera de lui-même sans aide."
+                    ],
+                    "rep": "Risque majeur de télescopage des dossiers médicaux, d'erreurs d'examens et d'administration de traitements inadaptés. La vigilance à l'accueil est le premier rempart d'identitovigilance."
+                },
+                {
+                    "q": "3. [Accueil] Confidentialité au comptoir : un patient énonce sa pathologie intime à haute voix devant une file d'attente serrée. L'agent d'accueil :",
+                    "options": [
+                        "Laisse faire pour accélérer le flux.",
+                        "Invite discrètement l'usager à respecter la ligne de discrétion, baisse la voix et adapte l'environnement pour préserver le secret médical.",
+                        "Demande à la file d'attente de commenter le diagnostic."
+                    ],
+                    "rep": "Invite discrètement l'usager à respecter la ligne de discrétion, baisse la voix et adapte l'environnement pour préserver le secret médical."
+                },
+                {
+                    "q": "4. [Accueil] Gestion des objets de valeur d'un patient pris en charge en urgence vitale et inconscient au déchocage :",
+                    "options": [
+                        "Réaliser un inventaire contradictoire formel avec un soignant, placer les valeurs dans un sac scellé sécurisé et les déposer au coffre de l'établissement.",
+                        "Laisser les bijoux dans le blouson posé sur la chaise de la salle d'attente.",
+                        "Les confier au premier passant se disant un ami de la famille."
+                    ],
+                    "rep": "Réaliser un inventaire contradictoire formel avec un soignant, placer les valeurs dans un sac scellé sécurisé et les déposer au coffre de l'établissement."
+                },
+                {
+                    "q": "5. [Accueil] Un accompagnant demande au guichet à consulter le dossier médical complet de son conjoint majeur hospitalisé aux urgences, sans procuration ni statut de personne de confiance désignée. Quelle est la règle ?",
+                    "options": [
+                        "Imprimer l'intégralité des examens et les lui remettre immédiatement pour apaiser la famille.",
+                        "Refuser la communication directe des éléments médicaux confidentiels à un tiers non habilité et orienter vers l'équipe médicale selon les règles du secret médical et de l'accès au dossier.",
+                        "Lui dicter les conclusions diagnostiques à voix haute au guichet."
+                    ],
+                    "rep": "Refuser la communication directe des éléments médicaux confidentiels à un tiers non habilité et orienter vers l'équipe médicale selon les règles du secret médical et de l'accès au dossier."
+                },
+                {
+                    "q": "6. [Accueil] En cas de panne informatique des admissions, l'agent d'accueil doit :",
+                    "options": [
+                        "Arrêter d'inscrire les patients et leur dire de revenir le lendemain.",
+                        "Utiliser la papeterie de secours (fiches d'admission de crise) en s'assurant de recueillir rigoureusement le triptyque d'identitovigilance.",
+                        "Noter les prénoms sur un bout de carton de récupération."
+                    ],
+                    "rep": "Utiliser la papeterie de secours (fiches d'admission de crise) en s'assurant de recueillir rigoureusement le triptyque d'identitovigilance."
+                },
+                {
+                    "q": "7. [Accueil] Un journaliste se présente au guichet des urgences en demandant des détails sur une personnalité admise suite à un accident. L'agent d'accueil :",
+                    "options": [
+                        "Applique strictement la consigne de non-divulgation, refuse l'accès et oriente vers la direction de la communication / cellule officielle.",
+                        "Lui vend l'information en échange d'un article positif.",
+                        "Lui indique dans quel box est le patient."
+                    ],
+                    "rep": "Applique strictement la consigne de non-divulgation, refuse l'accès et oriente vers la direction de la communication / cellule officielle."
+                },
+                {
+                    "q": "8. [Accueil] Quelle pièce justificative officielle est prioritairement exigée pour lever un doute sur l'identité d'un patient se présentant à l'accueil des urgences ?",
+                    "options": [
+                        "Une carte de fidélité de grande surface.",
+                        "Une facture de téléphone fixe de moins de 3 mois.",
+                        "Une pièce d'identité officielle avec photographie (CNI, passeport, titre de séjour) combinée à la carte Vitale."
+                    ],
+                    "rep": "Une pièce d'identité officielle avec photographie (CNI, passeport, titre de séjour) combinée à la carte Vitale."
+                },
+                {
+                    "q": "9. [Accueil] Comment l'agent d'accueil gère-t-il l'attente prolongée des familles en période de forte tension aux urgences ?",
+                    "options": [
+                        "En leur raccrochant le guichet au nez pour être tranquille.",
+                        "En faisant preuve d'empathie, en expliquant de manière transparente le mode de tri fondé sur la gravité (et non l'ordre d'arrivée) et en faisant le lien avec l'équipe soignante.",
+                        "En leur promettant une heure de sortie précise et irréaliste."
+                    ],
+                    "rep": "En faisant preuve d'empathie, en expliquant de manière transparente le mode de tri fondé sur la gravité (et non l'ordre d'arrivée) et en faisant le lien avec l'équipe soignante."
+                },
+                {
+                    "q": "10. [Accueil] Un patient mineur se présente seul au guichet pour des soins. Quel réflexe administratif et de sécurité est attendu à l'accueil ?",
+                    "options": [
+                        "Le renvoyer dehors sans prévenir l'équipe soignante.",
+                        "Alerter immédiatement l'équipe soignante (IOA) et appliquer les procédures d'accueil/protection des mineurs ainsi que la recherche des titulaires de l'autorité parentale selon le contexte.",
+                        "Lui faire signer lui-même une décharge financière et médicale."
+                    ],
+                    "rep": "Alerter immédiatement l'équipe soignante (IOA) et appliquer les procédures d'accueil/protection des mineurs ainsi que la recherche des titulaires de l'autorité parentale selon le contexte."
+                }
+            ],
+            "Brancardier": [
+                {
+                    "q": "1. [Brancardier] Le brancardier vient chercher un patient en box pour l'imagerie. Le patient n'a pas de bracelet d'identitovigilance à son poignet. Que dit la règle HAS ?",
+                    "options": [
+                        "Emmener le patient quand même en lui demandant juste son nom à l'oral.",
+                        "Inscrire le nom du patient au feutre sur sa main pour aller plus vite.",
+                        "Refuser le départ du brancard, alerter l'IDE pour poser un bracelet conforme et certifié avant d'effectuer le moindre déplacement."
+                    ],
+                    "rep": "Refuser le départ du brancard, alerter l'IDE pour poser un bracelet conforme et certifié avant d'effectuer le moindre déplacement."
+                },
+                {
+                    "q": "2. [Brancardier] Transport d'un patient sous oxygénothérapie : le brancardier oublie de fixer la bouteille d'oxygène dans son support, celle-ci roule au sol et la lyre se débranche. Analyse du risque :",
+                    "options": [
+                        "Un quasi-événement / risque critique de chute d'obus sous pression et de coupure d'oxygène pour un patient fragile, nécessitant une Fiche d'Événement Indésirable (FEI).",
+                        "Un incident sans gravité, il suffit de la ramasser.",
+                        "Une simple maladresse de manipulation sans traçabilité requise."
+                    ],
+                    "rep": "Un quasi-événement / risque critique de chute d'obus sous pression et de coupure d'oxygène pour un patient fragile, nécessitant une Fiche d'Événement Indésirable (FEI)."
+                },
+                {
+                    "q": "3. [Brancardier] Au moment de quitter le service de radiologie avec un patient, le manipulateur remet au brancardier le dossier d'un autre patient portant un nom très proche. Quelle est la bonne réaction ?",
+                    "options": [
+                        "Prendre les deux dossiers ensemble et faire le tri dans le couloir.",
+                        "Vérifier systématiquement la concordance entre le bracelet du patient et l'identité figurant sur les documents/examens avant de quitter le secteur, et faire corriger l'erreur immédiatement.",
+                        "Laisser le dossier sur le comptoir de radiologie sans rien dire."
+                    ],
+                    "rep": "Vérifier systématiquement la concordance entre le bracelet du patient et l'identité figurant sur les documents/examens avant de quitter le secteur, et faire corriger l'erreur immédiatement."
+                },
+                {
+                    "q": "4. [Brancardier] Hygiène hospitalière : après le transport d'un patient connu porteur d'une bactérie multirésistante (BMR), le brancardier doit :",
+                    "options": [
+                        "Réaliser un bio-nettoyage systématique et complet des surfaces de contact du brancard (matelas, ridelles, poignées) avec le produit détergent-désinfectant homologué.",
+                        "Laisser le brancard tel quel pour le patient suivant.",
+                        "Passer un coup de chiffon sec pour enlever la poussière."
+                    ],
+                    "rep": "Réaliser un bio-nettoyage systématique et complet des surfaces de contact du brancard (matelas, ridelles, poignées) avec le produit détergent-désinfectant homologué."
+                },
+                {
+                    "q": "5. [Brancardier] Ergonomie et sécurité des manipulations : pour transférer un patient grabataire du lit au brancard, le brancardier :",
+                    "options": [
+                        "Tire le patient par les bras en force brute.",
+                        "Demande au patient de sauter seul sur le brancard.",
+                        "Utilise les équipements d'aide à la mobilisation (plan glissant, drap de transfert) en collaboration avec l'aide-soignant ou l'infirmier, en respectant les postures de sécurité."
+                    ],
+                    "rep": "Utilise les équipements d'aide à la mobilisation (plan glissant, drap de transfert) en collaboration avec l'aide-soignant ou l'infirmier, en respectant les postures de sécurité."
+                },
+                {
+                    "q": "6. [Brancardier] Le brancardier est invité par un collègue à modifier les débits d'une seringue électrique de perfusion pendant le trajet en ascenseur. Il doit :",
+                    "options": [
+                        "Obtempérer pour aider l'équipe en tension.",
+                        "Refuser formellement : le brancardier ne doit jamais manipuler les dispositifs médicaux actifs, les débits ou les pompes de perfusion.",
+                        "Arrêter l'alarme de la machine en appuyant sur n'importe quel bouton."
+                    ],
+                    "rep": "Refuser formellement : le brancardier ne doit jamais manipuler les dispositifs médicaux actifs, les débits ou les pompes de perfusion."
+                },
+                {
+                    "q": "7. [Brancardier] Sécurité des circulations : lors d'un Plan Blanc, le brancardier doit respecter :",
+                    "options": [
+                        "Les sens de circulation spécifiques et sectorisés (flux propres/contaminés) définis par la cellule logistique de crise.",
+                        "Le chemin le plus court en traversant les zones confinées interdites.",
+                        "Les couloirs réservés au public de l'hôpital."
+                    ],
+                    "rep": "Les sens de circulation spécifiques et sectorisés (flux propres/contaminés) définis par la cellule logistique de crise."
+                },
+                {
+                    "q": "8. [Brancardier] Comment s'assure-t-on de la stabilité d'un patient positionné sur un brancard avant d'entamer le déplacement ?",
+                    "options": [
+                        "Demander au patient s'il a le vertige sans relever les barrières.",
+                        "Courir directement dans le couloir pour tester l'équilibre.",
+                        "Vérification du verrouillage complet et de la hauteur des ridelles de sécurité, calage correct du corps et des dispositifs associés."
+                    ],
+                    "rep": "Vérification du verrouillage complet et de la hauteur des ridelles de sécurité, calage correct du corps et des dispositifs associés."
+                },
+                {
+                    "q": "9. [Brancardier] Lors de l'arrivée dans un service d'hospitalisation en aval, le lit prévu n'est pas prêt ou le service signale un problème d'accueil. Quelle est la conduite à tenir ?",
+                    "options": [
+                        "Laisser le patient seul dans le couloir du service d'aval et repartir à vide.",
+                        "Ne pas abandonner le patient sans prise en charge sécurisée, prévenir le cadre/référent des urgences et suivre la procédure de gestion des transferts/lits tampons.",
+                        "Ramener le patient au fond du parking des urgences."
+                    ],
+                    "rep": "Ne pas abandonner le patient sans prise en charge sécurisée, prévenir le cadre/référent des urgences et suivre la procédure de gestion des transferts/lits tampons."
+                },
+                {
+                    "q": "10. [Brancardier] Rôle clé du brancardier dans la fluidité et la sécurité des urgences :",
+                    "options": [
+                        "Optimiser les délais de transport, relayer les informations de tension au personnel soignant et contribuer à la sécurité active des transferts.",
+                        "Rester invisible et ne communiquer avec personne.",
+                        "Décider de la priorité médicale des examens radiologiques."
+                    ],
+                    "rep": "Optimiser les délais de transport, relayer les informations de tension au personnel soignant et contribuer à la sécurité active des transferts."
+                }
+            ],
+            "ASH": [
+                {
+                    "q": "1. [ASH] En effectuant le bio-nettoyage d'un box d'urgences, l'ASH trouve un flacon de traitement anticancéreux (cytotoxique) éliminé par erreur dans la poubelle noire classique (DAOM). Quelle est la conduite immédiate ?",
+                    "options": [
+                        "Le laisser dans la poubelle pour ne pas perturber le tri.",
+                        "Le vider dans l'évier du box et jeter le flacon vide.",
+                        "Alerter immédiatement l'équipe soignante et reconditionner le déchet dans la filière spécifique sécurisée appropriée (DASRI / cytotoxiques) pour prévenir un risque toxique majeur."
+                    ],
+                    "rep": "Alerter immédiatement l'équipe soignante et reconditionner le déchet dans la filière spécifique sécurisée appropriée (DASRI / cytotoxiques) pour prévenir un risque toxique majeur."
+                },
+                {
+                    "q": "2. [ASH] L'ASH constate qu'une flaque de liquide biologique vient de tomber au sol dans un couloir de passage. Quelle est la méthode de sécurité avant de passer la lavette ?",
+                    "options": [
+                        "Essuyer rapidement sans balisage pendant que les brancards passent.",
+                        "Baliser/sécuriser temporairement la zone si possible pour éviter les glissades, porter les gants adaptés et appliquer le protocole de traitement des souillures biologiques.",
+                        "Saupoudrer du sel et laisser sécher."
+                    ],
+                    "rep": "Baliser/sécuriser temporairement la zone si possible pour éviter les glissades, porter les gants adaptés et appliquer le protocole de traitement des souillures biologiques."
+                },
+                {
+                    "q": "3. [ASH] Manipulation des produits d'entretien : un agent ASH transvase du détergent-désinfectant concentré dans une bouteille de jus de fruit vide laissée sur un chariot. Analyse HAS de ce comportement :",
+                    "options": [
+                        "C'est une astuce pratique et économique courante.",
+                        "C'est une infraction majeure et un danger mortel d'ingestion accidentelle par confusion (interdiction formelle de transvaser des produits chimiques dans des contenants alimentaires).",
+                        "C'est toléré si une croix est dessinée au feutre sur la bouteille."
+                    ],
+                    "rep": "C'est une infraction majeure et un danger mortel d'ingestion accidentelle par confusion (interdiction formelle de transvaser des produits chimiques dans des contenants alimentaires)."
+                },
+                {
+                    "q": "4. [ASH] Quelle est la règle absolue d'hygiène des mains à respecter par l'ASH lors de l'entretien des locaux de soins à haut risque ?",
+                    "options": [
+                        "Réaliser une friction hydro-alcoolique (PHA) des mains avant d'entrer, après chaque tâche à risque, et systématiquement après le retrait des gants de protection.",
+                        "Garder la même paire de gants de ménage toute la journée sans friction.",
+                        "Se rincer les mains à l'eau froide sans savon."
+                    ],
+                    "rep": "Réaliser une friction hydro-alcoolique (PHA) des mains avant d'entrer, après chaque tâche à risque, et systématiquement après le retrait des gants de protection."
+                },
+                {
+                    "q": "5. [ASH] Bientraitance environnementale : l'ASH doit nettoyer un box occupé par un patient conscient, éveillé et anxieux. La bonne posture est de :",
+                    "options": [
+                        "Entrer en silence sans dire bonjour, pousser le lit et faire du bruit avec le seau.",
+                        "Refuser de nettoyer le box tant que le patient y est.",
+                        "Frapper à la porte, se présenter, expliquer poliment l'intervention de bio-nettoyage et veiller à respecter l'intimité et le repos du patient."
+                    ],
+                    "rep": "Frapper à la porte, se présenter, expliquer poliment l'intervention de bio-nettoyage et veiller à respecter l'intimité et le repos du patient."
+                },
+                {
+                    "q": "6. [ASH] En période de risque épidémique ou de Plan Blanc, quelle méthode de bio-nettoyage des surfaces l'ASH doit-il renforcer ?",
+                    "options": [
+                        "Un simple dépoussiérage avec un chiffon sec non stérile.",
+                        "L'application stricte du protocole de désinfection terminale avec des produits virucides/sporicides aux temps de contact requis, en portant les équipements de protection individuelle (EPI) complets.",
+                        "Ne rien changer aux habitudes de nettoyage."
+                    ],
+                    "rep": "L'application stricte du protocole de désinfection terminale avec des produits virucides/sporicides aux temps de contact requis, en portant les équipements de protection individuelle (EPI) complets."
+                },
+                {
+                    "q": "7. [ASH] Que doit faire l'ASH si le chariot de soins infirmiers se trouve au milieu du box pendant qu'elle souhaite nettoyer le sol sous ce chariot ?",
+                    "options": [
+                        "Demander impérativement la présence et l'accord de l'IDE pour déplacer tout plan de travail mobile ou chariot contenant des produits de santé (interdiction de manipuler les médicaments).",
+                        "Déplacer seule les boîtes de médicaments et les seringues pour faire place nette.",
+                        "Jeter le contenu du chariot dans la poubelle pour nettoyer."
+                    ],
+                    "rep": "Demander impérativement la présence et l'accord de l'IDE pour déplacer tout plan de travail mobile ou chariot contenant des produits de santé (interdiction de manipuler les médicaments)."
+                },
+                {
+                    "q": "8. [ASH] Gestion des sacs DASRI : à quel niveau de remplissage maximal les sacs jaunes de déchets infectieux doivent-ils impérativement être fermés et évacués ?",
+                    "options": [
+                        "Quand le sac éclate sous la pression.",
+                        "Une fois par semaine quel que soit le niveau.",
+                        "Aux trois quarts de leur capacité maximale, avec une fermeture étanche définitive (lien tunique / colliers de serrage)."
+                    ],
+                    "rep": "Aux trois quarts de leur capacité maximale, avec une fermeture étanche définitive (lien tunique / colliers de serrage)."
+                },
+                {
+                    "q": "9. [ASH] En rangeant le local de stockage des produits d'entretien, l'ASH constate une fuite sur un bidon de désinfectant et une absence de fiche de données de sécurité (FDS) accessible. Que fait-elle ?",
+                    "options": [
+                        "Laisser le bidon fuir dans le bac de rétention sans rien dire.",
+                        "Sécuriser/isoler le contenant selon la procédure, signaler l'incident à l'encadrement et s'assurer de l'accessibilité des consignes/FDS du local.",
+                        "Utiliser le bidon en premier pour le vider plus vite."
+                    ],
+                    "rep": "Sécuriser/isoler le contenant selon la procédure, signaler l'incident à l'encadrement et s'assurer de l'accessibilité des consignes/FDS du local."
+                },
+                {
+                    "q": "10. [ASH] Rôle de l'ASH dans la prévention des infections nosocomiales :",
+                    "options": [
+                        "Un rôle de première ligne fondamental : la qualité du bio-nettoyage des surfaces et le respect des circuits de bionettoyage brisent la chaîne de transmission croisée.",
+                        "Un rôle secondaire sans impact sur les patients.",
+                        "Le nettoyage des sols n'a aucun lien avec la sécurité des soins."
+                    ],
+                    "rep": "Un rôle de première ligne fondamental : la qualité du bio-nettoyage des surfaces et le respect des circuits de bionettoyage brisent la chaîne de transmission croisée."
+                }
+            ],
+            "Cadre": [
+                {
+                    "q": "1. [Cadre] Visite HAS 2027 : un Événement Indésirable Grave Associé aux Soins (EIGAS) est survenu dans l'unité deux mois plus tôt. Les experts-visiteurs consultent le dossier. Quelle attente managériale majeure ont-ils ?",
+                    "options": [
+                        "Vérifier que le nom du soignant responsable est affiché en salle de repos.",
+                        "Constater que l'incident a été étouffé pour ne pas ternir la réputation du service.",
+                        "Analyser la traçabilité de la déclaration, la mise en œuvre immédiate d'une analyse systémique des causes (RMM/CREX) et le suivi effectif du plan d'actions correctives."
+                    ],
+                    "rep": "Analyser la traçabilité de la déclaration, la mise en œuvre immédiate d'une analyse systémique des causes (RMM/CREX) et le suivi effectif du plan d'actions correctives."
+                },
+                {
+                    "q": "2. [Cadre] Surcharge chronique et tensions majeures sur les flux aux urgences : le cadre constate que le double contrôle des Médicaments à Haut Risque (MHR) n'est plus fait par manque de temps. Son action corrective :",
+                    "options": [
+                        "Analyser les freins organisationnels, rappeler le caractère non négociable de cette barrière de sécurité et réorganiser les binômes soignants pour sanctuariser la pratique.",
+                        "Supprimer officiellement la règle du double contrôle pour fluidifier les passages.",
+                        "Faire un reproche individuel public aux infirmiers récalcitrants."
+                    ],
+                    "rep": "Analyser les freins organisationnels, rappeler le caractère non négociable de cette barrière de sécurité et réorganiser les binômes soignants pour sanctuariser la pratique."
+                },
+                {
+                    "q": "3. [Cadre] Comment le cadre pilote-t-il concrètement l'évaluation des pratiques professionnelles (EPP) exigée par la certification HAS dans son service d'urgences ?",
+                    "options": [
+                        "En rédigeant des classeurs de protocoles poussiéreux rangés au fond d'un placard.",
+                        "En organisant des audits flash réguliers et partagés (identitovigilance, traçabilité de la douleur, chariots d'urgence, dossiers 'patients traceurs') ancrés dans le quotidien des équipes.",
+                        "En interdisant aux soignants de commettre des erreurs."
+                    ],
+                    "rep": "En organisant des audits flash réguliers et partagés (identitovigilance, traçabilité de la douleur, chariots d'urgence, dossiers 'patients traceurs') ancrés dans le quotidien des équipes."
+                },
+                {
+                    "q": "4. [Cadre] Gestion des risques liés aux ressources humaines et à l'épuisement professionnel (burn-out) : quelle est la responsabilité managériale du cadre ?",
+                    "options": [
+                        "Surveiller les signaux faibles d'épuisement, veiller au respect strict des temps de pause, planifier des rotations équitables et favoriser un espace de parole sécure.",
+                        "Ignorer la fatigue des agents tant que les indicateurs chiffrés de passage sont corrects.",
+                        "Exiger des doubles postes continus en cas d'absentéisme."
+                    ],
+                    "rep": "Surveiller les signaux faibles d'épuisement, veiller au respect strict des temps de pause, planifier des rotations équitables et favoriser un espace de parole sécure."
+                },
+                {
+                    "q": "5. [Cadre] Contrôle de la sécurité du chariot d'urgence de l'unité : quelle est la fréquence et la modalité de traçabilité exigée par la certification HAS ?",
+                    "options": [
+                        "Un contrôle visuel annuel aléatoire.",
+                        "Une vérification réalisée uniquement par la pharmacie centrale.",
+                        "Un contrôle quotidien formalisé de l'intégrité du scellé et une traçabilité rigoureuse des péremptions sur le registre dédié de l'unité."
+                    ],
+                    "rep": "Un contrôle quotidien formalisé de l'intégrité du scellé et une traçabilité rigoureuse des péremptions sur le registre dédié de l'unité."
+                },
+                {
+                    "q": "6. [Cadre] Face à un signalement répété de quasi-erreurs informatiques liées à l'ergonomie d'un nouveau logiciel de prescription, le cadre :",
+                    "options": [
+                        "Demande aux soignants de faire plus attention sans rien remonter.",
+                        "Coordonne la remontée institutionnelle des incidents via la matériovigilance/système d'information et met en place des barrières de sécurité palliatives sur le terrain.",
+                        "Interdit l'utilisation de l'ordinateur."
+                    ],
+                    "rep": "Coordonne la remontée institutionnelle des incidents via la matériovigilance/système d'information et met en place des barrières de sécurité palliatives sur le terrain."
+                },
+                {
+                    "q": "7. [Cadre] Quelle est l'attente de la HAS concernant la culture de sécurité des soins et la déclaration des événements indésirables (FEI) par les équipes ?",
+                    "options": [
+                        "Développer une culture juste (just culture) non punitive, encourageant la déclaration libérée des erreurs et quasi-erreurs pour transformer l'organisation.",
+                        "Promouvoir une approche punitive pour responsabiliser individuellement chaque agent.",
+                        "Limiter le nombre de déclarations mensuelles pour embellir les statistiques."
+                    ],
+                    "rep": "Développer une culture juste (just culture) non punitive, encourageant la déclaration libérée des erreurs et quasi-erreurs pour transformer l'organisation."
+                },
+                {
+                    "q": "8. [Cadre] En situation de crise sanitaire (Plan Blanc) avec une saturation critique des box d'urgences, le cadre pilote la gestion des flux en :",
+                    "options": [
+                        "Fermant les portes du service pour refuser l'entrée de nouveaux patients.",
+                        "Demandant à l'équipe de se débrouiller sans directive.",
+                        "Coordonnant la cellule de crise locale, activant les lits tampons, fluidifiant l'aval et réallouant les ressources soignantes selon les priorités de criticité."
+                    ],
+                    "rep": "Coordonnant la cellule de crise locale, activant les lits tampons, fluidifiant l'aval et réallouant les ressources soignantes selon les priorités de criticité."
+                },
+                {
+                    "q": "9. [Cadre] Lors d'un audit interne, le cadre constate que des protocoles de service sont périmés ou en double version sur le réseau intranet. Quelle est la bonne gouvernance documentaire ?",
+                    "options": [
+                        "Conserver les anciennes versions 'au cas où' sans mention de statut.",
+                        "Retirer les versions obsolètes de la diffusion active, valider et diffuser la version unique à jour avec l'équipe, et tracer la mise à jour.",
+                        "Demander à chaque agent d'imprimer sa propre version personnelle."
+                    ],
+                    "rep": "Retirer les versions obsolètes de la diffusion active, valider et diffuser la version unique à jour avec l'équipe, et tracer la mise à jour."
+                },
+                {
+                    "q": "10. [Cadre] Rôle du cadre dans la préparation physique et psychologique de l'équipe à la visite des experts-visiteurs de la HAS :",
+                    "options": [
+                        "Impliquer les professionnels au quotidien dans la démarche qualité, rendre lisibles les protocoles et libérer la parole de l'équipe pour présenter la réalité des pratiques.",
+                        "Faire du trucage de dossiers la veille de la visite pour masquer les non-conformités.",
+                        "Interdire au personnel de parler aux experts."
+                    ],
+                    "rep": "Impliquer les professionnels au quotidien dans la démarche qualité, rendre lisibles les protocoles et libérer la parole de l'équipe pour présenter la réalité des pratiques."
+                }
+            ]
+        },
+        "fiches_reflexes": {
+            "IDE": {
+                "class": "memo-box-ide",
+                "slug": "ide",
+                "points": [
+                    "**Identitovigilance Rigoureuse** : Exigence absolue du triptyque conforme (Nom de naissance, Prénom, Date de naissance) sur le bracelet avant tout soin critique.",
+                    "**Déclaration des Quasi-Erreurs** : Systématisation des Fiches d'Événements Indésirables (FEI) pour tout 'near-miss' afin d'améliorer la barrière systémique.",
+                    "**Sécurité Médicamenteuse & Allergies** : Vérification des antécédents/allergies, interdiction des préparations sans étiquetage nominatif immédiat et respect strict du patient unique.",
+                    "**Traçabilité & Consignes de Sortie** : Régularisation rigoureuse des actes dans le DPI, sécurisation des prélèvements/examens et vérification de la compréhension des consignes."
+                ]
+            },
+            "Medecin": {
+                "class": "memo-box-med",
+                "slug": "medecin",
+                "points": [
+                    "**Culture Juste & Analyse Systémique** : Implication active dans les RMM/CREX suite à un EIGAS, en bannissant la recherche de bouc émissaire individuel.",
+                    "**Continuité des Soins & Sorties** : Signature et transmission immédiate de la lettre de liaison de sortie pour prévenir la iatrogénie post-urgences.",
+                    "**Décisions Lourdes & Sécurité Transfusionnelle** : Formalisation des procédures collégiales d'urgence et respect strict des règles d'identitovigilance et de sécurité transfusionnelle.",
+                    "**Méthodologie Patient Traceur** : Garantie d'une traçabilité irréprochable dans le DPI et suivi des résultats critiques pour répondre aux exigences d'audit de la HAS."
+                ]
+            },
+            "AS": {
+                "class": "memo-box-as",
+                "slug": "as",
+                "points": [
+                    "**Vigie de l'Identité** : Contrôle systématique de la présence et de la conformité du bracelet d'identitovigilance au poignet des patients.",
+                    "**Précautions d'Hygiène & Risques Cliniques** : Application des précautions complémentaires adaptées (ex: FFP2 si besoin), contrôle du jeûne et des régimes/textures avant remise alimentaire.",
+                    "**Sécurité Environnementale & Produits** : Signalement immédiat des produits non étiquetés et alerte rapide de l'IDE en cas de mobilisation/coudure d'un dispositif.",
+                    "**Signalement Précoce** : Remontée immédiate à l'IDE et au cadre de toute lésion suspecte, situation de maltraitance ou quasi-accident."
+                ]
+            },
+            "ARM (Assistant/e de Régulation Médicale)": {
+                "class": "memo-box-arm",
+                "slug": "arm",
+                "points": [
+                    "**Premier Maillon de Sécurité** : Qualification rigoureuse du triptyque d'identitovigilance, de la localisation et des critères de gravité dès le premier décroché au SAMU 15.",
+                    "**Gestion des Homonymies & Rectifications** : Traitement strict des dossiers multiples et mise à jour immédiate/tracée de toute erreur de localisation ou d'aiguillage.",
+                    "**Traçabilité de Crise & Inaltérabilité** : Conservation des enregistrements audio et utilisation rigoureuse des mains courantes informatisées ou papiers en mode dégradé.",
+                    "**Secret Professionnel & Confidentialité** : Refus absolu de divulgation d'informations nominatives aux tiers non habilités par téléphone."
+                ]
+            },
+            "Accueil": {
+                "class": "memo-box-acc",
+                "slug": "accueil",
+                "points": [
+                    "**Barrière d'Accueil 24h/24** : Vérification de l'identité sur justificatifs valides pour éviter le télescopage de dossiers.",
+                    "**Secret Médical & Situations Particulières** : Préservation de la confidentialité au guichet, non-divulgation aux tiers non habilités et vigilance particulière pour les mineurs.",
+                    "**Protection des Valeurs & Sécurité** : Application stricte des inventaires contradictoires et alerte rapide face aux situations à risque.",
+                    "**Veille & Communication** : Explication claire du tri par gravité aux familles et alerte immédiate de l'équipe soignante en cas de besoin clinique."
+                ]
+            },
+            "Brancardier": {
+                "class": "memo-box-branc",
+                "slug": "brancardier",
+                "points": [
+                    "**Vérification Préalable Bracelet & Dossiers** : Contrôle de la présence du bracelet conforme et concordance de l'identité sur les documents/examens remis lors des transports.",
+                    "**Sécurité des Dispositifs Associés** : Arrimage parfait et sécurisé des obus d'oxygène et respect absolu de la règle de non-manipulation des pompes/perfusions.",
+                    "**Continuité & Sécurité du Transfert** : Ne jamais laisser un patient sans prise en charge sécurisée lors d'un transfert et vérifier le verrouillage des ridelles.",
+                    "**Hygiène & Bio-nettoyage** : Désinfection systématique des points de contact du brancard entre chaque patient, particulièrement en cas de transport à risque (BMR)."
+                ]
+            },
+            "ASH": {
+                "class": "memo-box-ash",
+                "slug": "ash",
+                "points": [
+                    "**Maîtrise des Filières de Déchets** : Distinction rigoureuse et tri strict entre les filières DAOM, DASRI et déchets cytotoxiques.",
+                    "**Sécurité Chimique & Souillures** : Interdiction formelle de transvaser des produits d'entretien dans des contenants alimentaires, sécurisation des souillures et suivi des FDS/fuites.",
+                    "**Hygiène des Mains & EPI** : Pratique systématique de la friction hydro-alcoolique et port des équipements de protection adaptés lors des bio-nettoyages terminaux.",
+                    "**Respect du Matériel Soignant** : Interdiction absolue de manipuler ou déplacer les chariots et plans de travail mobiles de soins en l'absence des infirmiers."
+                ]
+            },
+            "Cadre": {
+                "class": "memo-box-cadre",
+                "slug": "cadre",
+                "points": [
+                    "**Culture Juste & REX** : Animation des revues de mortalité/morbidité (RMM) et des CREX sans esprit de blâme individuel pour corriger les défaillances de système.",
+                    "**Pilotage des Audits Flash & Documents** : Évaluation continue des pratiques (EPP) par audits ciblés et garantie d'une gestion documentaire à jour sans doublons périmés.",
+                    "**Management de la Sécurité des Soins** : Sanctuarisation des barrières critiques incompressibles comme le double contrôle des MHR malgré les tensions de flux.",
+                    "**Accompagnement & Tutorat** : Mise en place de parcours d'intégration sécurisés pour les nouveaux arrivants et veille attentive face à l'épuisement des équipes."
+                ]
+            }
+        }
     }
 ]
 
