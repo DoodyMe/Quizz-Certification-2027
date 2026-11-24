@@ -2066,8 +2066,9 @@ SESSIONS = [
         },
         "fiches_reflexes": {
             "IDE": {
-                "titre": "Mémo Box IDE - Parcours & Vulnérabilités (Semaine 4)",
-                "points_cles": [
+                "class": "Mémo Box IDE - Parcours & Vulnérabilités (Semaine 4)",
+                "slug": "ide",
+                "points": [
                     "Sectorisation stricte : responsabilité directe de la gestion des soins et des risques sur sa zone de 6 box.",
                     "Repérage et traçabilité : cotation systématique des risques de vulnérabilité (chutes, escarres, dénutrition, troubles cognitifs) dès l'admission dans le DPI.",
                     "Surveillance des temps d'attente : traçabilité renforcée des patients en attente prolongée ou en brancard de couloir (hydratation, confort, réévaluations).",
@@ -2075,8 +2076,9 @@ SESSIONS = [
                 ]
             },
             "Medecin": {
-                "titre": "Mémo Box Medecin - Parcours & Vulnérabilités (Semaine 4)",
-                "points_cles": [
+                "class": "Mémo Box Medecin - Parcours & Vulnérabilités (Semaine 4)",
+                "slug": "medecin",
+                "points": [
                     "Pilotage sectoriel : responsabilité clinique de l'ensemble des 2 zones rattachées (gestion globale des flux et des priorités médicales).",
                     "Sécurisation thérapeutique : adaptation stricte des posologies aux fonctions d'élimination (DFG) chez le sujet âgé et traçabilité des conciliations médicamenteuses.",
                     "Cadre réglementaire des décisions lourdes : protocoles stricts de contention physique (prescription écrite, limitée, réévaluée) et recherche des directives anticipées.",
@@ -2084,8 +2086,9 @@ SESSIONS = [
                 ]
             },
             "AS": {
-                "titre": "Mémo Box AS - Parcours & Vulnérabilités (Semaine 4)",
-                "points_cles": [
+                "class": "Mémo Box AS - Parcours & Vulnérabilités (Semaine 4)",
+                "slug": "as",
+                "points": [
                     "Prévention active : installation immédiate des supports anti-escarres et respect des postures de décharge pour les patients dépendants ou grabataires.",
                     "Sécurité alimentaire & hydrique : surveillance des apports, adaptation des textures (mixé, eau gélifiée) et prévention des fausses routes lors des repas en zone de soins.",
                     "Veille comportementale : repérage et signalement immédiat à l'IDE de tout changement d'état cutané, de conscience ou d'agitation à risque de chute.",
@@ -2093,8 +2096,9 @@ SESSIONS = [
                 ]
             },
             "ARM (Assistant/e de Régulation Médicale)": {
-                "titre": "Mémo Box ARM - Régulation & Vulnérabilités (Semaine 4)",
-                "points_cles": [
+                "class": "Mémo Box ARM - Régulation & Vulnérabilités (Semaine 4)",
+                "slug": "arm",
+                "points": [
                     "Qualification ciblée : repérage immédiat des situations d'isolement, de perte de contact ou de fragilité gérontologique dès le premier décroché au 15.",
                     "Traçabilité amont : consignation rigoureuse des antécédents lourds, des traitements et des statuts éthiques (directives anticipées) dans le DRM.",
                     "Interface sécurisée : transmission exclusive des éléments cliniques et logistiques au Medecin Régulateur des Urgences (MRU) pour arbitrage et engagement des secours adaptés.",
@@ -2102,8 +2106,9 @@ SESSIONS = [
                 ]
             },
             "Accueil": {
-                "titre": "Mémo Box Accueil - Guichet & Vulnérabilités (Semaine 4)",
-                "points_cles": [
+                "class": "Mémo Box Accueil - Guichet & Vulnérabilités (Semaine 4)",
+                "slug": "accueil",
+                "points": [
                     "Accueil sécurisé 24h/24 : prise en charge immédiate et mise en sécurité des patients vulnérables isolés ou confus se présentant au comptoir.",
                     "Barrière du secret professionnel : interdiction absolue de divulguer des informations thérapeutiques au guichet ; orientation systématique vers l'IDE ou l'équipe médicale de la zone.",
                     "Gestion rigoureuse des valeurs : application stricte des procédures d'inventaire contradictoire et de mise en coffre des effets personnels des patients non conscients.",
@@ -2111,8 +2116,9 @@ SESSIONS = [
                 ]
             },
             "Brancardier": {
-                "titre": "Mémo Box Brancardier - Transport & Vulnérabilités (Semaine 4)",
-                "points_cles": [
+                "class": "Mémo Box Brancardier - Transport & Vulnérabilités (Semaine 4)",
+                "slug": "brancardier",
+                "points": [
                     "Confort et sécurité du transport : installation minutieuse du patient fragile (barrières relevées, protections thermiques, cales posturales) et vigilance permanente.",
                     "Sécurité des appareillages : vérification et fixation des obus d'oxygène et des dispositifs de perfusion avant tout départ de la zone de soins.",
                     "Réaction face à l'incident : arrêt immédiat du transfert en zone sécurisée et appel des soignants les plus proches en cas de modification de la conscience ou des constantes.",
@@ -2120,8 +2126,9 @@ SESSIONS = [
                 ]
             },
             "Cadre": {
-                "titre": "Mémo Box Cadre - Management & Vulnérabilités (Semaine 4)",
-                "points_cles": [
+                "class": "Mémo Box Cadre - Management & Vulnérabilités (Semaine 4)",
+                "slug": "cadre",
+                "points": [
                     "Pilotage qualité & certification HAS 2027 : mise en place d'audits flash, d'EPP ciblées et de revues de dossiers sur le parcours des patients vulnérables.",
                     "Gestion opérationnelle des tensions : animation des cellules de flux, régulation des lits d'aval et réallocation des ressources en cas de saturation des zones (6 box/IDE).",
                     "Maîtrise des risques : pilotage des déclarations d'événements indésirables (FEI/EIG), animation des RMM et mise en place d'actions correctives pérennes.",
