@@ -2956,6 +2956,33 @@ SESSIONS = [
                 ]
             }
         }
+    },
+        {
+        "id": 6,
+        "titre": "Semaine 6 - Qualité de Vie au Travail, Prévention des Violences & Culture d'Évaluation",
+        "date_debut": datetime.date(2026, 11, 30),
+        "date_fin": datetime.date(2026, 12, 6),
+        "tronc_commun": [],
+        "metiers": {},
+        "fiches_reflexes": {}
+        },
+    {
+        "id": 7,
+        "titre": "Semaine 7 - Coordination Ville-Hôpital, Pertinence des Soins & Orientations",
+        "date_debut": datetime.date(2026, 12, 7),
+        "date_fin": datetime.date(2026, 12, 13),
+        "tronc_commun": [],
+        "metiers": {},
+        "fiches_reflexes": {}
+    },
+    {
+        "id": 8,
+        "titre": "Semaine 8 - Éthique Clinique, Transparence & Mesures Restrictives",
+        "date_debut": datetime.date(2026, 12, 14),
+        "date_fin": datetime.date(2026, 12, 20),
+        "tronc_commun": [],
+        "metiers": {},
+        "fiches_reflexes": {}
     }
 ]
 
