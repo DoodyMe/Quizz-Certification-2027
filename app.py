@@ -487,7 +487,7 @@ SESSIONS = [
                 {"q": "6. [Module Medecin] Concernant les directives anticipées aux urgences, quelle est la règle applicable pour le Medecin ?", "options": ["Elles ont une durée de validité limitée à 3 ans", "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)", "Elles ne sont qu'un simple avis consultatif que le Medecin peut ignorer librement"], "rep": "Elles s'imposent pour toute décision de limitation/arrêt de traitement (sauf urgence vitale le temps de l'évaluation)"},
                 {"q": "7. [Module Medecin] Lors d'une décision de Limitation ou Arrêt de Traitement (LAT) aux urgences, quelle est l'obligation réglementaire ?", "options": ["Décider seul pour ne pas perdre de temps", "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier", "Demander l'autorisation préalable au directeur de l'hôpital"], "rep": "Organiser une procédure collégiale, consulter la personne de confiance/directives anticipées et tracer la décision dans le dossier"},
                 {"q": "8. [Module Medecin] Un proche réclame des informations médicales sur un patient majeur hospitalisé aux urgences. Le Medecin peut lui répondre si :", "options": ["Le proche prouve son lien de parenté direct (livret de famille)", "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche", "Le proche habite sous le même toit que le patient"], "rep": "Le patient ne s'y est pas opposé et a autorisé la transmission d'informations à ce proche"},
-                {"q": "9. [Module Medecin] Quelle information minimale doit obligatoirement être tracée dans le Dossier Patient Informatisé lors d'une sortie contre avis médical ?", "options": ["L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié", "La mention 'Patient parti' sans autre précision", "Le règlement des frais de séjour"], "rep": "L me l'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié"},
+                {"q": "9. [Module Medecin] Quelle information minimale doit obligatoirement être tracée dans le Dossier Patient Informatisé lors d'une sortie contre avis médical ?", "options": ["L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié", "La mention 'Patient parti' sans autre précision", "Le règlement des frais de séjour"], "rep": "L'information claire délivrée sur les risques vitaux encourus, la proposition d'alternatives et la signature du formulaire dédié"},
                 {"q": "10. [Module Medecin] Dans le cadre de la certification HAS, quel est le délai recommandé pour la rédaction et la transmission du compte-rendu de passage aux urgences ?", "options": ["Dans les 8 jours suivant la sortie", "Remis au patient à sa sortie ou transmis au Medecin traitant dans les 24 heures maximum", "Dans le mois qui suit"], "rep": "Remis au patient à sa sortie ou transmis au Medecin traitant dans les 24 heures maximum"}
             ],
             "ARM (Assistant/e de Régulation Médicale)": [
@@ -1458,7 +1458,7 @@ SESSIONS = [
                     "q": "10. [Module Brancardier] Un brancardier transporte un patient porteur d'une bactérie multirésistante (BMR) vers une unité d'imagerie. Quelles sont les exigences de gestion du matériel à l'issue du transport selon les protocoles HAS de prévention des transmissions croisées ?",
                     "options": [
                         "Le patient étant simplement transporté assis sans contact direct prolongé avec le matelas, une simple aération de la civière de 15 minutes suffit avant le brancardage suivant.",
-                        "Le brancardier réalise immédiatement la désinfection de contact des points de contact (barrières, poignées, matelas) avec le produit détergent-désinfectant homologué du circuit, conformément à la traçabilité des protocoles d'hygiène.",
+                        "Désinfection systématique des surfaces de contact du brancard avec un produit homologué entre chaque patient pour éviter toute transmission croisée.",
                         "Le brancardier doit immédiatement isoler le brancard hors service pendant 1 heure en zone propre pour neutraliser par déperdition naturelle la charge bactérienne résiduelle, après l'avoir désinfecté."
                     ],
                     "rep": "Désinfection systématique des surfaces de contact du brancard avec un produit homologué entre chaque patient pour éviter toute transmission croisée."
@@ -1487,10 +1487,10 @@ SESSIONS = [
                     "q": "8. [Module ASH] L'ASH nettoie le sol d'un box et trouve un capuchon d'aiguille et une compresse souillée de sang séché. Que fait-elle vis-à-vis du risque iatrogène ?",
                     "options": [
                         "Ramasse à main nue, le sang étant sec.",
-                        "Utilise des gants et signale le risque de matériel piquant/tranchant abandonné.",
+                        "Utilise des gants et signale le risque de matériel piquant/tranchant abandonné",
                         "Le signale aux soignants pour qu'ils s'en chargent"
                     ],
-                    "rep": "Utilise des gants et signale le risque de matériel piquant/tranchant abandonné."
+                    "rep": "Utilise des gants et signale le risque de matériel piquant/tranchant abandonné"
                 },
                 {
                     "q": "9. [Module ASH] L'ASH transvase un produit de désinfection de surface dans une bouteille d'eau vide laissée dans un local de soins. Quel danger majeur la HAS pointe-t-elle ?",
